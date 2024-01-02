@@ -1,4 +1,5 @@
-*.yaml
+src/main/resources/*.yml
+
 # IDEA
 .idea/
 out/
