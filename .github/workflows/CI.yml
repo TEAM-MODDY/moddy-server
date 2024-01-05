@@ -2,7 +2,7 @@ name: MODDY DEV CI
 
 on:
   push:
-    branched: [ "develop" ]
+    branches: [ "develop" ]
   pull_request: 
     branches: [ "develop" ]
 
