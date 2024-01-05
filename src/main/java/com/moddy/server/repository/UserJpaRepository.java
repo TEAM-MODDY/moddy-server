@@ -1,7 +1,6 @@
 package com.moddy.server.repository;
 
 
-import com.moddy.server.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
