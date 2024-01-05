@@ -1,4 +1,4 @@
-package com.modee.server.config.swagger;
+package com.moddy.server.config.swagger;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -20,8 +20,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         Info info = new Info()
-                .title("Modee Swagger")
-                .description("Modee API Docs")
+                .title("Moddy Swagger")
+                .description("Moddy API Docs")
                 .version("1.0.0");
 
         return new OpenAPI()

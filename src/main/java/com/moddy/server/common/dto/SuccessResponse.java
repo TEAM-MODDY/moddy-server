@@ -1,6 +1,6 @@
-package com.modee.server.common.dto;
+package com.moddy.server.common.dto;
 
-import com.modee.server.common.exception.enums.SuccessCode;
+import com.moddy.server.common.exception.enums.SuccessCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
