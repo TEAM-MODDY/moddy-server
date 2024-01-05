@@ -2,7 +2,6 @@ package com.moddy.server.service;
 
 
 
-import com.moddy.server.domain.User;
 import com.moddy.server.external.kakao.dto.response.KakaoAccessTokenResponse;
 import com.moddy.server.external.kakao.dto.response.KakaoUserResponse;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
