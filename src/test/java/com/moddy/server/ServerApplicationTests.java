@@ -1,4 +1,4 @@
-package com.modee.server;
+package com.moddy.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

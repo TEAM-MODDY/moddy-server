@@ -1,4 +1,4 @@
-package com.modee.server.common.exception;
+package com.moddy.server.common.exception;
 
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
