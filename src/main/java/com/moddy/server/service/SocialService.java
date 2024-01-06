@@ -1,4 +1,4 @@
-package com.moddy.server.external.kakao.service;
+package com.moddy.server.service;
 
 
 import com.moddy.server.request.SocialLoginRequest;
