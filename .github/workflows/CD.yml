@@ -5,7 +5,7 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  deploy-ci:
+  deploy-ci
     runs-on: ubuntu-22.04
     env:
       working-directory: moddy-server
@@ -24,13 +24,11 @@ jobs:
       run: | 
           cd src/main/resources 
           echo "${{ secrets.APPLICATION }}" > ./application.yml
-      working-directory: ${{ env.working-directory }}
 
     - name: 빌드
       run: |
           chmod +x gradlew
           ./gradlew build -x test
-      working-directory: ${{ env.working-directory }}
       shell: bash
 
 ######## 여기까지는 CI.yml와 동일 #########
@@ -48,7 +46,6 @@ jobs:
       run: |
         docker build --platform linux/amd64 -t moddy1217/moddy-server .
         docker push moddy1217/moddy-server
-      working-directory: ${{ env.working-directory }}
 
   deploy-cd:      
     needs: deploy-ci
