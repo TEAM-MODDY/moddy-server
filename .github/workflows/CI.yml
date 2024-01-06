@@ -26,7 +26,6 @@ jobs:
       run: | 
           cd src/main/resources 
           echo "${{ secrets.APPLICATION }}" > ./application.yml
-      working-directory: ${{ env.working-directory }}
 
     - name: 빌드
       run: |
