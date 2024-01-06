@@ -1,7 +1,6 @@
 package com.moddy.server.external.kakao;
 
 
-
 import com.moddy.server.service.KakaoSocialService;
 import com.moddy.server.service.SocialService;
 import jakarta.annotation.PostConstruct;
