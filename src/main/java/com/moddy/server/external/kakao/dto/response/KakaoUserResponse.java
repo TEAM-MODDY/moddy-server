@@ -12,5 +12,5 @@ public class KakaoUserResponse {
 
     private Long id;
 
-    private KakaoAccount kakaoAccount;
+
 }
