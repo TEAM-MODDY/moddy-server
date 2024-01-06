@@ -1,8 +1,8 @@
 package com.moddy.server.external.kakao;
 
 
-import com.moddy.server.service.KakaoSocialService;
-import com.moddy.server.service.SocialService;
+import com.moddy.server.external.kakao.service.KakaoSocialService;
+import com.moddy.server.external.kakao.service.SocialService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

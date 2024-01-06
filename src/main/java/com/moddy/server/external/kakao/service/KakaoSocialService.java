@@ -1,4 +1,4 @@
-package com.moddy.server.service;
+package com.moddy.server.external.kakao.service;
 
 
 import com.moddy.server.external.kakao.dto.response.KakaoAccessTokenResponse;
@@ -26,7 +26,6 @@ public class KakaoSocialService extends SocialService {
     @Override
     public SocialLoginResponse login(SocialLoginRequest request) {
 
-        System.out.println(clientId);
 
         // Authorization code로 Access Token 불러오기
         KakaoAccessTokenResponse tokenResponse = kakaoAuthApiClient.getOAuth2AccessToken(
@@ -37,9 +36,10 @@ public class KakaoSocialService extends SocialService {
         );
 
         // Access Token으로 유저 정보 불러오기
-        KakaoUserResponse userResponse = kakaoApiClient.getUserInformation("Bearer " + tokenResponse.getAccessToken());
+        KakaoUserResponse userResponse = kakaoApiClient.getUserInformation("Bearer " + tokenResponse.accessToken());
 
 
-        return SocialLoginResponse.of(String.valueOf(userResponse.getId()));
+        return new SocialLoginResponse(String.valueOf(userResponse.id()));
+
     }
 }
