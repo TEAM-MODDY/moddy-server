@@ -23,6 +23,9 @@ repositories {
 }
 
 dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	// Discord logback
 	implementation 'com.github.napstr:logback-discord-appender:1.0.0'
 
