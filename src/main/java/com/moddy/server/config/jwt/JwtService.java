@@ -1,5 +1,6 @@
 package com.moddy.server.config.jwt;
 
+import com.moddy.server.common.exception.model.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
@@ -13,6 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+
+import static com.moddy.server.common.exception.enums.ErrorCode.TOKEN_TIME_EXPIRED_EXCEPTION;
 
 @Service
 public class JwtService {
@@ -43,6 +46,23 @@ public class JwtService {
 
         claims.put(USER_ID, userId);
         return createToken(claims);
+    }
+
+    public boolean verifyToken(final String token) {
+        try {
+            final Claims claims = getBody(token);
+            return true;
+        } catch (RuntimeException e) {
+            if (e instanceof ExpiredJwtException) {
+                throw new UnAuthorizedException(TOKEN_TIME_EXPIRED_EXCEPTION);
+            }
+            return false;
+        }
+    }
+
+    public String getUserIdInToken(final String token) {
+        final Claims claims = getBody(token);
+        return (String) claims.get(USER_ID);
     }
 
     private String createToken(final Claims claims) {
