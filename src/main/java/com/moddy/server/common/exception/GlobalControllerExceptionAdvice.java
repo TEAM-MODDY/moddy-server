@@ -18,8 +18,6 @@ import static com.moddy.server.common.exception.enums.ErrorCode.METHOD_NOT_ALLOW
 @Slf4j
 @RestControllerAdvice
 public class GlobalControllerExceptionAdvice {
-    private final static String START_ERROR = "================================================NEW===============================================\n";
-
     /**
      * 400 Bad Request
      */
@@ -73,7 +71,7 @@ public class GlobalControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     protected ErrorResponse handleException(final Exception error) {
-        log.error(START_ERROR + error.getMessage(), error);
+        log.error(error.getMessage(), error);
         return ErrorResponse.error(INTERNAL_SERVER_EXCEPTION);
     }
 }
