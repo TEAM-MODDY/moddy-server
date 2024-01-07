@@ -1,12 +1,12 @@
-package com.moddy.server.service;
+package com.moddy.server.external.kakao.service;
 
 
 import com.moddy.server.external.kakao.dto.response.KakaoAccessTokenResponse;
 import com.moddy.server.external.kakao.dto.response.KakaoUserResponse;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
-import com.moddy.server.request.SocialLoginRequest;
-import com.moddy.server.response.SocialLoginResponse;
+import com.moddy.server.controller.auth.dto.request.SocialLoginRequest;
+import com.moddy.server.controller.auth.dto.response.SocialLoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
