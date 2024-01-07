@@ -23,7 +23,7 @@
   <img src="https://img.shields.io/badge/AWS_EC2-FF9900?style=flat-square&logo=AWSLEC2&logoColor=orange"/></a>
 	<br>	
 	<img src="https://img.shields.io/badge/NGINX-%23009639.svg?style=flat-square&logo=NGINX&logoColor=white"></a>
-	<img src="https://img.shields.io/badge/GitHub_Actions%20actions-%232671E5.svg?style=flat-square&logo=GitHub_Actions&logoColor=white"></a>
+	<img src="https://img.shields.io/badge/GitHub_Actions-%232671E5.svg?style=flat-square&logo=GitHub_Actions&logoColor=white"></a>
 	<img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"> </a>
 	<br>	
 	<img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white"></a>
