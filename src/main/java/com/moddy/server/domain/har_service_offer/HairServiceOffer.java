@@ -33,4 +33,7 @@ public class HairServiceOffer extends BaseTimeEntity {
     @NotNull
     private Boolean isModelAgree;
 
+    @NotNull
+    private Boolean isClicked;
+
 }
