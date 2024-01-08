@@ -22,11 +22,6 @@ public class HairModelApplication extends BaseTimeEntity {
     @NotNull
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "designer_id_")
-    @NotNull
-    private Designer designer;
-
     @Enumerated(value = EnumType.STRING)
     @NotNull
     private HairLength hairLength;
