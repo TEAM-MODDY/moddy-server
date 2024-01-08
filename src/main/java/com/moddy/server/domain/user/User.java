@@ -27,7 +27,7 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING)
     @NotNull
-    private String gender;
+    private Gender gender;
 
     @NotNull
     private String phoneNumber;
