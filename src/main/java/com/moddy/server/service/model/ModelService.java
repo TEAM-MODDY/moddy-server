@@ -1,7 +1,6 @@
 package com.moddy.server.service.model;
 
 
-import com.moddy.server.common.dto.PageInfo;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
@@ -66,8 +65,6 @@ public class ModelService {
     public ModelMainResponse getModelMainInfo(Long userId, int page, int size){
 
         Page<HairServiceOffer> offerPage = findOffers(userId, page, size);
-        PageInfo pageInfo = new PageInfo(page, size);
-
 
         boolean applyStatus = hairModelApplicationJpaRepository.existsByUserId(userId);
         boolean offerStatus = hairServiceOfferJpaRepository.existsByUserId(userId);
@@ -76,7 +73,8 @@ public class ModelService {
 
         if(modelApplyStatus != ModelApplyStatus.APPLY_AND_OFFER){
             return new ModelMainResponse(
-                    pageInfo,
+                    page,
+                    size,
                     modelApplyStatus,
                     user.getName(),
                     new ArrayList<>()
@@ -84,7 +82,7 @@ public class ModelService {
         }
 
 
-        //offerPage
+        //offerPage / HairServiceOffer
         List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByUserId(userId);
         List<OfferResponse> offerResponseList = new ArrayList<>();
 
@@ -105,7 +103,8 @@ public class ModelService {
         }
 
         return new ModelMainResponse(
-                pageInfo,
+                page,
+                size,
                 modelApplyStatus,
                 user.getName(),
                 offerResponseList
