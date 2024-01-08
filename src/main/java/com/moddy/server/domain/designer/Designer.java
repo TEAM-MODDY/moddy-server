@@ -4,8 +4,10 @@ import com.moddy.server.domain.user.User;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Designer extends User {
 
     @Embedded
