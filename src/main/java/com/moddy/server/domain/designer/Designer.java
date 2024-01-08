@@ -1,11 +1,18 @@
 package com.moddy.server.domain.designer;
 
+import com.moddy.server.domain.user.Gender;
+import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class Designer extends User {
 
     @Embedded

@@ -7,9 +7,5 @@ public record DesignerCreateResponse(
         String accessToken,
         String refreshToken
 ) {
-    public static DesignerCreateResponse of() {
-        public static DesignerCreateResponse of() {
 
-        }
-    }
 }
