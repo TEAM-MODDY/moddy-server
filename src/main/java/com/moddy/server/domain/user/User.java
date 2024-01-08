@@ -25,9 +25,6 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String name;
 
-    @NotNull
-    private String year;
-
     @Enumerated(value = EnumType.STRING)
     @NotNull
     private Gender gender;
