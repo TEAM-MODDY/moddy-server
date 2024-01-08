@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum SuccessCode {
 
 
-    SOCIAL_LOGIN_SUCCESS(HttpStatus.OK, "소셜 로그인 성공");
+    SOCIAL_LOGIN_SUCCESS(HttpStatus.OK, "카카오 로그인 성공입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
