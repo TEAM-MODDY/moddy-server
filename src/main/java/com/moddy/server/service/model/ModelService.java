@@ -81,10 +81,7 @@ public class ModelService {
             );
         }
 
-
-        //offerPage / HairServiceOffer
         List<HairServiceOffer> hairServiceOffers = offerPage.stream().toList();
-//        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByUserId(userId);
         List<OfferResponse> offerResponseList = new ArrayList<>();
 
         for (int i = 0; i < hairServiceOffers.size(); i++){
