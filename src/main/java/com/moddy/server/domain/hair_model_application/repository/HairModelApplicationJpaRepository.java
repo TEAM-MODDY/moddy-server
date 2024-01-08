@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface HairModelApplicationJpaRepository extends JpaRepository<HairModelApplication, Long> {
 
-    Boolean existsByUser(Long userId);
+    Boolean existsByUserId(Long userId);
 
 }

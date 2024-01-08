@@ -8,8 +8,8 @@ import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OfferResponse;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
-import com.moddy.server.domain.har_service_offer.HairServiceOffer;
-import com.moddy.server.domain.har_service_offer.repository.HairServiceOfferJpaRepository;
+import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
+import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
@@ -19,6 +19,7 @@ import com.moddy.server.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +38,9 @@ public class ModelService {
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
     private final PreferOfferConditionJpaRepository preferOfferConditionJpaRepository;
 
-    private Page<HairServiceOffer> findOffers(int page, int size){
-        PageRequest pageRequest = PageRequest.of(page-1, size);
-        Page<HairServiceOffer> offerPage = hairServiceOfferJpaRepository.findAllByOrderByHairServiceOfferIdDesc(pageRequest);
+    private Page<HairServiceOffer> findOffers(Long userId, int page, int size){
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
+        Page<HairServiceOffer> offerPage = hairServiceOfferJpaRepository.findByUserId(userId, pageRequest);
 
         return offerPage;
     }
@@ -64,14 +65,14 @@ public class ModelService {
 
     public ModelMainResponse getModelMainInfo(Long userId, int page, int size){
 
-        Page<HairServiceOffer> offerPage = findOffers(page,size);
+        Page<HairServiceOffer> offerPage = findOffers(userId, page, size);
         PageInfo pageInfo = new PageInfo(page, size);
 
 
-        boolean applyStatus = hairModelApplicationJpaRepository.existsByUser(userId);
-        boolean offerStatus = hairServiceOfferJpaRepository.existsByUser(userId);
+        boolean applyStatus = hairModelApplicationJpaRepository.existsByUserId(userId);
+        boolean offerStatus = hairServiceOfferJpaRepository.existsByUserId(userId);
         ModelApplyStatus modelApplyStatus = calModelStatus(applyStatus, offerStatus);
-        User user = modelJpaRepository.findByUser(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
+        User user = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
 
         if(modelApplyStatus != ModelApplyStatus.APPLY_AND_OFFER){
             return new ModelMainResponse(
@@ -83,12 +84,13 @@ public class ModelService {
         }
 
 
-        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByUser(userId);
+        //offerPage
+        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByUserId(userId);
         List<OfferResponse> offerResponseList = new ArrayList<>();
 
         for (int i = 0; i < hairServiceOffers.size(); i++){
             Designer designer = hairServiceOffers.get(i).getDesigner();
-            List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOffer(hairServiceOffers.get(i).getId());
+            List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOfferId(hairServiceOffers.get(i).getId());
             List<OfferCondition> offerConditionTop2List = preferOfferCondition.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
 
             OfferResponse offerResponse = new OfferResponse(

@@ -1,6 +1,6 @@
-package com.moddy.server.domain.har_service_offer.repository;
+package com.moddy.server.domain.hair_service_offer.repository;
 
-import com.moddy.server.domain.har_service_offer.HairServiceOffer;
+import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface HairServiceOfferJpaRepository extends JpaRepository<HairServiceOffer, Long> {
 
-    Page<HairServiceOffer> findAllByOrderByHairServiceOfferIdDesc(Pageable pageable);
+    Page<HairServiceOffer> findByUserId(Long userId, Pageable pageable);
 
-    Boolean existsByUser(Long userId);
+    Boolean existsByUserId(Long userId);
 
-    List<HairServiceOffer> findAllByUser(Long userId);
+    List<HairServiceOffer> findAllByUserId(Long userId);
 }
