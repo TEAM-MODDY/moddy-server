@@ -1,5 +1,6 @@
 package com.moddy.server.controller.model;
 
+import com.moddy.server.common.dto.PageInfo;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
@@ -37,7 +38,7 @@ public class ModelController {
     })
     @GetMapping
     public SuccessResponse<ModelMainResponse> getMain(@UserId Long userId, @RequestParam int page, @RequestParam int size){
-        return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo());
+        return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo(userId, page, size));
     }
 
 }
