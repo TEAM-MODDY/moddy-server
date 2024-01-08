@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 public class User extends BaseTimeEntity {
 
@@ -26,9 +29,6 @@ public class User extends BaseTimeEntity {
 
     @NotNull
     private String name;
-
-    @NotNull
-    private String year;
 
     @Enumerated(value = EnumType.STRING)
     @NotNull
