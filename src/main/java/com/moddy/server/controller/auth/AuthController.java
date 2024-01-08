@@ -23,6 +23,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_S
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+    private static final String AUTHORIZATION = "Authorization";
     private final AuthService authService;
 
     @Operation(summary = "로그인 API")
@@ -33,7 +34,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/login")
-    public SuccessResponse<LoginResponseDto> login(@RequestHeader("kakaoCode") String kakaoCode) {
+    public SuccessResponse<LoginResponseDto> login(@RequestHeader(AUTHORIZATION) String kakaoCode) {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(kakaoCode));
     }
 }
