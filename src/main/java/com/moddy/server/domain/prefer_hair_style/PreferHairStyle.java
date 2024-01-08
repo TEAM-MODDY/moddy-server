@@ -1,13 +1,22 @@
 package com.moddy.server.domain.prefer_hair_style;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.moddy.server.domain.BaseTimeEntity;
+import com.moddy.server.domain.hair_model_application.HairModelApplication;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class PreferHairStyle {
+public class PreferHairStyle extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    private HairModelApplication hairModelApplication;
+
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    private HairStyle hairStyle;
+
 }

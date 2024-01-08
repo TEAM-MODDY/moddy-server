@@ -1,13 +1,43 @@
 package com.moddy.server.domain.hair_model_application;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.moddy.server.domain.BaseTimeEntity;
+import com.moddy.server.domain.designer.Designer;
+import com.moddy.server.domain.user.User;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class HairModelApplication {
+public class HairModelApplication extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @NotNull
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "designer_id_")
+    @NotNull
+    private Designer designer;
+
+    @NotNull
+    private String hairLength;
+
+    @NotNull
+    private String hairDetail;
+
+    @NotNull
+    private String modelImgUrl;
+
+    @NotNull
+    private String instagramId;
+
+    @NotNull
+    private String applicationCaptureUrl;
+
+    @NotNull
+    private Boolean isSend;
+
 }
