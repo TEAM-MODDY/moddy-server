@@ -1,6 +1,5 @@
 package com.moddy.server.controller.model;
 
-import com.moddy.server.common.dto.PageInfo;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
@@ -8,7 +7,6 @@ import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.service.model.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
