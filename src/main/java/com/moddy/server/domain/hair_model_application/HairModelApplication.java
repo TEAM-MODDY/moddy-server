@@ -22,8 +22,9 @@ public class HairModelApplication extends BaseTimeEntity {
     @NotNull
     private Designer designer;
 
+    @Enumerated(value = EnumType.STRING)
     @NotNull
-    private String hairLength;
+    private HairLength hairLength;
 
     @NotNull
     private String hairDetail;
