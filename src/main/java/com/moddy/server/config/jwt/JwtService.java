@@ -68,6 +68,12 @@ public class JwtService {
         return (String) claims.get(USER_ID);
     }
 
+    public TokenPair generateTokenPair(final String userId) {
+        String accessToken = createAccessToken(userId);
+        String refreshToken = createRefreshToken(userId);
+        return new TokenPair(accessToken, refreshToken);
+    }
+
     private String createToken(final Claims claims) {
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -105,9 +111,4 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenPair generateTokenPair(final String userId) {
-        String accessToken = createAccessToken(userId);
-        String refreshToken = createRefreshToken(userId);
-        return new TokenPair(accessToken, refreshToken);
-    }
 }
