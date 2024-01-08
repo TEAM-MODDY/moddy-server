@@ -1,5 +1,6 @@
 package com.moddy.server.config.jwt;
 
+import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.model.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -14,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.moddy.server.common.exception.enums.ErrorCode.TOKEN_TIME_EXPIRED_EXCEPTION;
 
@@ -100,5 +103,11 @@ public class JwtService {
     private Key getSigningKey() {
         final byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public TokenPair generateTokenPair(final String userId) {
+        String accessToken = createAccessToken(userId);
+        String refreshToken = createRefreshToken(userId);
+        return new TokenPair(accessToken, refreshToken);
     }
 }
