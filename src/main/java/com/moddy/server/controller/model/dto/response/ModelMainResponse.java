@@ -10,12 +10,6 @@ public record ModelMainResponse(
         int size,
         String status,
         String userName,
-        int offerId,
-        String imgUrl,
-        String name,
-        String shopName,
-        List conditions,
-        boolean isClicked
+        List<OfferResponse> offer
 ) {
-
 }
