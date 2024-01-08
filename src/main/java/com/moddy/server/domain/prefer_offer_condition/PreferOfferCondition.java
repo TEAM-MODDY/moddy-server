@@ -4,8 +4,10 @@ import com.moddy.server.domain.BaseTimeEntity;
 import com.moddy.server.domain.har_service_offer.HairServiceOffer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class PreferOfferCondition extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
