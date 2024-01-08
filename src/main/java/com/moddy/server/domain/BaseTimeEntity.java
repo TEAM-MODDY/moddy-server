@@ -1,4 +1,4 @@
-package com.moddy.server.common.domain;
+package com.moddy.server.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
