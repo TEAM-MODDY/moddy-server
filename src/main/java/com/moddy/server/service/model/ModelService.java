@@ -46,20 +46,11 @@ public class ModelService {
 
     private ModelApplyStatus calModelStatus(boolean apply, boolean offer){
 
-        //테스트 코드에 false true 경우 있는지 테스트하기
-        if(apply == false && offer == false) {
-            return ModelApplyStatus.NOTHING;
-        }
-        else if (apply == true && offer == false) {
-            return ModelApplyStatus.APPLY;
-        }
-        else if (apply == true && offer == true) {
-            return ModelApplyStatus.APPLY_AND_OFFER;
-        }
-        else {
-            throw new NotFoundException(ErrorCode.NOT_FOUND_MODEL_STATUS);
-        }
-
+        if(!apply && !offer) return ModelApplyStatus.NOTHING;
+        else if (apply && !offer) return ModelApplyStatus.APPLY;
+        else if (apply && offer) return ModelApplyStatus.APPLY_AND_OFFER;
+        else throw new NotFoundException(ErrorCode.NOT_FOUND_MODEL_STATUS);
+        
     }
 
     public ModelMainResponse getModelMainInfo(Long userId, int page, int size){
