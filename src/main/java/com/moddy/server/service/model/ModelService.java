@@ -173,4 +173,11 @@ public class ModelService {
         return new DetailOfferResponse(designerInfoResponseList, styleDetailResponse);
     }
 
+    @Transactional
+    public void acceptOffer(Long offerId){
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
+
+        hairServiceOffer.setIsModelAgree(Boolean.TRUE);
+    }
+
 }
