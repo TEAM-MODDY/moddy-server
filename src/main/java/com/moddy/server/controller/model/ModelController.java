@@ -58,7 +58,7 @@ public class ModelController {
 
     @Operation(summary = "[JWT] 디자이너 제안서 승낙하기", description = "디자이너 제안서 승낙하기 API입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "디자이너 제안서 승낙하기"),
+            @ApiResponse(responseCode = "200", description = "디자이너 제안서 승낙하기", content = @Content(schema = @Schema(implementation = SuccessCode.class))),
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "제안서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -68,7 +68,7 @@ public class ModelController {
     public SuccessResponse acceptOffer(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId){
-        modelService.acceptOffer(offerId);
+        modelService.updateOfferAgreeStatus(offerId);
         return SuccessResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
     }
 
