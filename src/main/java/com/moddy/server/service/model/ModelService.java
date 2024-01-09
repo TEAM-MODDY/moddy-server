@@ -50,17 +50,18 @@ public class ModelService {
         else if (apply && !offer) return ModelApplyStatus.APPLY;
         else if (apply && offer) return ModelApplyStatus.APPLY_AND_OFFER;
         else throw new NotFoundException(ErrorCode.NOT_FOUND_MODEL_STATUS);
-        
+
     }
 
     public ModelMainResponse getModelMainInfo(Long userId, int page, int size){
+
+        User user = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
 
         Page<HairServiceOffer> offerPage = findOffers(userId, page, size);
 
         boolean applyStatus = hairModelApplicationJpaRepository.existsByUserId(userId);
         boolean offerStatus = hairServiceOfferJpaRepository.existsByUserId(userId);
         ModelApplyStatus modelApplyStatus = calModelStatus(applyStatus, offerStatus);
-        User user = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
 
         if(modelApplyStatus != ModelApplyStatus.APPLY_AND_OFFER){
             return new ModelMainResponse(
