@@ -19,6 +19,6 @@ public enum Gender {
         return Stream.of(Gender.values())
                 .filter(c -> c.getValue().equals(gender))
                 .findFirst()
-                .orElseThrow(() -> new BadRequestException(ErrorCode.INVALID_DAY_OF_WEEK_EXCEPTION));
+                .orElseThrow(() -> new BadRequestException(ErrorCode.INVALID_GENDER_EXCEPTION));
     }
 }

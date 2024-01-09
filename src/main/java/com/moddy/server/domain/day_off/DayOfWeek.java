@@ -16,7 +16,7 @@ public enum DayOfWeek {
     private final String value;
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static DayOfWeek findByDay(String dayOfWeek) {
+    public static DayOfWeek findByDayOfWeek(String dayOfWeek) {
         return Stream.of(DayOfWeek.values())
                 .filter(c -> c.getValue().equals(dayOfWeek))
                 .findFirst()
