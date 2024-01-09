@@ -74,27 +74,6 @@ public class ModelService {
             );
         }
 
-//        List<HairServiceOffer> hairServiceOffers = offerPage.stream().toList();
-//        List<OfferResponse> offerResponseList = new ArrayList<>();
-//
-//        for (int i = 0; i < hairServiceOffers.size(); i++){
-//            Designer designer = hairServiceOffers.get(i).getDesigner();
-//            List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOfferId(hairServiceOffers.get(i).getId());
-//            List<OfferCondition> offerConditionTop2List = preferOfferCondition.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
-//
-//            OfferResponse offerResponse = new OfferResponse(
-//                    hairServiceOffers.get(i).getId(),
-//                    designer.getProfileImgUrl(),
-//                    designer.getName(),
-//                    designer.getHairShop().getName(),
-//                    offerConditionTop2List,
-//                    hairServiceOffers.get(i).getIsClicked());
-//
-//            offerResponseList.add(offerResponse);
-//        }
-
-//        List<OfferResponse> offerResponseList = new ArrayList<>();
-
         List<OfferResponse> offerResponseList = offerPage.stream().map(offer -> {
             Designer designer = offer.getDesigner();
             List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOfferId(offer.getId());
