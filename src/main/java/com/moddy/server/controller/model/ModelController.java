@@ -52,7 +52,7 @@ public class ModelController {
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<DetailOfferResponse> getModelDetailOfferInfo(
             @Parameter(hidden = true) @UserId Long userId,
-            @Parameter(name = "offerId", description = "제안서아이디") @RequestParam(value = "offerId") int offerId){
+            @Parameter(name = "offerId", description = "제안서아이디") @RequestParam(value = "offerId") Long offerId){
         return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, modelService.getModelDetailOfferInfo(userId, offerId));
     }
 
