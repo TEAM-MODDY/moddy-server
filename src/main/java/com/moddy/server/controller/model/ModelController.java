@@ -1,5 +1,6 @@
 package com.moddy.server.controller.model;
 
+import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
@@ -15,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +26,7 @@ public class ModelController {
 
     private final ModelService modelService;
 
-    @Operation(summary = "모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
+    @Operation(summary = "[JWT] 모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -41,7 +41,7 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo(userId, page, size));
     }
 
-    @Operation(summary = "제안서 상세보기 뷰 조회", description = "제안서 상세보기 API입니다.")
+    @Operation(summary = "[JWT] 제안서 상세보기 뷰 조회", description = "제안서 상세보기 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
