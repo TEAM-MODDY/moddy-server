@@ -14,6 +14,9 @@ public enum ErrorCode {
     TOKEN_NOT_CONTAINED_EXCEPTION(HttpStatus.UNAUTHORIZED, "Access Token이 필요합니다."),
     TOKEN_TIME_EXPIRED_EXCEPTION(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다. 다시 로그인 해주세요."),
 
+    //404
+    INVALID_DAY_OF_WEEK_EXCEPTION(HttpStatus.NOT_FOUND, "요일을 찾을 수 없습니다"),
+    INVALID_GENDER_EXCEPTION(HttpStatus.NOT_FOUND, "성별을 찾을 수 없습니다"),
     // 500
     /**
      * 405 METHOD_NOT_ALLOWED

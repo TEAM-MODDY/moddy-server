@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum SuccessCode {
 
 
-    SOCIAL_LOGIN_SUCCESS(HttpStatus.OK, "소셜 로그인 성공");
+    SOCIAL_LOGIN_SUCCESS(HttpStatus.OK, "소셜 로그인 성공"),
+    DESIGNER_CREATE_SUCCESS(HttpStatus.OK, "디자이너 회원가입 성공");
 
     private final HttpStatus httpStatus;
     private final String message;
