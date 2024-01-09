@@ -13,7 +13,7 @@ public record DesignerInfoResponse(
         String naverPlaceUrl,
         String introduction,
         Gender gender,
-        List<DayOfWeek> dayoffs,
+        List<String> dayoffs,
         String shopAddress,
         String shopDetailAddress
 ) {
