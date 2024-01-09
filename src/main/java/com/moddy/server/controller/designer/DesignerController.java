@@ -29,7 +29,7 @@ public class DesignerController {
 
     private final DesignerService designerService;
 
-    @Operation(summary = "디자이너 회원가입 뷰 조회", description = "디자이너 회원가입 뷰 조회 API입니다.")
+    @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 뷰 조회", description = "디자이너 회원가입 뷰 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = DesignerCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
