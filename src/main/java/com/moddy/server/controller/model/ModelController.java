@@ -68,7 +68,7 @@ public class ModelController {
     public SuccessResponse acceptOffer(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId){
-        modelService.acceptOffer(userId, offerId);
+        modelService.acceptOffer(offerId);
         return SuccessResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
     }
 
