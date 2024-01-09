@@ -13,6 +13,8 @@ public interface HairServiceOfferJpaRepository extends JpaRepository<HairService
 
     Page<HairServiceOffer> findByUserId(Long userId, Pageable pageable);
 
+    Optional<HairServiceOffer> findHairServiceOfferByOfferId(Long offerId);
+
     Boolean existsByUserId(Long userId);
 
 }

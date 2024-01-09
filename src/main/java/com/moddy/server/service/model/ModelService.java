@@ -173,4 +173,27 @@ public class ModelService {
         return new DetailOfferResponse(designerInfoResponseList, styleDetailResponse);
     }
 
+    public OpenChatResponse getOpenChatInfo(Long userId, Long offerId){
+
+        HairModelApplication application = hairModelApplicationJpaRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findHairServiceOfferByOfferId(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
+        Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+
+        DesignerInfoOpenChatResponse designerInfoOpenChatResponse = new DesignerInfoOpenChatResponse(
+                designer.getProfileImgUrl(),
+                designer.getHairShop().getName(),
+                designer.getName(),
+                designer.getIntroduction()
+        );
+
+        OpenChatResponse openChatResponse = new OpenChatResponse(
+                application.getApplicationCaptureUrl(),
+                designer.getKakaoOpenChatUrl(),
+                designerInfoOpenChatResponse
+
+        );
+
+        return openChatResponse;
+    }
+
 }

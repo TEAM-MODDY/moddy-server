@@ -1,9 +1,10 @@
-package com.moddy.server.service;
+package com.moddy.server.service.designer;
 
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
+import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -32,7 +33,6 @@ public class DesignerService {
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
-
     @Transactional
     public DesignerCreateResponse createDesigner(String code, DesignerCreateRequest request) {
 
