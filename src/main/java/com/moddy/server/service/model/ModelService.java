@@ -111,7 +111,7 @@ public class ModelService {
 
     public DetailOfferResponse getModelDetailOfferInfo(Long userId, Long offerId){
 
-        Designer designer = designerJpaRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         List<DayOff> dayOffList = dayOffJpaRespository.findByUserId(userId);
 
         List<String> dayOfWeekList = dayOffList.stream().map(dayOff -> {

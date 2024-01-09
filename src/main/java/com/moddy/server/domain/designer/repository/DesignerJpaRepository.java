@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface DesignerJpaRepository extends JpaRepository<Designer, Long> {
 
-    Optional<Designer> findByUserId(Long userId);
+    Optional<Designer> findById(Long userId);
 }
