@@ -1,18 +1,20 @@
 package com.moddy.server.domain.designer;
 
-import com.moddy.server.domain.user.Gender;
-import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Designer extends User {
 
     @Embedded
@@ -26,5 +28,7 @@ public class Designer extends User {
 
     @NotNull
     private String kakaoOpenChatUrl;
+
+
 
 }

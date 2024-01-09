@@ -1,23 +1,17 @@
 package com.moddy.server.domain.user;
 
 import com.moddy.server.domain.BaseTimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
+@SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -38,7 +32,7 @@ public class User extends BaseTimeEntity {
     private String phoneNumber;
 
     @NotNull
-    private Integer isMarketingAgree;
+    private Boolean isMarketingAgree;
 
     @NotNull
     private String profileImgUrl;
@@ -47,10 +41,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String kakaoId, String name, String year, Gender gender, String phoneNumber,  Integer isMarketingAgree, String profileImgUrl ) {
+    public User(String kakaoId, String name, Gender gender, String phoneNumber,  Boolean isMarketingAgree, String profileImgUrl ) {
         this.kakaoId = kakaoId;
         this.name = name;
-        this.year = year;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.isMarketingAgree = isMarketingAgree;

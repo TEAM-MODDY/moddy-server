@@ -1,12 +1,16 @@
 package com.moddy.server.domain.day_off;
 
-import com.moddy.server.domain.BaseTimeEntity;
-import com.moddy.server.domain.user.User;
+import com.moddy.server.domain.designer.Designer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class DayOff extends BaseTimeEntity {
+public class DayOff{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,10 +19,11 @@ public class DayOff extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
-    private User user;
+    private Designer designer;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private DayOfWeek dayOfWeek;
+
 
 }
