@@ -22,6 +22,8 @@ public enum ErrorCode {
     NOT_FOUND_PREFER_OFFER_CONDITION(HttpStatus.NOT_FOUND, "선호 제안조건을 찾을 수 없습니다."),
     USER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 유저는 존재하지 않습니다."),
     DESIGNER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 디자이너는 존재하지 않습니다."),
+    NOT_FOUND_OFFER_EXCEPTION(HttpStatus.NOT_FOUND, "해당 제안서를 찾을 수 없습니다."),
+    NOT_FOUND_APPLICATION_EXCEPTION(HttpStatus.NOT_FOUND, "해당 지원서를 찾을 수 없습니다."),
 
     // 405 METHOD_NOT_ALLOWED
     METHOD_NOT_ALLOWED_EXCEPTION(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 메소드 입니다."),
