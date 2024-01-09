@@ -10,4 +10,6 @@ import java.util.List;
 public interface PreferOfferConditionJpaRepository extends JpaRepository<PreferOfferCondition, Long> {
 
     List<PreferOfferCondition> findTop2ByHairServiceOfferId(Long offerId);
+
+    List<PreferOfferCondition> findAllByHairServiceOfferId(Long offerId);
 }
