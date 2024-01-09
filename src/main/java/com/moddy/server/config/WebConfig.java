@@ -1,5 +1,6 @@
 package com.moddy.server.config;
 
+import com.moddy.server.config.resolver.kakao.KakaoCodeResolver;
 import com.moddy.server.config.resolver.user.UserResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
     private final UserResolver userResolver;
+    private final KakaoCodeResolver kakaoCodeResolver;
 
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
@@ -28,5 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(userResolver);
+        resolvers.add(kakaoCodeResolver);
+
     }
 }

@@ -1,6 +1,5 @@
 package com.moddy.server.external.kakao.service;
 
-import com.moddy.server.common.exception.model.BadRequestException;
 import com.moddy.server.external.kakao.dto.response.KakaoAccessTokenResponse;
 import com.moddy.server.external.kakao.dto.response.KakaoUserResponse;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
@@ -8,9 +7,6 @@ import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import static com.moddy.server.common.exception.enums.ErrorCode.EMPTY_KAKAO_CODE_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_KAKAO_CODE_EXCEPTION;
 
 
 @Service
@@ -24,7 +20,6 @@ public class KakaoSocialService extends SocialService {
 
     @Override
     public String getIdFromKakao(String kakaoCode) {
-        if (kakaoCode == null) throw new BadRequestException(EMPTY_KAKAO_CODE_EXCEPTION);
         // Authorization code로 Access Token 불러오기
         KakaoAccessTokenResponse tokenResponse = kakaoAuthApiClient.getOAuth2AccessToken(
                 "authorization_code",
