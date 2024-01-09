@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_S
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+    private static final String ORIGIN = "origin";
     private final AuthService authService;
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
@@ -36,7 +38,10 @@ public class AuthController {
     })
     @PostMapping("/login")
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<LoginResponseDto> login(@Parameter(hidden = true) @KakaoCode String kakaoCode) {
-        return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(kakaoCode));
+    public SuccessResponse<LoginResponseDto> login(
+            @Parameter(hidden = true) @KakaoCode String kakaoCode,
+            @Parameter(hidden = true) HttpServletRequest request
+    ) {
+        return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
     }
 }
