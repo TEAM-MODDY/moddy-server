@@ -4,7 +4,6 @@ import com.moddy.server.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -42,15 +41,5 @@ public class User extends BaseTimeEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    public User(String kakaoId, String name, Gender gender, String phoneNumber,  Boolean isMarketingAgree, String profileImgUrl ) {
-        this.kakaoId = kakaoId;
-        this.name = name;
-        this.gender = gender;
-        this.phoneNumber = phoneNumber;
-        this.isMarketingAgree = isMarketingAgree;
-        this.profileImgUrl = profileImgUrl;
-        this.role = role;
-    }
 
 }

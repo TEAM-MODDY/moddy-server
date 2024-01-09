@@ -2,7 +2,6 @@ package com.moddy.server.service;
 
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.config.jwt.JwtService;
-import com.moddy.server.controller.auth.dto.request.SocialLoginRequest;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
 import com.moddy.server.domain.day_off.DayOff;
@@ -11,7 +10,6 @@ import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.designer.HairShop;
 import com.moddy.server.domain.designer.Portfolio;
 import com.moddy.server.domain.designer.repository.DesignerJpaRepository;
-import com.moddy.server.domain.user.Gender;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
@@ -41,7 +39,6 @@ public class DesignerService {
 
         String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
 
-//        String kakaoId = String.valueOf(kakaoSocialService.login(SocialLoginRequest.of(code)));
         String kakaoId = kakaoSocialService.getIdFromKakao(code);
 
         HairShop hairShop = HairShop.builder()
@@ -54,7 +51,6 @@ public class DesignerService {
                 .instagramUrl(request.instagramUrl())
                 .naverPlaceUrl(request.naverPlaceUrl())
                 .build();
-
 
         Designer designer = Designer.builder()
                 .hairShop(hairShop)

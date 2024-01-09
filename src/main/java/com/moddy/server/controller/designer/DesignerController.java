@@ -37,7 +37,6 @@ public class DesignerController {
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<DesignerCreateResponse> createDesigner(@Parameter(hidden = true) @KakaoCode String kakaoCode, @ModelAttribute DesignerCreateRequest request) {
-        System.out.println(request);
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(kakaoCode, request));
     }
 
