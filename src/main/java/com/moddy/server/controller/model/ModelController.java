@@ -25,7 +25,7 @@ public class ModelController {
 
     private final ModelService modelService;
 
-    @Operation(summary = "모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
+    @Operation(summary = "[JWT] 모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
