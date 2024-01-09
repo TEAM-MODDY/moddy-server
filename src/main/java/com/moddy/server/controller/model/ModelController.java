@@ -3,6 +3,7 @@ package com.moddy.server.controller.model;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
+import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.service.model.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +39,21 @@ public class ModelController {
             @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size){
         return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo(userId, page, size));
+    }
+
+    @Operation(summary = "", description = "제안서 상세보기 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "제안서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/offer")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<DetailOfferResponse> getModelDetailOfferInfo(
+            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(name = "offerId", description = "제안서아이디") @RequestParam(value = "offerId") int offerId){
+        return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, modelService.getModelDetailOfferInfo(userId, offerId));
     }
 
 }
