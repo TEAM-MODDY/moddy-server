@@ -1,6 +1,7 @@
 package com.moddy.server.controller.model;
 
 import com.moddy.server.common.dto.ErrorResponse;
+import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
@@ -65,11 +66,11 @@ public class ModelController {
     })
     @PutMapping("/offer/{offerId}")
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse acceptOffer(
+    public SuccessNonDataResponse acceptOffer(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId){
         modelService.updateOfferAgreeStatus(offerId);
-        return SuccessResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
+        return SuccessNonDataResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
     }
 
 }
