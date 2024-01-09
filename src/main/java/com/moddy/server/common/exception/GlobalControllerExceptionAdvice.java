@@ -5,6 +5,7 @@ import com.moddy.server.common.exception.model.BadRequestException;
 import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.common.exception.model.UnAuthorizedException;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static com.moddy.server.common.exception.enums.ErrorCode.INTERNAL_SERVER_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_TOKEN_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION;
 
 @Slf4j
@@ -25,6 +27,13 @@ public class GlobalControllerExceptionAdvice {
     @ExceptionHandler(BadRequestException.class)
     protected ErrorResponse handleBadRequestException(final BadRequestException e) {
         return ErrorResponse.error(e.getErrorCode());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FeignException.class)
+    protected ErrorResponse handleFeignException(final FeignException e) {
+        System.out.println(e.getMessage());
+        return ErrorResponse.error(INVALID_TOKEN_EXCEPTION);
     }
 
     /**

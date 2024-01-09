@@ -1,12 +1,13 @@
 package com.moddy.server.domain.hair_model_application;
 
 import com.moddy.server.domain.BaseTimeEntity;
-import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class HairModelApplication extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +17,6 @@ public class HairModelApplication extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "designer_id_")
-    @NotNull
-    private Designer designer;
 
     @Enumerated(value = EnumType.STRING)
     @NotNull

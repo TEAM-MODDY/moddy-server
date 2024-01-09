@@ -4,10 +4,12 @@ package com.moddy.server.controller.designer;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
+import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
 import com.moddy.server.service.DesignerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,9 +36,9 @@ public class DesignerController {
     })
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    SuccessResponse<DesignerCreateResponse> createDesigner(@RequestHeader("Authorization") String Authorization, @ModelAttribute DesignerCreateRequest request) {
+    SuccessResponse<DesignerCreateResponse> createDesigner(@Parameter(hidden = true) @KakaoCode String kakaoCode, @ModelAttribute DesignerCreateRequest request) {
         System.out.println(request);
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(Authorization, request));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(kakaoCode, request));
     }
 
 }

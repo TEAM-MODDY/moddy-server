@@ -3,7 +3,6 @@ package com.moddy.server.domain.user;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.BadRequestException;
-import com.moddy.server.domain.day_off.DayOfWeek;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

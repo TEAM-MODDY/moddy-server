@@ -4,6 +4,8 @@ import com.moddy.server.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Entity

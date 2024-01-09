@@ -5,16 +5,14 @@ import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.auth.dto.request.SocialLoginRequest;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
-import com.moddy.server.domain.day_off.DayOfWeek;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.designer.HairShop;
+import com.moddy.server.domain.designer.Portfolio;
 import com.moddy.server.domain.designer.repository.DesignerJpaRepository;
 import com.moddy.server.domain.user.Gender;
 import com.moddy.server.domain.user.Role;
-import com.moddy.server.domain.user.User;
-import com.moddy.server.domain.user.repository.UserJpaRepository;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
@@ -23,7 +21,6 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 public class DesignerService {
     private final DesignerJpaRepository designerJpaRepository;
-    private final UserJpaRepository userJpaRepository;
     private final DayOffJpaRepository dayOffJpaRepository;
     private final S3Service s3Service;
     private final KakaoSocialService kakaoSocialService;
@@ -44,19 +40,30 @@ public class DesignerService {
     public DesignerCreateResponse createDesigner(String code, DesignerCreateRequest request) {
 
         String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
-//        String profileImgUrl = "a";
 
 //        String kakaoId = String.valueOf(kakaoSocialService.login(SocialLoginRequest.of(code)));
-        String kakaoId = "a";
+        String kakaoId = kakaoSocialService.getIdFromKakao(code);
+
+        HairShop hairShop = HairShop.builder()
+                .name(request.hairShopName())
+                .address(request.hairShopAddress())
+                .detailAddress(request.hairShopAddressDetail())
+                .build();
+
+        Portfolio portfolio = Portfolio.builder()
+                .instagramUrl(request.instagramUrl())
+                .naverPlaceUrl(request.naverPlaceUrl())
+                .build();
+
 
         Designer designer = Designer.builder()
-                .hairShop(request.hairShop())
-                .portfolio(request.portfolio())
+                .hairShop(hairShop)
+                .portfolio(portfolio)
                 .introduction(request.introduction())
                 .kakaoOpenChatUrl(request.kakaoOpenChatUrl())
                 .kakaoId(kakaoId)
                 .name(request.name())
-                .gender(Gender.valueOf(request.gender()))
+                .gender(request.gender())
                 .phoneNumber(request.phoneNumber())
                 .isMarketingAgree(request.isMarketingAgree())
                 .profileImgUrl(profileImgUrl)

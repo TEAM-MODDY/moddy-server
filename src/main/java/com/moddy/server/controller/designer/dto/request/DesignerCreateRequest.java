@@ -16,8 +16,13 @@ public record DesignerCreateRequest(
         Gender gender,
         String phoneNumber,
         Boolean isMarketingAgree,
-        HairShop hairShop,
-        Portfolio portfolio,
+        String hairShopName,
+        String hairShopAddress,
+        String hairShopAddressDetail,
+
+        String instagramUrl,
+        String naverPlaceUrl,
+
         String introduction,
         String kakaoOpenChatUrl,
         List<DayOfWeek> dayOffs
