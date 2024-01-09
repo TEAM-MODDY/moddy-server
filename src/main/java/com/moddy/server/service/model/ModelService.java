@@ -110,7 +110,7 @@ public class ModelService {
         );
     }
 
-    public DesignerInfoResponse getDesignerInfoResponseList(Long userId, Long offerId){
+    private DesignerInfoResponse getDesignerInfoResponseList(Long userId, Long offerId){
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
         Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
@@ -137,7 +137,7 @@ public class ModelService {
 
     }
 
-    public StyleDetailResponse getStyleDetailResponse(Long userId, Long offerId) {
+    private StyleDetailResponse getStyleDetailResponse(Long userId, Long offerId) {
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
