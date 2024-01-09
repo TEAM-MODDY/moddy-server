@@ -65,7 +65,7 @@ public class ModelController {
     })
     @PutMapping("/offer/{offerId}")
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse accepOffer(
+    public SuccessResponse acceptOffer(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId){
         modelService.acceptOffer(userId, offerId);
