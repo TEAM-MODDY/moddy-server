@@ -41,7 +41,7 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo(userId, page, size));
     }
 
-    @Operation(summary = "", description = "제안서 상세보기 API입니다.")
+    @Operation(summary = "제안서 상세보기 뷰 조회", description = "제안서 상세보기 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
