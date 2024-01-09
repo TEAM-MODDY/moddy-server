@@ -33,7 +33,6 @@ public class DesignerService {
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
 
-
     @Transactional
     public DesignerCreateResponse createDesigner(String code, DesignerCreateRequest request) {
 
@@ -81,11 +80,5 @@ public class DesignerService {
         TokenPair tokenPair = jwtService.generateTokenPair(kakaoId);
         DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
-
-
-
-
     }
-
-
 }

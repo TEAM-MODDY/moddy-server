@@ -25,7 +25,6 @@ public enum ErrorCode {
     USER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 유저는 존재하지 않습니다."),
 
     // 405 METHOD_NOT_ALLOWED
-
     METHOD_NOT_ALLOWED_EXCEPTION(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 메소드 입니다."),
 
     // 500
