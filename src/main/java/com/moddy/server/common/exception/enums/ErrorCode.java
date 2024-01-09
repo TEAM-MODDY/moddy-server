@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     // 400
+    INVALID_DAY_OF_WEEK_EXCEPTION(HttpStatus.BAD_REQUEST, "요일을 찾을 수 없습니다"),
+    INVALID_GENDER_EXCEPTION(HttpStatus.BAD_REQUEST, "성별을 찾을 수 없습니다"),
     INVALID_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰을 입력했습니다."),
     EMPTY_KAKAO_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "카카오 코드 값을 입력해 주세요."),
     INVALID_KAKAO_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 카카오 코드를 입력했습니다."),

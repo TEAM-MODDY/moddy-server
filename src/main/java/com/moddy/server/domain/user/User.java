@@ -1,20 +1,18 @@
 package com.moddy.server.domain.user;
 
 import com.moddy.server.domain.BaseTimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
+@SuperBuilder
+@Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -35,7 +33,7 @@ public class User extends BaseTimeEntity {
     private String phoneNumber;
 
     @NotNull
-    private String isMarketingAgree;
+    private Boolean isMarketingAgree;
 
     @NotNull
     private String profileImgUrl;
