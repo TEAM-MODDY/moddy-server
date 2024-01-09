@@ -28,7 +28,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @Operation(summary = "유저 마이페이지 조회 API")
+    @Operation(summary = "[JWT] 유저 마이페이지 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "마이페이지 유저 정보 조회 성공입니다."),
             @ApiResponse(responseCode = "401", description = "토큰이 만료되었습니다. 다시 로그인 해주세요.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
