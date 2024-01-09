@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,9 +112,11 @@ public class ModelService {
 
     public DetailOfferResponse getModelDetailOfferInfo(Long userId, Long offerId){
 
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
-        List<DayOff> dayOffList = dayOffJpaRespository.findByUserId(userId);
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
+        Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
+        List<DayOff> dayOffList = dayOffJpaRespository.findAllByUserId(designer.getId());
         List<String> dayOfWeekList = dayOffList.stream().map(dayOff -> {
             return dayOff.getDayOfWeek().getValue();
         }).collect(Collectors.toList());
@@ -131,29 +134,25 @@ public class ModelService {
                 designer.getHairShop().getDetailAddress()
         );
 
-
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
-        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllById(hairServiceOffer.getId());
-        List<HairStyle> hairStyleList = preferHairStyles.stream().map(hairStyle -> {
-            return hairStyle.getHairStyle();
+        List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(hairServiceOffer.getHairModelApplication().getId());
+        List<String> hairStyleList = preferHairStyles.stream().map(hairStyle -> {
+            return hairStyle.getHairStyle().getValue();
         }).collect(Collectors.toList());
 
-
-        List<Boolean> preferOfferConditionList = hairStyleList.stream().map(hairStyle ->{
-            if(HairStyle.values().equals(hairStyle)) return true;
+        List<PreferOfferCondition> preferOfferConditionList = preferOfferConditionJpaRepository.findAllByHairServiceOfferId(offerId);
+        List<OfferCondition> offerConditionList = preferOfferConditionList.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
+        List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(condition ->{
+            if (offerConditionList.contains(condition)) return true;
             else return false;
         }).collect(Collectors.toList());
 
-
         StyleDetailResponse styleDetailResponse = new StyleDetailResponse(
                 hairServiceOffer.getIsModelAgree(),
-                preferHairStyles,
+                hairStyleList,
                 hairServiceOffer.getOfferDetail(),
                 hairModelApplication.getHairDetail(),
-                preferOfferConditionList
+                preferOfferConditionBooleanList
         );
-
 
         return new DetailOfferResponse(designerInfoResponseList, styleDetailResponse);
     }
