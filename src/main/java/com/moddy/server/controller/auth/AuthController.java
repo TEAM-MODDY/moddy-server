@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_SUCCESS;
 
-@Tag(name = "로그인 및 회원 가입", description = "로그인 및 회원 가입 관련 API 입니다.")
+@Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
-    @Operation(summary = "로그인 API")
+    @Operation(summary = "[KAKAO CODE] 로그인 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카카오 로그인 성공입니다."),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
