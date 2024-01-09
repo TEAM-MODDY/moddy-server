@@ -144,7 +144,7 @@ public class ModelService {
             if(HairStyle.values().equals(hairStyle)) return true;
             else return false;
         }).collect(Collectors.toList());
-        
+
 
         StyleDetailResponse styleDetailResponse = new StyleDetailResponse(
                 hairServiceOffer.getIsModelAgree(),
