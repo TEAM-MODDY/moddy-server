@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     // 400
     INVALID_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰을 입력했습니다."),
+    EMPTY_KAKAO_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "카카오 코드 값을 입력해 주세요."),
     INVALID_KAKAO_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 카카오 코드를 입력했습니다."),
 
     // 401
