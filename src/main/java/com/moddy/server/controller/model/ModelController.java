@@ -48,7 +48,7 @@ public class ModelController {
             @ApiResponse(responseCode = "404", description = "제안서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/offer")
+    @GetMapping("/offer/{offerId}")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<DetailOfferResponse> getModelDetailOfferInfo(
             @Parameter(hidden = true) @UserId Long userId,
