@@ -12,6 +12,7 @@ import org.joda.time.base.BaseDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Getter
 public class DayOff extends BaseTimeEntity {
 
     @Id

@@ -4,8 +4,10 @@ import com.moddy.server.domain.BaseTimeEntity;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class PreferHairStyle extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
