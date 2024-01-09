@@ -10,8 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseTimeEntity {
 
