@@ -16,7 +16,10 @@ public enum ErrorCode {
     TOKEN_NOT_CONTAINED_EXCEPTION(HttpStatus.UNAUTHORIZED, "Access Token이 필요합니다."),
     TOKEN_TIME_EXPIRED_EXCEPTION(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다. 다시 로그인 해주세요."),
 
-    // 404
+    //404
+    NOT_FOUND_MODEL_STATUS(HttpStatus.NOT_FOUND, "모델의 지원서 작성과 제안서 도착 상태를 알 수 없습니다."),
+    NOT_FOUND_MODEL_INFO(HttpStatus.NOT_FOUND, "모델 정보를 찾을 수 없습니다."),
+    NOT_FOUND_PREFER_OFFER_CONDITION(HttpStatus.NOT_FOUND, "선호 제안조건을 찾을 수 없습니다."),
     USER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 유저는 존재하지 않습니다."),
 
     // 405 METHOD_NOT_ALLOWED

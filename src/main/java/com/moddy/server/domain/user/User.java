@@ -13,8 +13,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Entity
-@Getter
 @Inheritance(strategy = InheritanceType.JOINED)
+@Getter
 public class User extends BaseTimeEntity {
 
     @Id
