@@ -5,7 +5,6 @@ import lombok.*;
 
 @Getter
 @ToString
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SuccessResponse<T> {
     private final int code;
