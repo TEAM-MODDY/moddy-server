@@ -15,5 +15,4 @@ public interface HairServiceOfferJpaRepository extends JpaRepository<HairService
 
     Boolean existsByUserId(Long userId);
 
-    Optional<HairServiceOffer> findById(Long offerId);
 }
