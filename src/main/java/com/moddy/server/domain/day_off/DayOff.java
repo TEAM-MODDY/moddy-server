@@ -4,8 +4,10 @@ import com.moddy.server.domain.BaseTimeEntity;
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class DayOff extends BaseTimeEntity {
 
     @Id
