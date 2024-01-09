@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -73,24 +74,42 @@ public class ModelService {
             );
         }
 
-        List<HairServiceOffer> hairServiceOffers = offerPage.stream().toList();
-        List<OfferResponse> offerResponseList = new ArrayList<>();
+//        List<HairServiceOffer> hairServiceOffers = offerPage.stream().toList();
+//        List<OfferResponse> offerResponseList = new ArrayList<>();
+//
+//        for (int i = 0; i < hairServiceOffers.size(); i++){
+//            Designer designer = hairServiceOffers.get(i).getDesigner();
+//            List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOfferId(hairServiceOffers.get(i).getId());
+//            List<OfferCondition> offerConditionTop2List = preferOfferCondition.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
+//
+//            OfferResponse offerResponse = new OfferResponse(
+//                    hairServiceOffers.get(i).getId(),
+//                    designer.getProfileImgUrl(),
+//                    designer.getName(),
+//                    designer.getHairShop().getName(),
+//                    offerConditionTop2List,
+//                    hairServiceOffers.get(i).getIsClicked());
+//
+//            offerResponseList.add(offerResponse);
+//        }
 
-        for (int i = 0; i < hairServiceOffers.size(); i++){
-            Designer designer = hairServiceOffers.get(i).getDesigner();
-            List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOfferId(hairServiceOffers.get(i).getId());
+//        List<OfferResponse> offerResponseList = new ArrayList<>();
+
+        List<OfferResponse> offerResponseList = offerPage.stream().map(offer -> {
+            Designer designer = offer.getDesigner();
+            List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOfferId(offer.getId());
             List<OfferCondition> offerConditionTop2List = preferOfferCondition.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
 
             OfferResponse offerResponse = new OfferResponse(
-                    hairServiceOffers.get(i).getId(),
+                    offer.getId(),
                     designer.getProfileImgUrl(),
                     designer.getName(),
                     designer.getHairShop().getName(),
                     offerConditionTop2List,
-                    hairServiceOffers.get(i).getIsClicked());
-
-            offerResponseList.add(offerResponse);
-        }
+                    offer.getIsClicked()
+            );
+            return offerResponse;
+        }).collect(Collectors.toList());
 
         return new ModelMainResponse(
                 page,
