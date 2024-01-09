@@ -6,7 +6,7 @@ import java.util.List;
 
 public record StyleDetailResponse(
         Boolean isAgree,
-        List<PreferHairStyle> preferStyle,
+        List<String> preferStyle,
         String designerOfferDetail,
         String modelApplicationDetail,
         List<Boolean> preferOfferConditions
