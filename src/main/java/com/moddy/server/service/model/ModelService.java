@@ -175,7 +175,7 @@ public class ModelService {
     public void updateOfferAgreeStatus(Long offerId){
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
 
-        hairServiceOffer.setIsModelAgree(Boolean.TRUE);
+        hairServiceOffer.setIsModelAgree(true);
     }
 
 }
