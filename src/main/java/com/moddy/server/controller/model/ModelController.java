@@ -33,7 +33,10 @@ public class ModelController {
     })
     @GetMapping
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<ModelMainResponse> getMain(@Parameter(hidden = true) @UserId Long userId, @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page, @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size){
+    public SuccessResponse<ModelMainResponse> getMain(
+            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
+            @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size){
         return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo(userId, page, size));
     }
 
