@@ -2,19 +2,19 @@ package com.moddy.server.controller.auth;
 
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessResponse;
-import com.moddy.server.config.jwt.JwtService;
+import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +25,6 @@ import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_S
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private static final String AUTHORIZATION = "authorization";
     private final AuthService authService;
 
     @Operation(summary = "로그인 API")
@@ -36,7 +35,8 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/login")
-    public SuccessResponse<LoginResponseDto> login(@RequestHeader(AUTHORIZATION) String kakaoCode) {
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<LoginResponseDto> login(@Parameter(hidden = true) @KakaoCode String kakaoCode) {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(kakaoCode));
     }
 }
