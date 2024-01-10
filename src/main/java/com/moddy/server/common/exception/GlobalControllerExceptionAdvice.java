@@ -32,7 +32,6 @@ public class GlobalControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(FeignException.class)
     protected ErrorResponse handleFeignException(final FeignException e) {
-        System.out.println(e.getMessage());
         return ErrorResponse.error(INVALID_TOKEN_EXCEPTION);
     }
 
