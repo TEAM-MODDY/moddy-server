@@ -25,7 +25,7 @@ public class HairServiceOffer extends BaseTimeEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "designer_id_")
+    @JoinColumn(name = "designer_id")
     @NotNull
     private Designer designer;
 

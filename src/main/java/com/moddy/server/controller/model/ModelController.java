@@ -71,6 +71,4 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, modelService.getOpenChatInfo(userId, offerId));
     }
 
-
-
 }

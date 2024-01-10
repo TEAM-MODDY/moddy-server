@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface DayOffJpaRespository extends JpaRepository<DayOff, Long> {
 
-    List<DayOff> findAllByUserId(Long userId);
+    List<DayOff> findAllByDesignerId(Long userId);
 }

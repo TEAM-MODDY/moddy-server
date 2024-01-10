@@ -4,7 +4,6 @@ package com.moddy.server.service.model;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.model.dto.response.*;
-import com.moddy.server.domain.day_off.DayOfWeek;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRespository;
 import com.moddy.server.domain.designer.Designer;
@@ -15,7 +14,6 @@ import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
-import com.moddy.server.domain.prefer_hair_style.HairStyle;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
 import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
@@ -115,7 +113,7 @@ public class ModelService {
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
         Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
-        List<DayOff> dayOffList = dayOffJpaRespository.findAllByUserId(designer.getId());
+        List<DayOff> dayOffList = dayOffJpaRespository.findAllByDesignerId(designer.getId());
         List<String> dayOfWeekList = dayOffList.stream().map(dayOff -> {
             return dayOff.getDayOfWeek().getValue();
         }).collect(Collectors.toList());
@@ -175,8 +173,8 @@ public class ModelService {
 
     public OpenChatResponse getOpenChatInfo(Long userId, Long offerId){
 
-        HairModelApplication application = hairModelApplicationJpaRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findHairServiceOfferByOfferId(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
+        HairModelApplication application = hairModelApplicationJpaRepository.findById(hairServiceOffer.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
         DesignerInfoOpenChatResponse designerInfoOpenChatResponse = new DesignerInfoOpenChatResponse(
