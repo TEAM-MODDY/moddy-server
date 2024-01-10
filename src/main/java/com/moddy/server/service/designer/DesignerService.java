@@ -15,7 +15,6 @@ import com.moddy.server.domain.designer.Portfolio;
 import com.moddy.server.domain.designer.repository.DesignerJpaRepository;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
-import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
@@ -44,12 +43,14 @@ public class DesignerService {
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
+
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private Page<HairModelApplication> findApplications(Long userId, int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findByUserId(userId, pageRequest);
         return applicationPage;
     }
+
     @Transactional
     public DesignerCreateResponse createDesigner(String baseUrl,String code, DesignerCreateRequest request) {
 
@@ -62,12 +63,10 @@ public class DesignerService {
                 .address(request.hairShopAddress())
                 .detailAddress(request.hairShopAddressDetail())
                 .build();
-
         Portfolio portfolio = Portfolio.builder()
                 .instagramUrl(request.instagramUrl())
                 .naverPlaceUrl(request.naverPlaceUrl())
                 .build();
-
         Designer designer = Designer.builder()
                 .hairShop(hairShop)
                 .portfolio(portfolio)
@@ -81,9 +80,7 @@ public class DesignerService {
                 .profileImgUrl(profileImgUrl)
                 .role(Role.HAIR_DESIGNER)
                 .build();
-
         designerJpaRepository.save(designer);
-
         request.dayOffs().stream()
                 .forEach(d -> {
                     DayOff dayOff = DayOff.builder()
@@ -93,7 +90,6 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-
         TokenPair tokenPair = jwtService.generateTokenPair(kakaoId);
         DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
@@ -103,8 +99,6 @@ public class DesignerService {
     public DesignerMainResponse getMainView(Long userId, int page, int size){
         List<HairModelApplication> hairModelApplications= hairModelApplicationJpaRepository.findAllByUserId(userId);
         User user = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-
-
 
     }
 }

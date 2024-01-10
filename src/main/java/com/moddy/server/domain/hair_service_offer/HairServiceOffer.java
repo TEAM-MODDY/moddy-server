@@ -6,7 +6,10 @@ import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -25,7 +28,7 @@ public class HairServiceOffer extends BaseTimeEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "designer_id_")
+    @JoinColumn(name = "designer_id")
     @NotNull
     private Designer designer;
 
@@ -37,5 +40,9 @@ public class HairServiceOffer extends BaseTimeEntity {
 
     @NotNull
     private Boolean isClicked;
+
+    public void setIsModelAgree(final Boolean isModelAgree){
+        this.isModelAgree = isModelAgree;
+    }
 
 }
