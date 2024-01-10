@@ -20,10 +20,4 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
         return new UserDetailResponseDto(user.getId(), user.getName(), user.getName(), user.getRole());
     }
-
-    public Integer calAge(String year){
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1 ;
-        return age;
-    }
 }

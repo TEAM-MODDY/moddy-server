@@ -7,6 +7,8 @@ import lombok.*;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @SuperBuilder
@@ -41,5 +43,12 @@ public class User extends BaseTimeEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
+    public Integer calAge(String year){
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1 ;
+        return age;
+    }
 
 }

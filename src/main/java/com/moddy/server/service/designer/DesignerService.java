@@ -54,7 +54,6 @@ public class DesignerService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
-    private final UserService userService;
 
     private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
@@ -108,8 +107,8 @@ public class DesignerService {
 
     @Transactional
     public DesignerMainResponse getDesignerMainView(Long userId, int page, int size){
-        //designer
-        User user = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
+        User user = new User();
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
         Page<HairModelApplication> applicationPage = findApplications(page, size);
 
@@ -123,7 +122,7 @@ public class DesignerService {
             HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                     application.getId(),
                     model.getName(),
-                    userService.calAge(model.getYear()),
+                    user.calAge(model.getYear()),
                     model.getProfileImgUrl(),
                     model.getGender().getValue(),
                     top2hairStyles
@@ -134,7 +133,7 @@ public class DesignerService {
         return new DesignerMainResponse(
                 page,
                 size,
-                user.getName(),
+                designer.getName(),
                 applicationResponsesList
         );
     }

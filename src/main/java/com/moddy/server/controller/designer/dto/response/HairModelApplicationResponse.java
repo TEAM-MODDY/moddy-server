@@ -1,6 +1,7 @@
 package com.moddy.server.controller.designer.dto.response;
 
 import com.moddy.server.domain.prefer_hair_style.HairStyle;
+import com.moddy.server.domain.user.Gender;
 
 import java.util.List;
 
