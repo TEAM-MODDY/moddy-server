@@ -51,7 +51,6 @@ public class DesignerService {
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
-
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
@@ -66,8 +65,9 @@ public class DesignerService {
         Integer age = Integer.parseInt(year) - currentDateTime.getYear() +1 ;
         return age;
     }
+
     @Transactional
-    public DesignerCreateResponse createDesigner(String baseUrl,String code, DesignerCreateRequest request) {
+    public DesignerCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
 
         String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
 
@@ -105,7 +105,7 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-        TokenPair tokenPair = jwtService.generateTokenPair(kakaoId);
+        TokenPair tokenPair = jwtService.generateTokenPair(designer.getId().toString());
         DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
     }
