@@ -5,7 +5,6 @@ import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
-import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -74,8 +73,8 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-        TokenPair tokenPair = jwtService.generateTokenPair(kakaoId);
-        UserCreateResponse designerCreateResponse = new UserCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
+        TokenPair tokenPair = jwtService.generateTokenPair(designer.getId().toString());
+        DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
     }
 }
