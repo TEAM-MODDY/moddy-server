@@ -250,7 +250,7 @@ public class ModelService {
         }
 
         TokenPair tokenPair = jwtService.generateTokenPair(model.getId().toString());
-        UserCreateResponse userCreateResponse = new UserCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());\
+        UserCreateResponse userCreateResponse = new UserCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
 
         return userCreateResponse;
     }
