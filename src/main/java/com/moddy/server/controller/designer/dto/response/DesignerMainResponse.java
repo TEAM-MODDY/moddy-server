@@ -9,6 +9,6 @@ public record DesignerMainResponse(
         int page,
         int size,
         String name,
-        List<HairModelApplicationResponse> applications
+        List<HairModelApplicationResponse> hairModelApplications
 ) {
 }
