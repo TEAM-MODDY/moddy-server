@@ -7,6 +7,8 @@ import com.moddy.server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 import static com.moddy.server.common.exception.enums.ErrorCode.USER_NOT_FOUND_EXCEPTION;
 
 @Service
@@ -17,5 +19,11 @@ public class UserService {
     public UserDetailResponseDto getUserDetail(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
         return new UserDetailResponseDto(user.getId(), user.getName(), user.getName(), user.getRole());
+    }
+
+    public Integer calAge(String year){
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1 ;
+        return age;
     }
 }

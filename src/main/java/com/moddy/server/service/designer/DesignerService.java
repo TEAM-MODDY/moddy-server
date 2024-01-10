@@ -27,6 +27,7 @@ import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
 import com.moddy.server.external.s3.S3Service;
+import com.moddy.server.service.user.UserService;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,16 +54,12 @@ public class DesignerService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
+    private final UserService userService;
 
     private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
         return applicationPage;
-    }
-    private Integer calAge(String year){
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1 ;
-        return age;
     }
 
     @Transactional
@@ -126,7 +123,7 @@ public class DesignerService {
             HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                     application.getId(),
                     model.getName(),
-                    calAge(model.getYear()),
+                    userService.calAge(model.getYear()),
                     model.getProfileImgUrl(),
                     model.getGender().getValue(),
                     top2hairStyles
