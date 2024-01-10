@@ -14,7 +14,7 @@ public class PreferOfferCondition extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hair_service_offer_id_")
+    @JoinColumn(name = "hair_service_offer_id")
     @NotNull
     private HairServiceOffer hairServiceOffer;
 
