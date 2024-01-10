@@ -3,12 +3,16 @@ package com.moddy.server.service.auth;
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
+import com.moddy.server.controller.auth.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
+import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.domain.user.repository.UserRepository;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.moddy.server.common.exception.enums.ErrorCode.USER_NOT_FOUND_EXCEPTION;
 
@@ -25,5 +29,11 @@ public class AuthService {
         TokenPair tokenPair = jwtService.generateTokenPair(String.valueOf(user.getId()));
 
         return new LoginResponseDto(tokenPair.accessToken(), tokenPair.refreshToken(), user.getRole().name());
+    }
+
+    @Transactional
+    public UserCreateResponse createModel(String baseUrl, String code, ModelCreateRequest request) {
+
+        return
     }
 }
