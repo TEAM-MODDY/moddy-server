@@ -45,7 +45,7 @@ public class User extends BaseTimeEntity {
     private Role role;
 
 
-    public Integer calAge(String year){
+    public Integer getAge(String year){
         LocalDateTime currentDateTime = LocalDateTime.now();
         Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1 ;
         return age;

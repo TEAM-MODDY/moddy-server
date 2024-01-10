@@ -122,7 +122,7 @@ public class DesignerService {
             HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                     application.getId(),
                     model.getName(),
-                    user.calAge(model.getYear()),
+                    user.getAge(model.getYear()),
                     model.getProfileImgUrl(),
                     model.getGender().getValue(),
                     top2hairStyles

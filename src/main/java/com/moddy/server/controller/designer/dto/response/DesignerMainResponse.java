@@ -10,6 +10,5 @@ public record DesignerMainResponse(
         int size,
         String name,
         List<HairModelApplicationResponse> applications
-
 ) {
 }
