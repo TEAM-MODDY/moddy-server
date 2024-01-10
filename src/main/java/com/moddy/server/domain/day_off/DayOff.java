@@ -5,7 +5,6 @@ import com.moddy.server.domain.designer.Designer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.joda.time.base.BaseDateTime;
 
 @Getter
 @Builder

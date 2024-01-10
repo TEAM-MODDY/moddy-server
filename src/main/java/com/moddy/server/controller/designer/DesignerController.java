@@ -16,9 +16,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -36,8 +40,12 @@ public class DesignerController {
     })
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    SuccessResponse<DesignerCreateResponse> createDesigner(@Parameter(hidden = true) @KakaoCode String kakaoCode, @ModelAttribute DesignerCreateRequest request) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(kakaoCode, request));
+    SuccessResponse<DesignerCreateResponse> createDesigner(
+            @Parameter(hidden = true) @KakaoCode String kakaoCode,
+            @ModelAttribute DesignerCreateRequest request,
+            @Parameter(hidden = true) HttpServletRequest servletRequest
+    ) {
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader("origin"), kakaoCode, request));
     }
 
 }

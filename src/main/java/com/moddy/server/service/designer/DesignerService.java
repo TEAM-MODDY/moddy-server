@@ -34,11 +34,11 @@ public class DesignerService {
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
     @Transactional
-    public DesignerCreateResponse createDesigner(String code, DesignerCreateRequest request) {
+    public DesignerCreateResponse createDesigner(String baseUrl,String code, DesignerCreateRequest request) {
 
         String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
 
-        String kakaoId = kakaoSocialService.getIdFromKakao(code);
+        String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
 
         HairShop hairShop = HairShop.builder()
                 .name(request.hairShopName())

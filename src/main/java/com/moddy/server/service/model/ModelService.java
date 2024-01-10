@@ -5,7 +5,7 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.model.dto.response.*;
 import com.moddy.server.domain.day_off.DayOff;
-import com.moddy.server.domain.day_off.repository.DayOffJpaRespository;
+import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.designer.repository.DesignerJpaRepository;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
@@ -44,7 +44,7 @@ public class ModelService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
     private final PreferOfferConditionJpaRepository preferOfferConditionJpaRepository;
-    private final DayOffJpaRespository dayOffJpaRespository;
+    private final DayOffJpaRepository dayOffJpaRespository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
 
     private Page<HairServiceOffer> findOffers(Long userId, int page, int size){
@@ -171,7 +171,7 @@ public class ModelService {
         return new DetailOfferResponse(designerInfoResponseList, styleDetailResponse);
     }
 
-    public OpenChatResponse getOpenChatInfo(Long userId, Long offerId){
+    public OpenChatResponse getOpenChatInfo(Long userId, Long offerId) {
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
         HairModelApplication application = hairModelApplicationJpaRepository.findById(hairServiceOffer.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
@@ -192,6 +192,14 @@ public class ModelService {
         );
 
         return openChatResponse;
+    }
+
+    @Transactional
+    public void updateOfferAgreeStatus(Long offerId){
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
+
+        hairServiceOffer.setIsModelAgree(true);
+
     }
 
 }

@@ -19,8 +19,8 @@ public class AuthService {
     private final KakaoSocialService kakaoSocialService;
     private final UserRepository userRepository;
 
-    public LoginResponseDto login(final String kakaoCode) {
-        String kakaoId = kakaoSocialService.getIdFromKakao(kakaoCode);
+    public LoginResponseDto login(final String baseUrl, final String kakaoCode) {
+        String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, kakaoCode);
         User user = userRepository.findByKakaoId(kakaoId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
         TokenPair tokenPair = jwtService.generateTokenPair(String.valueOf(user.getId()));
 
