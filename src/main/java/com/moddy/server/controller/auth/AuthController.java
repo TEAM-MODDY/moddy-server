@@ -1,16 +1,17 @@
 package com.moddy.server.controller.auth;
 
 import com.moddy.server.common.dto.ErrorResponse;
-import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
+import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
-import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
 import com.moddy.server.service.auth.AuthService;
 import com.moddy.server.service.designer.DesignerService;
+import com.moddy.server.service.model.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,10 +22,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +42,7 @@ public class AuthController {
     private static final String ORIGIN = "origin";
     private final AuthService authService;
     private final DesignerService designerService;
+    private final ModelService modelService;
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
     @ApiResponses(value = {
@@ -67,20 +70,36 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
     }
 
-
-
     @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 뷰 조회", description = "디자이너 회원가입 뷰 조회 API입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = DesignerCreateResponse.class))),
+            @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    SuccessResponse<DesignerCreateResponse> createDesigner(
+    SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @KakaoCode String kakaoCode,
             @ModelAttribute DesignerCreateRequest request,
             @Parameter(hidden = true) HttpServletRequest servletRequest
     ) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader("origin"), kakaoCode, request));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, request));
     }
+
+    @Operation(summary = "[KAKAO CODE] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping(value = "/signup/model")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<UserCreateResponse> createModel(
+            @Parameter(hidden = true) @KakaoCode String kakaoCode,
+            @Parameter(hidden = true) HttpServletRequest request,
+            @RequestBody ModelCreateRequest modelCreateRequest
+    ) {
+        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(request.getHeader(ORIGIN), kakaoCode, modelCreateRequest));
+    }
+
 }

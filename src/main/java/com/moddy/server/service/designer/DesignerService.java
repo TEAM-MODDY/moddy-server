@@ -5,9 +5,9 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
-import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -27,7 +27,7 @@ import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
 import com.moddy.server.external.s3.S3Service;
-import com.moddy.server.service.user.UserService;
+import com.moddy.server.service.auth.AuthService;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,7 +35,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,8 +60,9 @@ public class DesignerService {
         return applicationPage;
     }
 
+    private final AuthService authService;
     @Transactional
-    public DesignerCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
+    public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
 
         String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
 
@@ -100,9 +100,8 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-        TokenPair tokenPair = jwtService.generateTokenPair(designer.getId().toString());
-        DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
-        return designerCreateResponse;
+
+        return authService.createUserToken(designer.getId().toString());
     }
 
     @Transactional
