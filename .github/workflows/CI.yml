@@ -22,8 +22,10 @@ jobs:
         distribution: 'corretto'
         java-version: '17'
 
-    - name: redis 설치
-      uses: pustovitDmytro/redis-github-action@v1.0.1
+    - name: Start Redis
+      uses: supercharge/redis-github-action@1.7.0
+      with:
+        redis-version: ${{ matrix.redis-version }}
 
     - name: application.yml 생성
       run: | 
