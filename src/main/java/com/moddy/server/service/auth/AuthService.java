@@ -51,10 +51,4 @@ public class AuthService {
         return regionResponseList;
     }
 
-
-    @Transactional
-    public UserCreateResponse createModel(String baseUrl, String code, ModelCreateRequest request) {
-
-        return
-    }
 }

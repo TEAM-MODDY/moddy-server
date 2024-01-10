@@ -3,6 +3,8 @@ package com.moddy.server.service.model;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.controller.auth.dto.request.ModelCreateRequest;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.response.*;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
@@ -200,6 +202,15 @@ public class ModelService {
 
         hairServiceOffer.setIsModelAgree(true);
 
+    }
+
+
+    @Transactional
+    public UserCreateResponse createModel(String baseUrl, String code, ModelCreateRequest request) {
+
+
+
+        return UserCreateResponse
     }
 
 }
