@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface HairModelApplicationJpaRepository extends JpaRepository<HairModelApplication, Long> {
     Boolean existsByUserId(Long userId);
     Optional<HairModelApplication> findByUserId(Long userId);
-    Page<HairModelApplication> findByUserId(Long userId, Pageable pageable);
+    Page<HairModelApplication> findAll(Pageable pageable);
 }

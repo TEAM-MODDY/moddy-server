@@ -34,7 +34,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,14 +54,14 @@ public class DesignerService {
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
 
-    private Page<HairModelApplication> findApplications(Long userId, int page, int size){
+    private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
-        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findByUserId(userId, pageRequest);
+        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
         return applicationPage;
     }
     private Integer calAge(String year){
         LocalDateTime currentDateTime = LocalDateTime.now();
-        Integer age = Integer.parseInt(year) - currentDateTime.getYear() +1 ;
+        Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1 ;
         return age;
     }
 
@@ -111,11 +110,11 @@ public class DesignerService {
     }
 
     @Transactional
-    public DesignerMainResponse getMainView(Long userId, int page, int size){
+    public DesignerMainResponse getDesignerMainView(Long userId, int page, int size){
+        //designer
+        User user = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
-        User user = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-
-        Page<HairModelApplication> applicationPage = findApplications(userId, page, size);
+        Page<HairModelApplication> applicationPage = findApplications(page, size);
 
         List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
 
@@ -124,7 +123,6 @@ public class DesignerService {
             List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
 
             List<HairStyle> top2hairStyles= preferHairStyle.stream().map(PreferHairStyle::getHairStyle).collect(Collectors.toList());
-
             HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                     application.getId(),
                     model.getName(),
