@@ -1,7 +1,9 @@
 package com.moddy.server.config.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -24,6 +26,7 @@ public class LoggingAspect {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String START_LOG = "================================================NEW===============================================\n";
     private static final String END_LOG = "================================================END===============================================\n";
+    private static final String MULTI_PART_FORM_DATA = "multipart/form-data";
 
     @Pointcut("execution(* com.moddy.server.controller..*(..)) || ( execution(* com.moddy.server.common.exception..*(..)) && !execution(* com.moddy.server.common.exception.GlobalControllerExceptionAdvice.handleException*(..)))")
     public void controllerInfoLevelExecute() {
@@ -63,12 +66,19 @@ public class LoggingAspect {
             long startAt,
             long endAt,
             Object returnValue
-    ) throws IOException {
+    ) throws IOException, ServletException {
         StringBuilder sb = new StringBuilder();
 
         sb.append(START_LOG);
         sb.append(String.format("====> Request: %s %s ({%d}ms)\n====> *Header = {%s}\n", request.getMethod(), request.getRequestURL(), endAt - startAt, getHeaders(request)));
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
+        if ("POST".equalsIgnoreCase(request.getMethod()) && request.getContentType().contains(MULTI_PART_FORM_DATA)) {
+            sb.append("====> Body: ");
+            cachingRequest.getParts().stream().map(Part::getName).forEach(n -> {
+                String keyValue = String.format("%s = %s", n, request.getParameter(n));
+                sb.append(keyValue).append(", ");
+            });
+            sb.append("\n");
+        } else if ("POST".equalsIgnoreCase(request.getMethod())) {
             sb.append(String.format("====> Body: {%s}\n", objectMapper.readTree(cachingRequest.getContentAsByteArray())));
         }
         if (returnValue != null) {
