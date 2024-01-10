@@ -21,6 +21,13 @@ jobs:
       with:
         distribution: 'corretto'
         java-version: '17'
+    - name: Setup MySQL
+      uses: samin/mysql-action@v1
+      with:
+        character set server: 'utf8'
+        mysql database: 'moddy-server-database'
+        mysql user: 'moddy'
+        mysql password: ${{ secrets.DatabasePassword }}
 
     - name: Start Redis
       uses: supercharge/redis-github-action@1.7.0
