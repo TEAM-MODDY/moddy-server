@@ -1,8 +1,12 @@
 package com.moddy.server.service.model;
 
 
+import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.config.jwt.JwtService;
+import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.response.*;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
@@ -12,6 +16,7 @@ import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
+import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
@@ -19,7 +24,15 @@ import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRe
 import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferConditionJpaRepository;
+import com.moddy.server.domain.prefer_region.PreferRegion;
+import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
+import com.moddy.server.domain.region.Region;
+import com.moddy.server.domain.region.repository.RegionJpaRepository;
+import com.moddy.server.domain.user.Gender;
+import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
+import com.moddy.server.external.kakao.service.KakaoSocialService;
+import com.moddy.server.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,8 +57,17 @@ public class ModelService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
     private final PreferOfferConditionJpaRepository preferOfferConditionJpaRepository;
-    private final DayOffJpaRepository dayOffJpaRespository;
+    private final DayOffJpaRepository dayOffJpaRepository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
+    private final PreferRegionJpaRepository preferRegionJpaRepository;
+    private final RegionJpaRepository regionJpaRepository;
+    private final KakaoSocialService kakaoSocialService;
+    private final AuthService authService;
+    private final JwtService jwtService;
+
+    private final String DEFAULT_PROFILE_IMG_URL = "";
+
+
 
     private Page<HairServiceOffer> findOffers(Long userId, int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
@@ -113,7 +135,7 @@ public class ModelService {
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
         Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
-        List<DayOff> dayOffList = dayOffJpaRespository.findAllByDesignerId(designer.getId());
+        List<DayOff> dayOffList = dayOffJpaRepository.findAllByDesignerId(designer.getId());
         List<String> dayOfWeekList = dayOffList.stream().map(dayOff -> {
             return dayOff.getDayOfWeek().getValue();
         }).collect(Collectors.toList());
@@ -200,6 +222,33 @@ public class ModelService {
 
         hairServiceOffer.setIsModelAgree(true);
 
+    }
+
+    @Transactional
+    public UserCreateResponse createModel(String baseUrl, String code, ModelCreateRequest request) {
+
+        String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
+
+        Model model = Model.builder()
+                .name(request.name())
+                .year(request.year())
+                .gender(request.gender())
+                .phoneNumber(request.phoneNumber())
+                .isMarketingAgree(request.isMarketingAgree())
+                .profileImgUrl(DEFAULT_PROFILE_IMG_URL)
+                .kakaoId(kakaoId)
+                .role(Role.MODEL)
+                .build();
+
+        modelJpaRepository.save(model);
+
+        request.preferRegions().stream().forEach(preferRegionId -> {
+            Region region = regionJpaRepository.findById(preferRegionId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_REGION_EXCEPTION));
+            PreferRegion preferRegion = PreferRegion.builder().user(model).region(region).build();
+            preferRegionJpaRepository.save(preferRegion);
+        });
+
+        return authService.createUserToken(model.getId().toString());
     }
 
 }

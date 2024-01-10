@@ -3,7 +3,7 @@ package com.moddy.server.service.designer;
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
-import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -15,6 +15,7 @@ import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
 import com.moddy.server.external.s3.S3Service;
+import com.moddy.server.service.auth.AuthService;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,9 +33,10 @@ public class DesignerService {
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
+    private final AuthService authService;
 
     @Transactional
-    public DesignerCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
+    public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
 
         String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
 
@@ -72,8 +74,7 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-        TokenPair tokenPair = jwtService.generateTokenPair(designer.getId().toString());
-        DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
-        return designerCreateResponse;
+
+        return authService.createUserToken(designer.getId().toString());
     }
 }
