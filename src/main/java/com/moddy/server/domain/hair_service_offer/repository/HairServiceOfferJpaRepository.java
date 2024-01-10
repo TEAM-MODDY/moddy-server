@@ -7,10 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface HairServiceOfferJpaRepository extends JpaRepository<HairServiceOffer, Long> {
-
     Page<HairServiceOffer> findByUserId(Long userId, Pageable pageable);
-
-    Optional<HairServiceOffer> findById(Long offerId);
-
     Boolean existsByUserId(Long userId);
 }

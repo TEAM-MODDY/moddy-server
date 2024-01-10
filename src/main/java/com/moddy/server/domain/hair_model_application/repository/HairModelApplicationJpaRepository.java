@@ -7,10 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface HairModelApplicationJpaRepository extends JpaRepository<HairModelApplication, Long> {
-
     Boolean existsByUserId(Long userId);
-
-    Optional<HairModelApplication> findById(Long id);
-
     Optional<HairModelApplication> findByUserId(Long userId);
 }

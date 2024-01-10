@@ -5,6 +5,5 @@ public record DesignerInfoOpenChatResponse(
         String shopName,
         String name,
         String introduction
-
 ) {
 }

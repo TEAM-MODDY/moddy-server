@@ -45,12 +45,10 @@ public class DesignerService {
                 .address(request.hairShopAddress())
                 .detailAddress(request.hairShopAddressDetail())
                 .build();
-
         Portfolio portfolio = Portfolio.builder()
                 .instagramUrl(request.instagramUrl())
                 .naverPlaceUrl(request.naverPlaceUrl())
                 .build();
-
         Designer designer = Designer.builder()
                 .hairShop(hairShop)
                 .portfolio(portfolio)
@@ -64,9 +62,7 @@ public class DesignerService {
                 .profileImgUrl(profileImgUrl)
                 .role(Role.HAIR_DESIGNER)
                 .build();
-
         designerJpaRepository.save(designer);
-
         request.dayOffs().stream()
                 .forEach(d -> {
                     DayOff dayOff = DayOff.builder()
@@ -76,7 +72,6 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-
         TokenPair tokenPair = jwtService.generateTokenPair(kakaoId);
         DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
