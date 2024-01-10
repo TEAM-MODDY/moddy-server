@@ -1,9 +1,11 @@
-package com.moddy.server.service;
+package com.moddy.server.service.designer;
 
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
+import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
+import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -45,12 +47,10 @@ public class DesignerService {
                 .address(request.hairShopAddress())
                 .detailAddress(request.hairShopAddressDetail())
                 .build();
-
         Portfolio portfolio = Portfolio.builder()
                 .instagramUrl(request.instagramUrl())
                 .naverPlaceUrl(request.naverPlaceUrl())
                 .build();
-
         Designer designer = Designer.builder()
                 .hairShop(hairShop)
                 .portfolio(portfolio)
@@ -64,9 +64,7 @@ public class DesignerService {
                 .profileImgUrl(profileImgUrl)
                 .role(Role.HAIR_DESIGNER)
                 .build();
-
         designerJpaRepository.save(designer);
-
         request.dayOffs().stream()
                 .forEach(d -> {
                     DayOff dayOff = DayOff.builder()
@@ -76,7 +74,6 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-
         TokenPair tokenPair = jwtService.generateTokenPair(kakaoId);
         UserCreateResponse designerCreateResponse = new UserCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
