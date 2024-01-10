@@ -71,7 +71,7 @@ public class LoggingAspect {
 
         sb.append(START_LOG);
         sb.append(String.format("====> Request: %s %s ({%d}ms)\n====> *Header = {%s}\n", request.getMethod(), request.getRequestURL(), endAt - startAt, getHeaders(request)));
-        if ("POST".equalsIgnoreCase(request.getMethod()) && request.getContentType().contains(MULTI_PART_FORM_DATA)) {
+        if ("POST".equalsIgnoreCase(request.getMethod()) && request.getContentType() != null && request.getContentType().contains(MULTI_PART_FORM_DATA)) {
             sb.append("====> Body: ");
             cachingRequest.getParts().stream().map(Part::getName).forEach(n -> {
                 String keyValue = String.format("%s = %s", n, request.getParameter(n));
