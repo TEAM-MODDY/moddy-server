@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface HairServiceOfferJpaRepository extends JpaRepository<HairServiceOffer, Long> {
     Page<HairServiceOffer> findByUserId(Long userId, Pageable pageable);
+
     Boolean existsByUserId(Long userId);
 }

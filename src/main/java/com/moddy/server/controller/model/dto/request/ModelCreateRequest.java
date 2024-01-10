@@ -1,4 +1,4 @@
-package com.moddy.server.controller.auth.dto.request;
+package com.moddy.server.controller.model.dto.request;
 
 import java.util.List;
 

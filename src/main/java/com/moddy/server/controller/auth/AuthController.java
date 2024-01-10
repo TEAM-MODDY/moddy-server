@@ -1,16 +1,14 @@
 package com.moddy.server.controller.auth;
 
 import com.moddy.server.common.dto.ErrorResponse;
-import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
-import com.moddy.server.controller.auth.dto.request.ModelCreateRequest;
+import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
-import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
 import com.moddy.server.service.auth.AuthService;
 import com.moddy.server.service.designer.DesignerService;
 import com.moddy.server.service.model.ModelService;
@@ -26,7 +24,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
