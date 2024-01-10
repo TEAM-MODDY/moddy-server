@@ -65,7 +65,7 @@ public class ModelService {
     private final AuthService authService;
     private final JwtService jwtService;
 
-    private final String DEFAULT_PROFILE_IMG_URL = "https://moddy-gallery.s3.ap-northeast-2.amazonaws.com/HAIR_MODEL_PROFILE/btn_photoadd_noicon.png";
+    private final String DEFAULT_PROFILE_IMG_URL = "";
 
 
 
