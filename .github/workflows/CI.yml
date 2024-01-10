@@ -31,4 +31,5 @@ jobs:
       run: |
           chmod +x gradlew
           ./gradlew build -x test
+          ./gradlew test
       shell: bash
