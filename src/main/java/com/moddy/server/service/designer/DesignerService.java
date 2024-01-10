@@ -4,7 +4,6 @@ import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
-import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -33,8 +32,9 @@ public class DesignerService {
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
+
     @Transactional
-    public DesignerCreateResponse createDesigner(String baseUrl,String code, DesignerCreateRequest request) {
+    public DesignerCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
 
         String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
 
@@ -72,7 +72,7 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-        TokenPair tokenPair = jwtService.generateTokenPair(kakaoId);
+        TokenPair tokenPair = jwtService.generateTokenPair(designer.getId().toString());
         DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
     }
