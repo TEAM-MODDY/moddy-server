@@ -32,6 +32,7 @@ import com.moddy.server.domain.user.Gender;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
+import com.moddy.server.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,6 +62,7 @@ public class ModelService {
     private final PreferRegionJpaRepository preferRegionJpaRepository;
     private final RegionJpaRepository regionJpaRepository;
     private final KakaoSocialService kakaoSocialService;
+    private final AuthService authService;
     private final JwtService jwtService;
 
     private final String DEFAULT_PROFILE_IMG_URL = "https://moddy-gallery.s3.ap-northeast-2.amazonaws.com/HAIR_MODEL_PROFILE/btn_photoadd_noicon.png";
@@ -230,7 +232,7 @@ public class ModelService {
         Model model = Model.builder()
                 .name(request.name())
                 .year(request.year())
-                .gender(Gender.findByGender(request.gender()))
+                .gender(request.gender())
                 .phoneNumber(request.phoneNumber())
                 .isMarketingAgree(request.isMarketingAgree())
                 .profileImgUrl(DEFAULT_PROFILE_IMG_URL)
@@ -240,19 +242,13 @@ public class ModelService {
 
         modelJpaRepository.save(model);
 
-        User user = modelJpaRepository.findById(model.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-        List<Long> preferRegionList = request.preferRegions();
-
-        for(int i = 0; i < preferRegionList.size(); i++){
-            Region region = regionJpaRepository.findById(preferRegionList.get(i)).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_REGION_EXCEPTION));
-            PreferRegion preferRegion = PreferRegion.builder().user(user).region(region).build();
+        request.preferRegions().stream().forEach(preferRegionId -> {
+            Region region = regionJpaRepository.findById(preferRegionId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_REGION_EXCEPTION));
+            PreferRegion preferRegion = PreferRegion.builder().user(model).region(region).build();
             preferRegionJpaRepository.save(preferRegion);
-        }
+        });
 
-        TokenPair tokenPair = jwtService.generateTokenPair(model.getId().toString());
-        UserCreateResponse userCreateResponse = new UserCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
-
-        return userCreateResponse;
+        return authService.createUserToken(model.getId().toString());
     }
 
 }

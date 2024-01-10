@@ -5,6 +5,7 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.domain.region.repository.RegionJpaRepository;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.domain.user.repository.UserRepository;
@@ -44,6 +45,14 @@ public class AuthService {
         }).collect(Collectors.toList());
 
         return regionResponseList;
+    }
+
+    public UserCreateResponse createUserToken(String useId){
+
+        TokenPair tokenPair = jwtService.generateTokenPair(useId);
+        UserCreateResponse userCreateResponse = new UserCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
+
+        return userCreateResponse;
     }
 
 }

@@ -15,6 +15,7 @@ import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
 import com.moddy.server.external.s3.S3Service;
+import com.moddy.server.service.auth.AuthService;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class DesignerService {
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
+    private final AuthService authService;
 
     @Transactional
     public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
@@ -72,8 +74,7 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-        TokenPair tokenPair = jwtService.generateTokenPair(designer.getId().toString());
-        UserCreateResponse userCreateResponse = new UserCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
-        return userCreateResponse;
+
+        return authService.createUserToken(designer.getId().toString());
     }
 }
