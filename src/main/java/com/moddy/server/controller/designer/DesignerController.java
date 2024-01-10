@@ -7,7 +7,7 @@ import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
-import com.moddy.server.service.DesignerService;
+import com.moddy.server.service.designer.DesignerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

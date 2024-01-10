@@ -1,4 +1,4 @@
-package com.moddy.server.service;
+package com.moddy.server.service.designer;
 
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.config.jwt.JwtService;
@@ -81,4 +81,7 @@ public class DesignerService {
         DesignerCreateResponse designerCreateResponse = new DesignerCreateResponse(tokenPair.accessToken(), tokenPair.refreshToken());
         return designerCreateResponse;
     }
+
+    @Transactional
+    public
 }
