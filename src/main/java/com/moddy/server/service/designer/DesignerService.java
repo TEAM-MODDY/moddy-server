@@ -7,6 +7,7 @@ import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
+import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -15,6 +16,11 @@ import com.moddy.server.domain.designer.Portfolio;
 import com.moddy.server.domain.designer.repository.DesignerJpaRepository;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
+import com.moddy.server.domain.model.Model;
+import com.moddy.server.domain.model.repository.ModelJpaRepository;
+import com.moddy.server.domain.prefer_hair_style.HairStyle;
+import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
+import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
@@ -29,7 +35,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,12 +53,19 @@ public class DesignerService {
     private final JwtService jwtService;
 
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
+    private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
+    private final ModelJpaRepository modelJpaRepository;
+
     private Page<HairModelApplication> findApplications(Long userId, int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findByUserId(userId, pageRequest);
         return applicationPage;
     }
-
+    private Integer calAge(String year){
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Integer age = Integer.parseInt(year) - currentDateTime.getYear() +1 ;
+        return age;
+    }
     @Transactional
     public DesignerCreateResponse createDesigner(String baseUrl,String code, DesignerCreateRequest request) {
 
@@ -97,8 +112,35 @@ public class DesignerService {
 
     @Transactional
     public DesignerMainResponse getMainView(Long userId, int page, int size){
-        List<HairModelApplication> hairModelApplications= hairModelApplicationJpaRepository.findAllByUserId(userId);
+
         User user = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
 
+        Page<HairModelApplication> applicationPage = findApplications(userId, page, size);
+
+        List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
+
+            Model model = modelJpaRepository.findById(application.getUser().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
+
+            List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
+
+            List<HairStyle> top2hairStyles= preferHairStyle.stream().map(PreferHairStyle::getHairStyle).collect(Collectors.toList());
+
+            HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
+                    application.getId(),
+                    model.getName(),
+                    calAge(model.getYear()),
+                    model.getProfileImgUrl(),
+                    model.getGender().getValue(),
+                    top2hairStyles
+            );
+            return applicationResponse;
+        }).collect(Collectors.toList());
+
+        return new DesignerMainResponse(
+                page,
+                size,
+                user.getName(),
+                applicationResponsesList
+        );
     }
 }

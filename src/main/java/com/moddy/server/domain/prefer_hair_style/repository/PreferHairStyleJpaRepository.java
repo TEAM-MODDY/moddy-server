@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface PreferHairStyleJpaRepository extends JpaRepository<PreferHairStyle, Long> {
 
+    List<PreferHairStyle> findTop2ByHairModelApplicationId(Long applicationId);
     List<PreferHairStyle> findAllByHairModelApplicationId(Long applicationId);
 }
