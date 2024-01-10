@@ -13,6 +13,7 @@ import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerCreateResponse;
 import com.moddy.server.service.auth.AuthService;
 import com.moddy.server.service.designer.DesignerService;
+import com.moddy.server.service.model.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,6 +45,7 @@ public class AuthController {
     private static final String ORIGIN = "origin";
     private final AuthService authService;
     private final DesignerService designerService;
+    private final ModelService modelService;
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
     @ApiResponses(value = {
@@ -61,34 +63,6 @@ public class AuthController {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
     }
 
-    @Operation(summary = "[KAKAO CODE] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @PostMapping(value = "/signup/model")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<UserCreateResponse> createModel(
-            @Parameter(hidden = true) @KakaoCode String kakaoCode,
-            @Parameter(hidden = true) HttpServletRequest request,
-            @RequestBody ModelCreateRequest modelCreateRequest
-            ) {
-        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, authService.createModel(request.getHeader(ORIGIN), kakaoCode, modelCreateRequest));
-    }
-
-
-    //    @SecurityRequirement(name = "JWT Auth")
-    //    @PostMapping(value = "/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    //    SuccessResponse<DesignerCreateResponse> createDesigner(
-    //            @Parameter(hidden = true) @KakaoCode String kakaoCode,
-    //            @ModelAttribute DesignerCreateRequest request,
-    //            @Parameter(hidden = true) HttpServletRequest servletRequest
-    //    ) {
-    //        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader("origin"), kakaoCode, request));
-    //    }
-
     @Operation(summary = "모델 회원가입 시 희망 지역 리스트 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "희망 지역 리스트 조회 성공입니다."),
@@ -98,8 +72,6 @@ public class AuthController {
     public SuccessResponse<List<RegionResponse>> getRegionList() {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
     }
-
-
 
     @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 뷰 조회", description = "디자이너 회원가입 뷰 조회 API입니다.")
     @ApiResponses({
@@ -113,6 +85,24 @@ public class AuthController {
             @ModelAttribute DesignerCreateRequest request,
             @Parameter(hidden = true) HttpServletRequest servletRequest
     ) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader("origin"), kakaoCode, request));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, request));
     }
+
+    @Operation(summary = "[KAKAO CODE] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping(value = "/signup/model")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<UserCreateResponse> createModel(
+            @Parameter(hidden = true) @KakaoCode String kakaoCode,
+            @Parameter(hidden = true) HttpServletRequest request,
+            @RequestBody ModelCreateRequest modelCreateRequest
+    ) {
+        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(request.getHeader(ORIGIN), kakaoCode, modelCreateRequest));
+    }
+
 }
