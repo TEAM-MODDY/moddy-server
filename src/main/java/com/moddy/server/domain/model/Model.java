@@ -2,13 +2,13 @@ package com.moddy.server.domain.model;
 
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
