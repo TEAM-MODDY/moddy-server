@@ -7,6 +7,7 @@ import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.common.util.SmsUtil;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.controller.auth.dto.request.PhoneNumberRequestDto;
+import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.SEND_VERIFICATION_CODE_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_SUCCESS;
+import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_CODE_MATCH_SUCCESS;
 
 @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
 @RestController
@@ -118,6 +120,24 @@ public class AuthController {
     public SuccessNonDataResponse sendVerificationCodeMessageToUser(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) {
         authService.sendVerificationCodeMessageToUser(phoneNumberRequestDto.phoneNumber());
         return SuccessNonDataResponse.success(SEND_VERIFICATION_CODE_SUCCESS);
+    }
+
+    @Operation(summary = "전화번호 인증 API", description = "전화번호 인증 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "전화번호 인증 성공입니다."),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "1. 인증번호가 일치하지 않습니다."
+                            + "2. 만료된 인증 코드입니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "인증 코드가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/phoneNumber/verify")
+    public SuccessNonDataResponse verifyCode(@RequestBody VerifyCodeRequestDto verifyCodeRequestDto) {
+        authService.verifyCode(verifyCodeRequestDto.phoneNumber(), verifyCodeRequestDto.verifyCode());
+        return SuccessNonDataResponse.success(VERIFICATION_CODE_MATCH_SUCCESS);
     }
 
 }
