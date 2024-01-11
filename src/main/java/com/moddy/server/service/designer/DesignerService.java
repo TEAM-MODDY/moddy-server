@@ -1,6 +1,5 @@
 package com.moddy.server.service.designer;
 
-import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
