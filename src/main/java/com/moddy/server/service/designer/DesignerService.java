@@ -157,7 +157,7 @@ public class DesignerService {
         }).collect(Collectors.toList());
 
         List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
-        hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().getOrder()));
+        hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
 
         List <PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(userId);
 
