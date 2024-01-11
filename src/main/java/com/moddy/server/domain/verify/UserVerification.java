@@ -8,10 +8,16 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
-@Builder
+@Getter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserVerification extends BaseTimeEntity {
@@ -22,4 +28,9 @@ public class UserVerification extends BaseTimeEntity {
     private String phoneNumber;
     @NotNull
     private String verificationCode;
+
+    public boolean isExpireCode(LocalDateTime now) {
+        long minutesDifference = ChronoUnit.MINUTES.between(this.getCreatedAt(), now);
+        return minutesDifference >= 3;
+    }
 }
