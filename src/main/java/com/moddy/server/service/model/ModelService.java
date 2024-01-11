@@ -262,7 +262,7 @@ public class ModelService {
     public void createModelApplication(Long userId, ModelApplicationRequest request){
 
         Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-        String modelImgUrl = s3Service.uploadApplicationModelImage(request.modelImgUrl(), model.getRole());
+        String modelImgUrl = s3Service.uploadProfileImage(request.modelImgUrl(), model.getRole());
         String applicationCaptureUmgUrl = s3Service.uploadApplicationImage(request.applicationCaptureImgUrl());
 
         HairModelApplication hairModelApplication = HairModelApplication.builder()
