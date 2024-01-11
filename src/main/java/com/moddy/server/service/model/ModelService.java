@@ -285,13 +285,7 @@ public class ModelService {
             preferHairStyleJpaRepository.save(preferHairStyle);
         });
 
-        System.out.println("\n==================헤어시술 이력 크기1" + request.hairServiceRecords().size() + "========================");
-//        System.out.println("\n==================헤어시술 이력 크기2" + request.getHairServiceRecords().size() + "========================");
-
-
-
-        request.hairServiceRecords().stream().forEach(modelHairServiceRecord -> {
-            System.out.println("\n==================헤어시술 이력 : " + modelHairServiceRecord.hairService() + "========================");
+        request.getHairServiceRecords().stream().forEach(modelHairServiceRecord -> {
             HairServiceRecord hairServiceRecord = HairServiceRecord.builder()
                     .hairModelApplication(hairModelApplication)
                     .serviceRecord(ServiceRecord.findByServiceRecord(modelHairServiceRecord.hairService()))
