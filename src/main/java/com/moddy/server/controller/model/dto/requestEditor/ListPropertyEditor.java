@@ -1,4 +1,4 @@
-package com.moddy.server.controller.model.dto;
+package com.moddy.server.controller.model.dto.requestEditor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;

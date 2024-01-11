@@ -5,7 +5,7 @@ import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
-import com.moddy.server.controller.model.dto.ListPropertyEditor;
+import com.moddy.server.controller.model.dto.requestEditor.ListPropertyEditor;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelHairServiceRequest;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
