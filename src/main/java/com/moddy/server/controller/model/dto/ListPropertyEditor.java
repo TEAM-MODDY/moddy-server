@@ -1,56 +1,46 @@
 package com.moddy.server.controller.model.dto;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moddy.server.controller.model.dto.request.ModelHairServiceRequest;
-import org.springframework.beans.propertyeditors.CustomCollectionEditor;
-
-import java.util.ArrayList;
+import org.springframework.util.StringUtils;
+import java.beans.PropertyEditorSupport;
+import java.io.IOException;
 import java.util.List;
 
-public class ListPropertyEditor extends CustomCollectionEditor {
+
+public class ListPropertyEditor extends PropertyEditorSupport {
 
     private final Class<?> elementType;
+    private final ObjectMapper objectMapper;
 
     public ListPropertyEditor(Class<?> elementType) {
-        super(ArrayList.class);
         this.elementType = elementType;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    protected Object convertElement(Object element) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue((String) element,  new TypeReference<List<ModelHairServiceRequest>>() {});
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to convert element", e);
+    public void setAsText(String text) throws IllegalArgumentException {
+        if (StringUtils.hasText(text)) {
+            try {
+                List<?> list = objectMapper.readValue(text, objectMapper.getTypeFactory().constructCollectionType(List.class, elementType));
+                setValue(list);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Failed to convert value to List: " + text, e);
+            }
+        } else {
+            setValue(null);
         }
     }
 
     @Override
-    public void setAsText(String text) {
-        // 전체 문자열을 변환하는 메서드 오버라이드
-        setValue(text);
+    public String getAsText() {
+        Object value = getValue();
+        if (value == null) {
+            return "";
+        }
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Failed to convert value to JSON: " + value, e);
+        }
     }
 }
-
-////
-//public class ListPropertyEditor extends CustomCollectionEditor {
-//
-//    private final Class<?> elementType;
-//
-//    public ListPropertyEditor(Class<?> elementType) {
-//        super(ArrayList.class);
-//        this.elementType = elementType;
-//    }
-//
-//    @Override
-//    protected Object convertElement(Object element) {
-//        try {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            return objectMapper.readValue((String) element, new TypeReference<List<Object>>() {});
-//        } catch (Exception e) {
-//            throw new IllegalArgumentException("Failed to convert element", e);
-//        }
-//    }
-//}
