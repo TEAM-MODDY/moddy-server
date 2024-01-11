@@ -1,10 +1,12 @@
 package com.moddy.server.service.designer;
 
+import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
+import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
@@ -16,13 +18,19 @@ import com.moddy.server.domain.designer.Portfolio;
 import com.moddy.server.domain.designer.repository.DesignerJpaRepository;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
+import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
+import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.HairStyle;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
+import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
+import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
+import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferConditionJpaRepository;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
+import com.moddy.server.domain.user.repository.UserRepository;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
@@ -53,6 +61,7 @@ public class DesignerService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
+    private final PreferOfferConditionJpaRepository preferOfferConditionJpaRepository;
 
     private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
@@ -61,6 +70,9 @@ public class DesignerService {
     }
 
     private final AuthService authService;
+    private final UserRepository userRepository;
+    private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
+
     @Transactional
     public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
 
@@ -135,5 +147,32 @@ public class DesignerService {
                 designer.getName(),
                 applicationResponsesList
         );
+    }
+
+    @Transactional
+    public void postOffer(Long userId, Long applicationId, OfferCreateRequest request){
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+
+        HairServiceOffer offer = HairServiceOffer.builder()
+                .user(user)
+                .hairModelApplication(hairModelApplication)
+                .designer(designer)
+                .offerDetail(request.offerDetail())
+                .isModelAgree(false)
+                .isClicked(false)
+                .build();
+        hairServiceOfferJpaRepository.save(offer);
+
+        request.preferOfferConditions().stream()
+                .forEach(p -> {
+                    PreferOfferCondition preferOfferCondition = PreferOfferCondition.builder()
+                            .offerCondition(p)
+                            .hairServiceOffer(offer)
+                            .build();
+                    preferOfferConditionJpaRepository.save(preferOfferCondition);
+
+                });
     }
 }
