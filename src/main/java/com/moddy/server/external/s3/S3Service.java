@@ -26,6 +26,10 @@ public class S3Service {
         return uploadImage(multipartFile, role.name());
     }
 
+    public String uploadApplicationModelImage(MultipartFile multipartFile, Role role){
+        return uploadImage(multipartFile, APPLICATION_PATH + "/" + role.name());
+    }
+
     public String uploadApplicationImage(MultipartFile multipartFile) {
         return uploadImage(multipartFile, APPLICATION_PATH);
     }
