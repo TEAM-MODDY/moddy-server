@@ -22,6 +22,5 @@ public record DesignerCreateRequest(
         String introduction,
         String kakaoOpenChatUrl,
         List<DayOfWeek> dayOffs
-
 ) {
 }
