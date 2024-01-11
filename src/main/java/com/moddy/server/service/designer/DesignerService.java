@@ -152,8 +152,8 @@ public class DesignerService {
 
         List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
 
-        List<HairStyle> preferhairStyleList = preferHairStyles.stream().map(hairStyle -> {
-            return hairStyle.getHairStyle();
+        List<String> preferhairStyleList = preferHairStyles.stream().map(hairStyle -> {
+            return hairStyle.getHairStyle().getValue();
         }).collect(Collectors.toList());
 
         List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
@@ -167,8 +167,8 @@ public class DesignerService {
 
         List<HairRecordResponse> recordResponseList = hairServiceRecords.stream().map(records -> {
              HairRecordResponse hairRecordResponse = new HairRecordResponse(
-                     records.getServiceRecord(),
-                     records.getServiceRecordTerm()
+                     records.getServiceRecordTerm().getValue(),
+                     records.getServiceRecord().getValue()
             );
             return hairRecordResponse;
         }).collect(Collectors.toList());
@@ -187,7 +187,7 @@ public class DesignerService {
                 model.getId(),
                 model.getName(),
                 user.getAge(model.getYear()),
-                model.getGender(),
+                model.getGender().getValue(),
                 regionList,
                 hairModelApplication.getInstagramId()
         );

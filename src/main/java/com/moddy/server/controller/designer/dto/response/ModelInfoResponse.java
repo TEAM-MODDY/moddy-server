@@ -8,7 +8,7 @@ public record ModelInfoResponse(
         Long modelId,
         String name,
         Integer age,
-        Gender gender,
+        String gender,
         List<String> preferRegions,
         String instagramId
 

@@ -9,7 +9,7 @@ public record ApplicationInfoResponse(
         Long applicationId,
         String modelImgUrl,
         HairLength hairLength,
-        List<HairStyle> preferHairstyles,
+        List<String> preferHairstyles,
         List<HairRecordResponse> hairServiceRecords,
         String hairDetail,
         Boolean isSend
