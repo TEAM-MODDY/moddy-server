@@ -17,7 +17,7 @@ public enum Gender {
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static Gender findByGender(String gender) {
         return Stream.of(Gender.values())
-                .filter(c -> c.getValue().equals(gender))
+                .filter(c -> c.name().equals(gender))
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException(ErrorCode.INVALID_GENDER_EXCEPTION));
     }
