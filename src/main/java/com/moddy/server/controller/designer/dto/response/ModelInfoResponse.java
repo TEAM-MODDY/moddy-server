@@ -1,6 +1,5 @@
 package com.moddy.server.controller.designer.dto.response;
 
-import com.moddy.server.domain.region.Region;
 import com.moddy.server.domain.user.Gender;
 
 import java.util.List;
@@ -8,9 +7,9 @@ import java.util.List;
 public record ModelInfoResponse(
         Long modelId,
         String name,
-        String age,
+        Integer age,
         Gender gender,
-        List<Region> preferRegions,
+        List<String> preferRegions,
         String instagramId
 
 ) {
