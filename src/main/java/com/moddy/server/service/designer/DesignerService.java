@@ -1,7 +1,5 @@
 package com.moddy.server.service.designer;
 
-import com.moddy.server.common.dto.SuccessNonDataResponse;
-import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
@@ -25,7 +23,6 @@ import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.HairStyle;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
-import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferConditionJpaRepository;
 import com.moddy.server.domain.user.Role;
@@ -43,6 +40,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
