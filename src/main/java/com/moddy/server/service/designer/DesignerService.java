@@ -8,6 +8,7 @@ import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
+import com.moddy.server.controller.designer.dto.response.*;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -18,6 +19,8 @@ import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
+import com.moddy.server.domain.hair_service_record.HairServiceRecord;
+import com.moddy.server.domain.hair_service_record.repository.HairServcieRecordJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.HairStyle;
@@ -25,6 +28,8 @@ import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
 import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferConditionJpaRepository;
+import com.moddy.server.domain.prefer_region.PreferRegion;
+import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.domain.user.repository.UserRepository;
@@ -40,7 +45,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,16 +65,19 @@ public class DesignerService {
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
     private final PreferOfferConditionJpaRepository preferOfferConditionJpaRepository;
+    private final HairServcieRecordJpaRepository hairServiceRecordJpaRepository;
+    private final AuthService authService;
+    private final PreferRegionJpaRepository preferRegionJpaRepository;
+    private final  HairServcieRecordJpaRepository hairServcieRecordJpaRepository;
+    private final UserRepository userRepository;
+    private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
+
 
     private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
         return applicationPage;
     }
-
-    private final AuthService authService;
-    private final UserRepository userRepository;
-    private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
 
     @Transactional
     public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
@@ -148,7 +156,7 @@ public class DesignerService {
     }
 
     @Transactional
-    public void postOffer(Long userId, Long applicationId, OfferCreateRequest request){
+    public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
@@ -172,5 +180,62 @@ public class DesignerService {
                     preferOfferConditionJpaRepository.save(preferOfferCondition);
 
                 });
+    }
+
+    @Transactional
+    public ApplicationDetailInfoResponse getApplicationDetail(Long userId, Long applicationId){
+        User user = new User();
+
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+
+        Model model = modelJpaRepository.findById(hairModelApplication.getUser().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+
+        List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
+
+        List<String> preferhairStyleList = preferHairStyles.stream().map(hairStyle -> {
+            return hairStyle.getHairStyle().getValue();
+        }).collect(Collectors.toList());
+
+        List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
+        hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
+
+        List <PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(userId);
+
+        List<String> regionList = preferRegions.stream().map(preferregion ->{
+             return preferregion.getRegion().getName();
+        }).collect(Collectors.toList());
+
+        List<HairRecordResponse> recordResponseList = hairServiceRecords.stream().map(records -> {
+             HairRecordResponse hairRecordResponse = new HairRecordResponse(
+                     records.getServiceRecordTerm().getValue(),
+                     records.getServiceRecord().getValue()
+            );
+            return hairRecordResponse;
+        }).collect(Collectors.toList());
+
+        ApplicationInfoResponse applicationInfoResponse = new ApplicationInfoResponse(
+                applicationId,
+                hairModelApplication.getModelImgUrl(),
+                hairModelApplication.getHairLength(),
+                preferhairStyleList,
+                recordResponseList,
+                hairModelApplication.getHairDetail(),
+                hairModelApplication.getIsSend()
+        );
+
+        ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
+                model.getId(),
+                model.getName(),
+                user.getAge(model.getYear()),
+                model.getGender().getValue(),
+                regionList,
+                hairModelApplication.getInstagramId()
+        );
+
+        return new ApplicationDetailInfoResponse(
+                applicationInfoResponse,
+                modelInfoResponse
+        );
+
     }
 }
