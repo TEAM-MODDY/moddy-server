@@ -76,7 +76,6 @@ public class ModelService {
     private final String DEFAULT_PROFILE_IMG_URL = "";
 
 
-
     private Page<HairServiceOffer> findOffers(Long userId, int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairServiceOffer> offerPage = hairServiceOfferJpaRepository.findByUserId(userId, pageRequest);
@@ -251,7 +250,7 @@ public class ModelService {
                 .gender(request.gender())
                 .phoneNumber(request.phoneNumber())
                 .isMarketingAgree(request.isMarketingAgree())
-                .profileImgUrl(DEFAULT_PROFILE_IMG_URL)
+                .profileImgUrl(s3Service.getDefaultProfileImageUrl())
                 .kakaoId(kakaoId)
                 .role(Role.MODEL)
                 .build();
