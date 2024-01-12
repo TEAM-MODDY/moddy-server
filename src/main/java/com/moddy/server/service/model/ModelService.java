@@ -272,7 +272,6 @@ public class ModelService {
                 .modelImgUrl(modelImgUrl)
                 .instagramId(request.instagramId())
                 .applicationCaptureUrl(applicationCaptureUmgUrl)
-                .isSend(false)
                 .build();
 
         hairModelApplicationJpaRepository.save(hairModelApplication);
