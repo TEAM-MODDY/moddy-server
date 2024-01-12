@@ -14,16 +14,11 @@ public class AwsSmsServiceImpl implements SmsService {
 
     @Override
     public boolean sendSms(String to, String verificationCode) {
-        try {
-            PublishRequest request = new PublishRequest();
-            request.setMessage(String.format(MESSAGE_FORM, verificationCode));
-            request.setPhoneNumber(KR + to);
+        PublishRequest request = new PublishRequest();
+        request.setMessage(String.format(MESSAGE_FORM, verificationCode));
+        request.setPhoneNumber(KR + to);
 
-            amazonSNSClient.publish(request);
-            return true;
-        } catch (Exception e) {
-            System.out.println(e);
-            return false;
-        }
+        amazonSNSClient.publish(request);
+        return true;
     }
 }
