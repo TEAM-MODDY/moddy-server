@@ -80,7 +80,7 @@ public class DesignerService {
         return applicationPage;
     }
 
-    private Boolean getIsSend(Long applicationId, Long userId){
+    private Boolean getIsSendStatus(Long applicationId, Long userId){
         Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndUserId(applicationId, userId);
         return offer.isPresent();
     }
@@ -226,7 +226,7 @@ public class DesignerService {
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
-                getIsSend(applicationId, userId)
+                getIsSendStatus(applicationId, userId)
         );
 
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
