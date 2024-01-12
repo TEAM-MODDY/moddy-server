@@ -45,6 +45,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -86,20 +88,20 @@ public class DesignerService {
     }
 
     @Transactional
-    public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
+    public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request, MultipartFile profileImg) {
 
-        String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
+        String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
         String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
 
         HairShop hairShop = HairShop.builder()
-                .name(request.hairShopName())
-                .address(request.hairShopAddress())
-                .detailAddress(request.hairShopAddressDetail())
+                .name(request.hairShop().name())
+                .address(request.hairShop().address())
+                .detailAddress(request.hairShop().detailAddress())
                 .build();
         Portfolio portfolio = Portfolio.builder()
-                .instagramUrl(request.instagramUrl())
-                .naverPlaceUrl(request.naverPlaceUrl())
+                .instagramUrl(request.portfolio().instagramUrl())
+                .naverPlaceUrl(request.portfolio().naverPlaceUrl())
                 .build();
         Designer designer = Designer.builder()
                 .hairShop(hairShop)
