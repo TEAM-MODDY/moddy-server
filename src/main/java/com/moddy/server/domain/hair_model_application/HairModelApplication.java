@@ -40,7 +40,4 @@ public class HairModelApplication extends BaseTimeEntity {
     @NotNull
     private String applicationCaptureUrl;
 
-    @NotNull
-    private Boolean isSend;
-
 }
