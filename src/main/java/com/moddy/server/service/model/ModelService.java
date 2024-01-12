@@ -5,6 +5,7 @@ import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
+import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.response.*;
@@ -12,13 +13,19 @@ import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.designer.repository.DesignerJpaRepository;
+import com.moddy.server.domain.hair_model_application.HairLength;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
+import com.moddy.server.domain.hair_service_record.HairServiceRecord;
+import com.moddy.server.domain.hair_service_record.ServiceRecord;
+import com.moddy.server.domain.hair_service_record.ServiceRecordTerm;
+import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
+import com.moddy.server.domain.prefer_hair_style.HairStyle;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
 import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
@@ -32,8 +39,10 @@ import com.moddy.server.domain.user.Gender;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
+import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -59,9 +68,10 @@ public class ModelService {
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
     private final RegionJpaRepository regionJpaRepository;
+    private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
     private final KakaoSocialService kakaoSocialService;
     private final AuthService authService;
-    private final JwtService jwtService;
+    private final S3Service s3Service;
 
     private final String DEFAULT_PROFILE_IMG_URL = "";
 
@@ -208,7 +218,6 @@ public class ModelService {
                 application.getApplicationCaptureUrl(),
                 designer.getKakaoOpenChatUrl(),
                 designerInfoOpenChatResponse
-
         );
 
         return openChatResponse;
@@ -247,6 +256,43 @@ public class ModelService {
         });
 
         return authService.createUserToken(model.getId().toString());
+    }
+
+    @Transactional
+    public void createModelApplication(Long userId, ModelApplicationRequest request){
+
+        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
+        String modelImgUrl = s3Service.uploadProfileImage(request.modelImgUrl(), model.getRole());
+        String applicationCaptureUmgUrl = s3Service.uploadApplicationImage(request.applicationCaptureImgUrl());
+
+        HairModelApplication hairModelApplication = HairModelApplication.builder()
+                .user(model)
+                .hairLength(HairLength.findByHairLength(request.hairLength()))
+                .hairDetail(request.hairDetail())
+                .modelImgUrl(modelImgUrl)
+                .instagramId(request.instagramId())
+                .applicationCaptureUrl(applicationCaptureUmgUrl)
+                .build();
+
+        hairModelApplicationJpaRepository.save(hairModelApplication);
+
+        request.preferHairStyles().stream().forEach(hairStyle -> {
+            PreferHairStyle preferHairStyle = PreferHairStyle.builder()
+                    .hairModelApplication(hairModelApplication)
+                    .hairStyle(HairStyle.findByHairStyle(hairStyle))
+                    .build();
+            preferHairStyleJpaRepository.save(preferHairStyle);
+        });
+
+        request.getHairServiceRecords().stream().forEach(modelHairServiceRecord -> {
+            HairServiceRecord hairServiceRecord = HairServiceRecord.builder()
+                    .hairModelApplication(hairModelApplication)
+                    .serviceRecord(ServiceRecord.findByServiceRecord(modelHairServiceRecord.hairService()))
+                    .serviceRecordTerm(ServiceRecordTerm.findByServiceRecord(modelHairServiceRecord.hairServiceTerm()))
+                    .build();
+            hairServiceRecordJpaRepository.save(hairServiceRecord);
+        });
+
     }
 
 }

@@ -22,7 +22,8 @@ public enum SuccessCode {
     SEND_VERIFICATION_CODE_SUCCESS(HttpStatus.OK, "전화번호 인증 요청 성공입니다."),
     FIND_REGION_LIST_SUCCESS(HttpStatus.OK, "희망 지역 리스트 조회 성공입니다."),
     VERIFICATION_CODE_MATCH_SUCCESS(HttpStatus.OK, "전화번호 인증 성공입니다."),
-    LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공입니다.");
+    LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공입니다."),
+    CREATE_MODEL_APPLICATION_SUCCESS(HttpStatus.OK, "모델 지원서 생성 성공입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

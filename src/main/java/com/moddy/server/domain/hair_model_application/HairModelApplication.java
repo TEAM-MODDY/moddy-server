@@ -4,10 +4,16 @@ import com.moddy.server.domain.BaseTimeEntity;
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public class HairModelApplication extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

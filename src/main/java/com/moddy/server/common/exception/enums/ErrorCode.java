@@ -15,6 +15,10 @@ public enum ErrorCode {
     INVALID_KAKAO_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 카카오 코드를 입력했습니다."),
     NOT_MATCH_VERIFICATION_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
     EXPIRE_VERIFICATION_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "만료된 인증 코드입니다."),
+    INVALID_HAIR_LENGTH_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 머리기장을 입력했습니다."),
+    INVALID_HAIR_SERVICE_RECORD_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 헤어시술을 입력했습니다."),
+    INVALID_HAIR_SERVICE_RECORD_TERM_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 헤어시술 이력기간을 입력했습니다."),
+    INVALID_HAIR_STYLE_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 헤어스타일을 입력했습니다."),
 
     // 401
     TOKEN_NOT_CONTAINED_EXCEPTION(HttpStatus.UNAUTHORIZED, "Access Token이 필요합니다."),
