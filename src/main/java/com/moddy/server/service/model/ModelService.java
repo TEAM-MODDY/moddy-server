@@ -181,8 +181,7 @@ public class ModelService {
         return  styleDetailResponse;
     }
 
-    @Transactional
-    public void handleOfferClickStatus(HairServiceOffer hairServiceOffer){
+    private void handleOfferClickStatus(HairServiceOffer hairServiceOffer){
 
         if(!hairServiceOffer.getIsClicked()){
             hairServiceOffer.updateClickStatus();
