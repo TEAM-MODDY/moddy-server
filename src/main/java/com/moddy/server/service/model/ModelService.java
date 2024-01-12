@@ -32,6 +32,7 @@ import com.moddy.server.domain.user.Gender;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
+import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -61,10 +62,10 @@ public class ModelService {
     private final RegionJpaRepository regionJpaRepository;
     private final KakaoSocialService kakaoSocialService;
     private final AuthService authService;
+    private final S3Service s3Service;
     private final JwtService jwtService;
 
     private final String DEFAULT_PROFILE_IMG_URL = "";
-
 
 
     private Page<HairServiceOffer> findOffers(Long userId, int page, int size){
@@ -233,7 +234,7 @@ public class ModelService {
                 .gender(request.gender())
                 .phoneNumber(request.phoneNumber())
                 .isMarketingAgree(request.isMarketingAgree())
-                .profileImgUrl(DEFAULT_PROFILE_IMG_URL)
+                .profileImgUrl(s3Service.getDefaultProfileImageUrl())
                 .kakaoId(kakaoId)
                 .role(Role.MODEL)
                 .build();

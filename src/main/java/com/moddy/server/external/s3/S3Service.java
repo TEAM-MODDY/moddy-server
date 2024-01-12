@@ -18,9 +18,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Service {
     private final static String APPLICATION_PATH = "APPLICATION";
+    private final static String MODEL_PROFILE_PATH = "HAIR_MODEL_PROFILE";
+    private final static String MODEL_PROFILE_IMAGE_NAME = "/model_default_profile.png";
     private final AmazonS3 amazonS3;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
 
     public String uploadProfileImage(MultipartFile multipartFile, Role role) {
         return uploadImage(multipartFile, role.name());
@@ -28,6 +31,10 @@ public class S3Service {
 
     public String uploadApplicationImage(MultipartFile multipartFile) {
         return uploadImage(multipartFile, APPLICATION_PATH);
+    }
+
+    public String getDefaultProfileImageUrl(){
+        return amazonS3.getUrl(bucket, MODEL_PROFILE_PATH + MODEL_PROFILE_IMAGE_NAME).toString();
     }
 
     private String uploadImage(MultipartFile multipartFile, String path) {
