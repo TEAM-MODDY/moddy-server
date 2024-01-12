@@ -145,6 +145,7 @@ public class AuthController {
     @Operation(summary = "로그아웃 API", description = "로그아웃 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공입니다."),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 유저입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
