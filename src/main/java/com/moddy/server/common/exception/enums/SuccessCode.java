@@ -20,7 +20,8 @@ public enum SuccessCode {
     OFFER_ACCEPT_SUCCESS(HttpStatus.OK, "제안서 승락 성공입니다."),
     POST_OFFER_SUCCESS(HttpStatus.OK, "제안서 작성 성공입니다."),
     SEND_VERIFICATION_CODE_SUCCESS(HttpStatus.OK, "전화번호 인증 요청 성공입니다."),
-    FIND_REGION_LIST_SUCCESS(HttpStatus.OK, "희망 지역 리스트 조회 성공입니다.");
+    FIND_REGION_LIST_SUCCESS(HttpStatus.OK, "희망 지역 리스트 조회 성공입니다."),
+    VERIFICATION_CODE_MATCH_SUCCESS(HttpStatus.OK, "전화번호 인증 성공입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

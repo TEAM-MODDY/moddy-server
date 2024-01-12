@@ -1,6 +1,7 @@
 package com.moddy.server.service.auth;
 
 import com.moddy.server.common.dto.TokenPair;
+import com.moddy.server.common.exception.model.BadRequestException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.common.util.SmsUtil;
 import com.moddy.server.common.util.VerificationCodeGenerator;
@@ -18,10 +19,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.moddy.server.common.exception.enums.ErrorCode.EXPIRE_VERIFICATION_CODE_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_VERIFICATION_CODE_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.NOT_MATCH_VERIFICATION_CODE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.USER_NOT_FOUND_EXCEPTION;
 
 @Service
@@ -78,5 +83,21 @@ public class AuthService {
                 .verificationCode(verificationCode)
                 .build();
         userVerificationRepository.save(newUserVerification);
+    }
+
+    @Transactional
+    public void verifyCode(String phoneNumber, String verificationCode) {
+        UserVerification userVerification = userVerificationRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_VERIFICATION_CODE_EXCEPTION));
+
+        if (userVerification.isExpireCode(LocalDateTime.now())) {
+            userVerificationRepository.deleteByPhoneNumber(phoneNumber);
+            throw new BadRequestException(EXPIRE_VERIFICATION_CODE_EXCEPTION);
+        }
+
+        if (!verificationCode.equals(userVerification.getVerificationCode()))
+            throw new BadRequestException(NOT_MATCH_VERIFICATION_CODE_EXCEPTION);
+
+        userVerificationRepository.deleteByPhoneNumber(phoneNumber);
     }
 }
