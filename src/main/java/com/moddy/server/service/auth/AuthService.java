@@ -100,4 +100,8 @@ public class AuthService {
 
         userVerificationRepository.deleteByPhoneNumber(phoneNumber);
     }
+
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+    }
 }
