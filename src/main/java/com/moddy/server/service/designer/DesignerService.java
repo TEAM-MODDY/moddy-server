@@ -95,13 +95,13 @@ public class DesignerService {
         String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
 
         HairShop hairShop = HairShop.builder()
-                .name(request.hairShop().getName())
-                .address(request.hairShop().getAddress())
-                .detailAddress(request.hairShop().getDetailAddress())
+                .name(request.hairShop().name())
+                .address(request.hairShop().address())
+                .detailAddress(request.hairShop().detailAddress())
                 .build();
         Portfolio portfolio = Portfolio.builder()
-                .instagramUrl(request.portfolio().getInstagramUrl())
-                .naverPlaceUrl(request.portfolio().getNaverPlaceUrl())
+                .instagramUrl(request.portfolio().instagramUrl())
+                .naverPlaceUrl(request.portfolio().naverPlaceUrl())
                 .build();
         Designer designer = Designer.builder()
                 .hairShop(hairShop)

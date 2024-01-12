@@ -18,7 +18,7 @@ public record DesignerCreateRequest(
         PortfolioDTO portfolio,
         String introduction,
         String kakaoOpenChatUrl,
-        List <DayOfWeek> dayOffs
+        List<DayOfWeek> dayOffs
 
 ) {
 }

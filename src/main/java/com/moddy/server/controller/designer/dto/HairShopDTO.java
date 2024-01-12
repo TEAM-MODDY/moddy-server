@@ -3,15 +3,12 @@ package com.moddy.server.controller.designer.dto;
 import lombok.*;
 
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@ToString
-public class HairShopDTO {
+public record HairShopDTO(
+        String name,
+        String address,
+        String detailAddress
+)
+{
 
-    private String name;
 
-    private String address;
-
-    private String detailAddress;
 }
