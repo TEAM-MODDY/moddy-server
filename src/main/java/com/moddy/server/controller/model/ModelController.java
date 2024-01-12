@@ -32,8 +32,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ModelController {
 
-    private static final String ORIGIN = "origin";
-
     private final ModelService modelService;
 
     @Operation(summary = "[JWT] 모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
