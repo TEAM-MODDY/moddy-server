@@ -1,14 +1,19 @@
 package com.moddy.server.controller.auth;
 
 import com.moddy.server.common.dto.ErrorResponse;
+import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
+import com.moddy.server.common.util.SmsUtil;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
-import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
+import com.moddy.server.config.resolver.user.UserId;
+import com.moddy.server.controller.auth.dto.request.PhoneNumberRequestDto;
+import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
-import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
+import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.service.auth.AuthService;
 import com.moddy.server.service.designer.DesignerService;
 import com.moddy.server.service.model.ModelService;
@@ -28,7 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.moddy.server.common.exception.enums.SuccessCode.LOGOUT_SUCCESS;
+import static com.moddy.server.common.exception.enums.SuccessCode.SEND_VERIFICATION_CODE_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_SUCCESS;
+import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_CODE_MATCH_SUCCESS;
 
 @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
 @RestController
@@ -39,6 +47,7 @@ public class AuthController {
     private final AuthService authService;
     private final DesignerService designerService;
     private final ModelService modelService;
+    private final SmsUtil smsUtil;
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
     @ApiResponses(value = {
@@ -99,4 +108,48 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(request.getHeader(ORIGIN), kakaoCode, modelCreateRequest));
     }
 
+    @Operation(summary = "[SMS 기능 미완성] 인증번호 요청 API", description = "인증번호 요청 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "전화번호 인증 요청 성공입니다."),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/phoneNumber")
+    public SuccessNonDataResponse sendVerificationCodeMessageToUser(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) {
+        authService.sendVerificationCodeMessageToUser(phoneNumberRequestDto.phoneNumber());
+        return SuccessNonDataResponse.success(SEND_VERIFICATION_CODE_SUCCESS);
+    }
+
+    @Operation(summary = "전화번호 인증 API", description = "전화번호 인증 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "전화번호 인증 성공입니다."),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "1. 인증번호가 일치하지 않습니다."
+                            + "2. 만료된 인증 코드입니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "인증 코드가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/phoneNumber/verify")
+    public SuccessNonDataResponse verifyCode(@RequestBody VerifyCodeRequestDto verifyCodeRequestDto) {
+        authService.verifyCode(verifyCodeRequestDto.phoneNumber(), verifyCodeRequestDto.verifyCode());
+        return SuccessNonDataResponse.success(VERIFICATION_CODE_MATCH_SUCCESS);
+    }
+
+    @Operation(summary = "로그아웃 API", description = "로그아웃 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공입니다."),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 유저입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @SecurityRequirement(name = "JWT Auth")
+    @PostMapping("/logout")
+    public SuccessNonDataResponse logout(@UserId Long userId) {
+        authService.logout(userId);
+        return SuccessNonDataResponse.success(LOGOUT_SUCCESS);
+    }
 }

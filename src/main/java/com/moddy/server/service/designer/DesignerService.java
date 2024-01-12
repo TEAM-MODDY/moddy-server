@@ -49,6 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,6 +80,11 @@ public class DesignerService {
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
         return applicationPage;
+    }
+
+    private Boolean getIsSendStatus(Long applicationId, Long userId){
+        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndUserId(applicationId, userId);
+        return offer.isPresent();
     }
 
     @Transactional
@@ -201,7 +207,7 @@ public class DesignerService {
         List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
         hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
 
-        List <PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(userId);
+        List <PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(model.getId());
 
         List<String> regionList = preferRegions.stream().map(preferregion ->{
              return preferregion.getRegion().getName();
@@ -222,7 +228,7 @@ public class DesignerService {
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
-                hairModelApplication.getIsSend()
+                getIsSendStatus(applicationId, userId)
         );
 
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
