@@ -45,4 +45,6 @@ public class HairServiceOffer extends BaseTimeEntity {
         this.isModelAgree = isModelAgree;
     }
 
+    public void updateClickStatus() { this.isClicked = true; }
+
 }

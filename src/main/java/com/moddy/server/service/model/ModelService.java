@@ -138,9 +138,8 @@ public class ModelService {
         );
     }
 
-    private DesignerInfoResponse getDesignerInfoResponseList(Long userId, Long offerId){
+    private DesignerInfoResponse getDesignerInfoResponseList(HairServiceOffer hairServiceOffer, Long userId, Long offerId){
 
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
         Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
         List<DayOff> dayOffList = dayOffJpaRepository.findAllByDesignerId(designer.getId());
@@ -165,10 +164,9 @@ public class ModelService {
 
     }
 
-    private StyleDetailResponse getStyleDetailResponse(Long userId, Long offerId) {
+    private StyleDetailResponse getStyleDetailResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId) {
 
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
-        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(hairServiceOffer.getHairModelApplication().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
         List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(hairServiceOffer.getHairModelApplication().getId());
         List<String> hairStyleList = preferHairStyles.stream().map(hairStyle -> {
@@ -193,10 +191,21 @@ public class ModelService {
         return  styleDetailResponse;
     }
 
+    private void handleOfferClickStatus(HairServiceOffer hairServiceOffer){
+
+        if(!hairServiceOffer.getIsClicked()){
+            hairServiceOffer.updateClickStatus();
+        }
+    }
+
+    @Transactional
     public DetailOfferResponse getModelDetailOfferInfo(Long userId, Long offerId){
 
-        DesignerInfoResponse designerInfoResponseList = getDesignerInfoResponseList(userId, offerId);
-        StyleDetailResponse styleDetailResponse = getStyleDetailResponse(userId, offerId);
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
+
+        DesignerInfoResponse designerInfoResponseList = getDesignerInfoResponseList(hairServiceOffer, userId, offerId);
+        StyleDetailResponse styleDetailResponse = getStyleDetailResponse(hairServiceOffer, userId, offerId);
+        handleOfferClickStatus(hairServiceOffer);
 
         return new DetailOfferResponse(designerInfoResponseList, styleDetailResponse);
     }
