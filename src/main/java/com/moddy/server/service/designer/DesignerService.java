@@ -45,8 +45,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,21 +82,26 @@ public class DesignerService {
         return applicationPage;
     }
 
-    @Transactional
-    public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request) {
+    private Boolean getIsSendStatus(Long applicationId, Long userId){
+        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndUserId(applicationId, userId);
+        return offer.isPresent();
+    }
 
-        String profileImgUrl = s3Service.uploadProfileImage(request.profileImg(), Role.HAIR_DESIGNER);
+    @Transactional
+    public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request, MultipartFile profileImg) {
+
+        String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
         String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
 
         HairShop hairShop = HairShop.builder()
-                .name(request.hairShopName())
-                .address(request.hairShopAddress())
-                .detailAddress(request.hairShopAddressDetail())
+                .name(request.hairShop().name())
+                .address(request.hairShop().address())
+                .detailAddress(request.hairShop().detailAddress())
                 .build();
         Portfolio portfolio = Portfolio.builder()
-                .instagramUrl(request.instagramUrl())
-                .naverPlaceUrl(request.naverPlaceUrl())
+                .instagramUrl(request.portfolio().instagramUrl())
+                .naverPlaceUrl(request.portfolio().naverPlaceUrl())
                 .build();
         Designer designer = Designer.builder()
                 .hairShop(hairShop)
@@ -199,7 +207,7 @@ public class DesignerService {
         List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
         hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
 
-        List <PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(userId);
+        List <PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(model.getId());
 
         List<String> regionList = preferRegions.stream().map(preferregion ->{
              return preferregion.getRegion().getName();
@@ -220,7 +228,7 @@ public class DesignerService {
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
-                hairModelApplication.getIsSend()
+                getIsSendStatus(applicationId, userId)
         );
 
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(

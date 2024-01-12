@@ -5,6 +5,9 @@ import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
+import com.moddy.server.controller.model.dto.requestEditor.ListPropertyEditor;
+import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
+import com.moddy.server.controller.model.dto.request.ModelHairServiceRequest;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
@@ -18,7 +21,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @Tag(name = "ModelController")
@@ -87,6 +93,27 @@ public class ModelController {
         modelService.updateOfferAgreeStatus(offerId);
         return SuccessNonDataResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
 
+    }
+
+    @Operation(summary = "[JWT] 모델 지원서 작성", description = "모델 지원서 작성 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),
+            @ApiResponse(responseCode = "400", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @SecurityRequirement(name = "JWT Auth")
+    @PostMapping(value = "/model/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public SuccessNonDataResponse submitModelApplication(
+            @Parameter(hidden = true) @UserId Long userId,
+            @ModelAttribute ModelApplicationRequest request
+    ) {
+        modelService.createModelApplication(userId, request);
+        return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(List.class, "hairServiceRecords", new ListPropertyEditor(ModelHairServiceRequest.class));
     }
 
 }
