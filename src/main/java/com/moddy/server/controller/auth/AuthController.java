@@ -66,7 +66,7 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
     }
 
-    @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 뷰", description = "디자이너 회원가입 조회 API입니다.")
+    @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -76,10 +76,10 @@ public class AuthController {
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @KakaoCode String kakaoCode,
             @RequestPart MultipartFile profileImg,
-            @RequestPart DesignerCreateRequest request,
+            @RequestPart DesignerCreateRequest designerInfo,
             @Parameter(hidden = true) HttpServletRequest servletRequest
     ) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, request, profileImg));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, designerInfo, profileImg));
     }
 
     @Operation(summary = "[KAKAO CODE] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
