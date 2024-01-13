@@ -1,44 +1,30 @@
-# Moddy
-> 포트폴리오 작업을 위해 모델이 필요한 헤어디자이너와 돈을 들이지 않고도 퀄리티 높은 서비스를 받고싶은 일반인 모델을 연결하는 플랫폼 서비스 
+<img width="1920" alt="노션 커버" src="https://github.com/TEAM-MODDY/moddy-server/assets/62981652/15991ee4-dcc0-4b53-86c7-99e08aed951b">
 
-<br>
-
-## 🧞‍♂️ Team
-
-|    **✨[강원용](https://github.com/KWY0218)**    |   **✨[안현주](https://github.com/hellozo0)**   |   **✨[박경린](https://github.com/pkl0912)**   |
-|:--------------------------------------------:|:------------------------------------------:|:------------------------------------------:|
-|             Server Developer                 |               Server Developer                   |               Server Developer                   |
+![팀원 소개](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/47d2b907-8166-47a5-adc1-b0a0079b5474)
 
 
-<br>
-
-## 🔨 Tech Stack 
-  <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"/></a>
-  <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/></a>
-  <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat-square&logo=SpringBoot&logoColor=white"/></a>
-  <br>
-  <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/></a>
-  <img src="https://img.shields.io/badge/AWS-232F3E?style=flat-square&logo=AWS&logoColor=orange"/></a>
-  <img src="https://img.shields.io/badge/AWS_RDS-527FFF?style=flat-square&logo=AWSRDS&logoColor=orange"/></a>
-  <img src="https://img.shields.io/badge/AWS_EC2-FF9900?style=flat-square&logo=AWSLEC2&logoColor=orange"/></a>
-	<br>	
-	<img src="https://img.shields.io/badge/NGINX-%23009639.svg?style=flat-square&logo=NGINX&logoColor=white"></a>
-	<img src="https://img.shields.io/badge/GitHub_Actions-%232671E5.svg?style=flat-square&logo=GitHub_Actions&logoColor=white"></a>
-	<img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"> </a>
-	<br>	
-	<img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white"></a>
-	<img src="https://img.shields.io/badge/Amazon_S3-569A31?style=flat-square&logo=Amazon_S3&logoColor=white"> </a>
-
- <br>
-
-## 🔨 Project Architecture
-
-<img width="705" alt="Architecture" src="https://github.com/TEAM-MODDY/moddy-server/assets/62981652/eb8b9cea-4fa3-44ea-8c95-739d7fb06d4c">
+![1](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/5d4efa4b-1d8b-4325-b492-04cac162a898)
+![기술 스택 ](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/0bb25516-1ba9-4fe1-bbe8-610052fb6d4a)
 
 
-<br>
 
-## 💫 Code Convention & 🌱 Commit Convention & 🌳 Branch
-[링크🔗](https://sparkle-uni.notion.site/12205441884c413c8cdd5404890acc8b?pvs=4)
+![2](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/990835e7-84e0-41fb-b839-bc049933c677)
+![프로젝트 아키텍처](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/2e72c546-f9dc-43dd-ba98-181fc408e3a4)
 
-<br>
+
+![3](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/49ce2aaf-ae7b-403c-a849-5a938413185f)
+![ERD](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/00d1072d-5fef-4ef2-a771-698ee8503a1e)
+
+
+![123](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/9caba146-2b0f-477f-8a24-64babd96a97d)
+![폴더 구조](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/74fd4347-5ee3-430b-babf-f7377508e943)
+
+
+![5](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/a313f256-f00e-49d9-822a-33d405012ed9)
+![브랜치 전략](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/3616c42e-fabc-4f7e-b86e-355e7018a005)
+![커밋 컨벤션](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/d7a7901d-74fd-4ea6-8012-8b830485d541)
+![풀리케 컨벤션](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/a23d511f-485e-4f22-9af5-fb655516fe53)
+
+
+![6](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/d0cf06b2-aab8-4149-89a1-87b00f99db81)
+![코드 컨벤션](https://github.com/TEAM-MODDY/moddy-server/assets/62981652/e50e3f70-f99b-4ef5-a5a2-0fda94b21dfc)
