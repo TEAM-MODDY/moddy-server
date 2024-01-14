@@ -91,21 +91,21 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, designerInfo, profileImg));
     }
 
-    @Operation(summary = "[KAKAO CODE] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
+    @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "인증오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping(value = "/signup/model")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
-            @Parameter(hidden = true) @KakaoCode String kakaoCode,
+            @Parameter(hidden = true) @UserId String userId,
             @Parameter(hidden = true) HttpServletRequest request,
             @RequestBody ModelCreateRequest modelCreateRequest
     ) {
-        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(request.getHeader(ORIGIN), kakaoCode, modelCreateRequest));
+        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(request.getHeader(ORIGIN), userId, modelCreateRequest));
     }
 
     @Operation(summary = "[SMS 기능 미완성] 인증번호 요청 API", description = "인증번호 요청 API입니다.")
