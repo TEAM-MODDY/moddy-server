@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PreferRegionJpaRepository extends JpaRepository<PreferRegion, Long> {
     List<PreferRegion> findAllByUserId(Long userId);
-
+    void deleteAllByUserId(Long userId);
 }
