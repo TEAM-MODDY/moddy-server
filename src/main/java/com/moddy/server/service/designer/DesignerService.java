@@ -90,7 +90,14 @@ public class DesignerService {
         String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+
+        user.setGender(request.gender());
+        user.setName(request.name());
+        user.setPhoneNumber(request.phoneNumber());
+        user.setIsMarketingAgree(request.isMarketingAgree());
+        user.setProfileImgUrl(profileImgUrl);
+        user.setRole(Role.HAIR_DESIGNER);
+
         HairShop hairShop = HairShop.builder()
                 .name(request.hairShop().name())
                 .address(request.hairShop().address())
@@ -100,17 +107,21 @@ public class DesignerService {
                 .instagramUrl(request.portfolio().instagramUrl())
                 .naverPlaceUrl(request.portfolio().naverPlaceUrl())
                 .build();
-
-        designer.setHairShop(hairShop);
-        designer.setPortfolio(portfolio);
-        designer.setIntroduction(request.introduction());
-        designer.setKakaoOpenChatUrl(request.kakaoOpenChatUrl());
-        user.setGender(request.gender());
-        user.setName(request.name());
-        user.setPhoneNumber(request.phoneNumber());
-        user.setIsMarketingAgree(request.isMarketingAgree());
-        user.setProfileImgUrl(profileImgUrl);
-        user.setRole(Role.HAIR_DESIGNER);
+        Designer designer = Designer.builder()
+                .id(user.getId())
+                .hairShop(hairShop)
+                .portfolio(portfolio)
+                .introduction(request.introduction())
+                .kakaoOpenChatUrl(request.kakaoOpenChatUrl())
+                .kakaoId(user.getKakaoId())
+                .name(request.name())
+                .gender(request.gender())
+                .phoneNumber(request.phoneNumber())
+                .isMarketingAgree(request.isMarketingAgree())
+                .profileImgUrl(profileImgUrl)
+                .role(Role.HAIR_DESIGNER)
+                .build();
+        designerJpaRepository.save(designer);
 
         request.dayOffs().stream()
                 .forEach(d -> {

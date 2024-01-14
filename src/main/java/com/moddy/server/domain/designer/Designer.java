@@ -1,14 +1,12 @@
 package com.moddy.server.domain.designer;
 
-import com.moddy.server.domain.user.Gender;
-import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
 
 @Entity
 @Getter
