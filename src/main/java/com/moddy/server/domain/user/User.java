@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
@@ -24,26 +25,19 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String kakaoId;
 
-    @NotNull
     private String name;
 
     @Enumerated(value = EnumType.STRING)
-    @NotNull
     private Gender gender;
 
-    @NotNull
     private String phoneNumber;
 
-    @NotNull
     private Boolean isMarketingAgree;
 
-    @NotNull
     private String profileImgUrl;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
-
 
     public Integer getAge(String year){
         LocalDateTime currentDateTime = LocalDateTime.now();
