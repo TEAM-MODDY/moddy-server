@@ -101,11 +101,10 @@ public class AuthController {
     @PostMapping(value = "/signup/model")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
-            @Parameter(hidden = true) @UserId String userId,
-            @Parameter(hidden = true) HttpServletRequest request,
+            @Parameter(hidden = true) @UserId Long userId,
             @RequestBody ModelCreateRequest modelCreateRequest
     ) {
-        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(request.getHeader(ORIGIN), userId, modelCreateRequest));
+        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
     @Operation(summary = "[SMS 기능 미완성] 인증번호 요청 API", description = "인증번호 요청 API입니다.")
