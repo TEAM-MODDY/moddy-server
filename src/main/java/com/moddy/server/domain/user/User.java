@@ -1,10 +1,18 @@
 package com.moddy.server.domain.user;
 
 import com.moddy.server.domain.BaseTimeEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -24,30 +32,23 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String kakaoId;
 
-    @NotNull
     private String name;
 
     @Enumerated(value = EnumType.STRING)
-    @NotNull
     private Gender gender;
 
-    @NotNull
     private String phoneNumber;
 
-    @NotNull
     private Boolean isMarketingAgree;
 
-    @NotNull
     private String profileImgUrl;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
-    public Integer getAge(String year){
+    public Integer getAge(String year) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1 ;
+        Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1;
         return age;
     }
 
