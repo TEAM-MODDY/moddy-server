@@ -43,6 +43,39 @@ public class UserService {
         return new UserDetailResponseDto(user.getId(), user.getName(), user.getName(), user.getRole());
     }
 
+    private void deleteModelInfos(Long userId) {
+        deleteModelHairServiceOfferInfos(userId);
+        deleteModelApplications(userId);
+        deleteModelPreferRegions(userId);
+        deleteModelInfo(userId);
+    }
+
+    private void deleteModelHairServiceOfferInfos(Long userId) {
+        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByUserId(userId);
+        hairServiceOffers.forEach(hairServiceOffer -> {
+            preferOfferConditionJpaRepository.deleteAllByHairServiceOffer(hairServiceOffer);
+            hairServiceOfferJpaRepository.deleteById(hairServiceOffer.getId());
+        });
+    }
+
+    private void deleteModelApplications(Long userId) {
+        List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByUserId(userId);
+        hairModelApplications.forEach(hairModelApplication -> {
+            preferHairStyleJpaRepository.deleteAllByHairModelApplication(hairModelApplication);
+            hairServiceRecordJpaRepository.deleteAllByHairModelApplication(hairModelApplication);
+            hairModelApplicationJpaRepository.deleteById(hairModelApplication.getId());
+        });
+    }
+
+    private void deleteModelPreferRegions(Long userId) {
+        preferRegionJpaRepository.deleteAllByUserId(userId);
+    }
+
+    private void deleteModelInfo(Long userId) {
+        modelJpaRepository.deleteById(userId);
+        userRepository.deleteById(userId);
+    }
+
     private void deleteDesignerInfos(Long userId) {
         deleteDesignerHairServiceOfferInfos(userId);
         deleteDesignerDayOffs(userId);
@@ -66,4 +99,10 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    @Transactional
+    public void withdraw(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+        if (user.getRole() == MODEL) deleteModelInfos(userId);
+        else deleteDesignerInfos(userId);
+    }
 }
