@@ -246,14 +246,22 @@ public class ModelService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
+        user.setName(request.name());
+        user.setGender(request.gender());
+        user.setPhoneNumber(request.phoneNumber());
+        user.setIsMarketingAgree(request.isMarketingAgree());
+        user.setProfileImgUrl(s3Service.getDefaultProfileImageUrl());
+        user.setRole(Role.MODEL);
+
         Model model = Model.builder()
+                .id(user.getId())
                 .kakaoId(user.getKakaoId())
-                .name(request.name())
-                .gender(request.gender())
-                .phoneNumber(request.phoneNumber())
-                .isMarketingAgree(request.isMarketingAgree())
-                .profileImgUrl(s3Service.getDefaultProfileImageUrl())
-                .role(Role.MODEL)
+                .name(user.getName())
+                .gender(user.getGender())
+                .phoneNumber(user.getPhoneNumber())
+                .isMarketingAgree(user.getIsMarketingAgree())
+                .profileImgUrl(user.getProfileImgUrl())
+                .role(user.getRole())
                 .year(request.year()).build();
 
         modelJpaRepository.save(model);
