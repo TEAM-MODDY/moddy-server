@@ -3,6 +3,7 @@ package com.moddy.server.service.auth;
 import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.model.BadRequestException;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.common.exception.model.NotFoundUserException;
 import com.moddy.server.common.util.SmsUtil;
 import com.moddy.server.common.util.VerificationCodeGenerator;
 import com.moddy.server.config.jwt.JwtService;
@@ -41,10 +42,21 @@ public class AuthService {
 
     public LoginResponseDto login(final String baseUrl, final String kakaoCode) {
         String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, kakaoCode);
-        User user = userRepository.findByKakaoId(kakaoId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
-        TokenPair tokenPair = jwtService.generateTokenPair(String.valueOf(user.getId()));
+        Optional<User> user = userRepository.findByKakaoId(kakaoId);
+        if (user.isEmpty()) {
+            User newUser = User.builder()
+                    .kakaoId(kakaoId)
+                    .build();
+            userRepository.save(newUser);
 
-        return new LoginResponseDto(tokenPair.accessToken(), tokenPair.refreshToken(), user.getRole().name());
+            TokenPair tokenPair = jwtService.generateTokenPair(String.valueOf(newUser.getId()));
+            throw new NotFoundUserException(USER_NOT_FOUND_EXCEPTION, tokenPair);
+        } else if (user.get().getRole() == null) {
+            TokenPair tokenPair = jwtService.generateTokenPair(String.valueOf(user.get().getId()));
+            throw new NotFoundUserException(USER_NOT_FOUND_EXCEPTION, tokenPair);
+        }
+        TokenPair tokenPair = jwtService.generateTokenPair(String.valueOf(user.get().getId()));
+        return new LoginResponseDto(tokenPair.accessToken(), tokenPair.refreshToken(), user.get().getRole().name());
     }
 
     public List<RegionResponse> getRegionList() {

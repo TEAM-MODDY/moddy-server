@@ -1,9 +1,12 @@
 package com.moddy.server.common.exception;
 
+import com.moddy.server.common.dto.ErrorDataResponse;
 import com.moddy.server.common.dto.ErrorResponse;
+import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.model.BadRequestException;
 import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.common.exception.model.NotFoundUserException;
 import com.moddy.server.common.exception.model.UnAuthorizedException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +57,12 @@ public class GlobalControllerExceptionAdvice {
     @ExceptionHandler(NotFoundException.class)
     protected ErrorResponse handleNotFoundException(final NotFoundException e) {
         return ErrorResponse.error(e.getErrorCode());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundUserException.class)
+    protected ErrorDataResponse<TokenPair> handleNotFoundUserException(final NotFoundUserException e) {
+        return ErrorDataResponse.error(e.getErrorCode(), e.getTokenPair());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
