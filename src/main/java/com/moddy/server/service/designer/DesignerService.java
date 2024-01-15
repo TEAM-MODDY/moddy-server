@@ -73,16 +73,42 @@ public class DesignerService {
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
 
 
-    private Page<HairModelApplication> findApplications(int page, int size){
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
-        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
+    @Transactional
+    public DesignerMainResponse getDesignerMainInfo(Long userId, int page, int size){
+        User user = new User();
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
-        return applicationPage;
-    }
+        Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
+        long totalElements = applicationPage.getTotalElements();
 
-    private Boolean getIsSendStatus(Long applicationId, Long userId){
-        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndUserId(applicationId, userId);
-        return offer.isPresent();
+        List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
+
+            Model model = modelJpaRepository.findById(application.getUser().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
+
+            List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
+
+            List<String> top2hairStyles= preferHairStyle.stream().map( haireStyle -> {
+                    return haireStyle.getHairStyle().getValue();
+                }).collect(Collectors.toList());
+
+            HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
+                    application.getId(),
+                    model.getName(),
+                    user.getAge(model.getYear()),
+                    model.getProfileImgUrl(),
+                    model.getGender().getValue(),
+                    top2hairStyles
+            );
+            return applicationResponse;
+        }).collect(Collectors.toList());
+
+        return new DesignerMainResponse(
+                page,
+                size,
+                totalElements,
+                designer.getName(),
+                applicationResponsesList
+        );
     }
 
     @Transactional
@@ -117,40 +143,6 @@ public class DesignerService {
         return authService.createUserToken(designer.getId().toString());
     }
 
-    @Transactional
-    public DesignerMainResponse getDesignerMainView(Long userId, int page, int size){
-        User user = new User();
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
-
-        Page<HairModelApplication> applicationPage = findApplications(page, size);
-        long totalElements = applicationPage.getTotalElements();
-
-        List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
-
-            Model model = modelJpaRepository.findById(application.getUser().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
-
-            List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
-
-            List<HairStyle> top2hairStyles= preferHairStyle.stream().map(PreferHairStyle::getHairStyle).collect(Collectors.toList());
-            HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
-                    application.getId(),
-                    model.getName(),
-                    user.getAge(model.getYear()),
-                    model.getProfileImgUrl(),
-                    model.getGender().getValue(),
-                    top2hairStyles
-            );
-            return applicationResponse;
-        }).collect(Collectors.toList());
-
-        return new DesignerMainResponse(
-                page,
-                size,
-                totalElements,
-                designer.getName(),
-                applicationResponsesList
-        );
-    }
 
     @Transactional
     public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) {
@@ -231,6 +223,17 @@ public class DesignerService {
                 applicationInfoResponse,
                 modelInfoResponse
         );
+    }
 
+    private Page<HairModelApplication> findApplicationsByPaging(int page, int size){
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
+        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
+
+        return applicationPage;
+    }
+
+    private Boolean getIsSendStatus(Long applicationId, Long userId){
+        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndUserId(applicationId, userId);
+        return offer.isPresent();
     }
 }

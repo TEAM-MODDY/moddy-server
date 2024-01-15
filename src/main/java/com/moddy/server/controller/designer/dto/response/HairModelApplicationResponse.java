@@ -11,6 +11,6 @@ public record HairModelApplicationResponse(
         int age,
         String imgUrl,
         String gender,
-        List<HairStyle> preferHairStyles
+        List<String> preferHairStyles
 ) {
 }

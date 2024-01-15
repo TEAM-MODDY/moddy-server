@@ -61,7 +61,7 @@ public class ModelController {
     public SuccessResponse<DetailOfferResponse> getModelDetailOfferInfo(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId){
-        return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, modelService.getModelDetailOfferInfo(userId, offerId));
+        return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, modelService.getOfferDetail(userId, offerId));
     }
 
     @Operation(summary = "[JWT] 카카오톡 오픈채팅", description = "지원서 캡처 이미지 및 디자이너 정보 조회입니다")
@@ -102,12 +102,12 @@ public class ModelController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/model/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessNonDataResponse submitModelApplication(
             @Parameter(hidden = true) @UserId Long userId,
             @ModelAttribute ModelApplicationRequest request
     ) {
-        modelService.createModelApplication(userId, request);
+        modelService.postApplication(userId, request);
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
     }
 
