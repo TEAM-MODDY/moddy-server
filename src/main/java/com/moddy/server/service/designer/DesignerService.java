@@ -167,9 +167,8 @@ public class DesignerService {
     public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        Model model = modelJpaRepository.findById(hairModelApplication.getUser().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
         HairServiceOffer offer = HairServiceOffer.builder()
-                .user(model)
+                .user(hairModelApplication.getUser())
                 .hairModelApplication(hairModelApplication)
                 .designer(designer)
                 .offerDetail(request.offerDetail())
