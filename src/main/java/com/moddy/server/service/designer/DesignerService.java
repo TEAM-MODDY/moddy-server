@@ -108,22 +108,8 @@ public class DesignerService {
                 .instagramUrl(request.portfolio().instagramUrl())
                 .naverPlaceUrl(request.portfolio().naverPlaceUrl())
                 .build();
-        Designer designer = Designer.builder()
-                .id(user.getId())
-                .hairShop(hairShop)
-                .portfolio(portfolio)
-                .introduction(request.introduction())
-                .kakaoOpenChatUrl(request.kakaoOpenChatUrl())
-                .kakaoId(user.getKakaoId())
-                .name(request.name())
-                .gender(request.gender())
-                .phoneNumber(request.phoneNumber())
-                .isMarketingAgree(request.isMarketingAgree())
-                .profileImgUrl(profileImgUrl)
-                .role(Role.HAIR_DESIGNER)
-                .build();
-        designerJpaRepository.save(designer);
-
+        designerJpaRepository.designerRegister(user.getId(), hairShop.getAddress(), hairShop.getDetailAddress(), hairShop.getName(), portfolio.getInstagramUrl(), portfolio.getNaverPlaceUrl(), request.introduction(), request.kakaoOpenChatUrl());
+        Designer designer = designerJpaRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         request.dayOffs().stream()
                 .forEach(d -> {
                     DayOff dayOff = DayOff.builder()
