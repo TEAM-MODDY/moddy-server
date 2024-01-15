@@ -11,7 +11,7 @@ public record ModelMainResponse(
         int size,
         int total,
         ModelApplyStatus status,
-        String userName,
+        String name,
         List<OfferResponse> offers
 ) {
 
