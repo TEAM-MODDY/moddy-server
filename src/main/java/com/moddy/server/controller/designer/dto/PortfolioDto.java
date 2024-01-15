@@ -5,7 +5,7 @@ import lombok.*;
 
 
 @Builder
-public record PortfolioDTO(
+public record PortfolioDto(
         @Schema(example = "http://instagram")
         String instagramUrl,
         @Schema(example = "http://naver")

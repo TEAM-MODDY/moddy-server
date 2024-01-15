@@ -51,7 +51,7 @@ public class User extends BaseTimeEntity {
         return age;
     }
 
-    public void update( String name, Gender gender, String phoneNumber, Boolean isMarketingAgree, String profileImgUrl, Role role) {
+    public void update(String name, Gender gender, String phoneNumber, Boolean isMarketingAgree, String profileImgUrl, Role role) {
         this.name = name;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
@@ -59,5 +59,4 @@ public class User extends BaseTimeEntity {
         this.profileImgUrl = profileImgUrl;
         this.role = role;
     }
-
 }

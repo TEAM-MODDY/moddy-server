@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @Builder
-public record HairShopDTO(
+public record HairShopDto(
         @Schema(example = "juno")
         String name,
         @Schema(example = "서울시 강남구")
