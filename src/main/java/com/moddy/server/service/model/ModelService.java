@@ -122,22 +122,13 @@ public class ModelService {
     }
 
     @Transactional
-    public UserCreateResponse createModel(String baseUrl, String code, ModelCreateRequest request) {
+    public UserCreateResponse createModel(long userId, ModelCreateRequest request) {
 
-        String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
+        user.update(request.name(),request.gender(), request.phoneNumber(), request.isMarketingAgree(), s3Service.getDefaultProfileImageUrl(), Role.MODEL);
 
-        Model model = Model.builder()
-                .name(request.name())
-                .year(request.year())
-                .gender(request.gender())
-                .phoneNumber(request.phoneNumber())
-                .isMarketingAgree(request.isMarketingAgree())
-                .profileImgUrl(s3Service.getDefaultProfileImageUrl())
-                .kakaoId(kakaoId)
-                .role(Role.MODEL)
-                .build();
-
-        modelJpaRepository.save(model);
+        modelJpaRepository.modelRegister(userId, request.year());
+        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
 
         request.preferRegions().stream().forEach(preferRegionId -> {
             Region region = regionJpaRepository.findById(preferRegionId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_REGION_EXCEPTION));
