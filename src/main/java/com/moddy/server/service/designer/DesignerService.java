@@ -79,6 +79,7 @@ public class DesignerService {
     private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
+
         return applicationPage;
     }
 
@@ -136,6 +137,7 @@ public class DesignerService {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
         Page<HairModelApplication> applicationPage = findApplications(page, size);
+        long totalElements = applicationPage.getTotalElements();
 
         List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
 
@@ -158,6 +160,7 @@ public class DesignerService {
         return new DesignerMainResponse(
                 page,
                 size,
+                totalElements,
                 designer.getName(),
                 applicationResponsesList
         );
