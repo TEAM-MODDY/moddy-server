@@ -107,7 +107,7 @@ public class ModelController {
             @Parameter(hidden = true) @UserId Long userId,
             @ModelAttribute ModelApplicationRequest request
     ) {
-        modelService.createModelApplication(userId, request);
+        modelService.postApplication(userId, request);
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
     }
 

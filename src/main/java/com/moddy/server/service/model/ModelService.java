@@ -119,11 +119,75 @@ public class ModelService {
     }
 
     @Transactional
+    public UserCreateResponse createModel(String baseUrl, String code, ModelCreateRequest request) {
+
+        String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
+
+        Model model = Model.builder()
+                .name(request.name())
+                .year(request.year())
+                .gender(request.gender())
+                .phoneNumber(request.phoneNumber())
+                .isMarketingAgree(request.isMarketingAgree())
+                .profileImgUrl(s3Service.getDefaultProfileImageUrl())
+                .kakaoId(kakaoId)
+                .role(Role.MODEL)
+                .build();
+
+        modelJpaRepository.save(model);
+
+        request.preferRegions().stream().forEach(preferRegionId -> {
+            Region region = regionJpaRepository.findById(preferRegionId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_REGION_EXCEPTION));
+            PreferRegion preferRegion = PreferRegion.builder().user(model).region(region).build();
+            preferRegionJpaRepository.save(preferRegion);
+        });
+
+        return authService.createUserToken(model.getId().toString());
+    }
+
+    @Transactional
+    public void postApplication(Long userId, ModelApplicationRequest request){
+
+        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
+        String modelImgUrl = s3Service.uploadProfileImage(request.modelImgUrl(), model.getRole());
+        String applicationCaptureUmgUrl = s3Service.uploadApplicationImage(request.applicationCaptureImgUrl());
+
+        HairModelApplication hairModelApplication = HairModelApplication.builder()
+                .user(model)
+                .hairLength(HairLength.findByHairLength(request.hairLength()))
+                .hairDetail(request.hairDetail())
+                .modelImgUrl(modelImgUrl)
+                .instagramId(request.instagramId())
+                .applicationCaptureUrl(applicationCaptureUmgUrl)
+                .build();
+
+        hairModelApplicationJpaRepository.save(hairModelApplication);
+
+        request.preferHairStyles().stream().forEach(hairStyle -> {
+            PreferHairStyle preferHairStyle = PreferHairStyle.builder()
+                    .hairModelApplication(hairModelApplication)
+                    .hairStyle(HairStyle.findByHairStyle(hairStyle))
+                    .build();
+            preferHairStyleJpaRepository.save(preferHairStyle);
+        });
+
+        request.getHairServiceRecords().stream().forEach(modelHairServiceRecord -> {
+            HairServiceRecord hairServiceRecord = HairServiceRecord.builder()
+                    .hairModelApplication(hairModelApplication)
+                    .serviceRecord(ServiceRecord.findByServiceRecord(modelHairServiceRecord.hairService()))
+                    .serviceRecordTerm(ServiceRecordTerm.findByServiceRecord(modelHairServiceRecord.hairServiceTerm()))
+                    .build();
+            hairServiceRecordJpaRepository.save(hairServiceRecord);
+        });
+
+    }
+
+    @Transactional
     public DetailOfferResponse getOfferDetail(Long userId, Long offerId){
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
 
-        DesignerInfoResponse designerInfoResponseList = getDesignerInfoResponseList(hairServiceOffer, userId, offerId);
+        DesignerInfoResponse designerInfoResponseList = getDesignerInfoResponse(hairServiceOffer, userId, offerId);
         StyleDetailResponse styleDetailResponse = getStyleDetailResponse(hairServiceOffer, userId, offerId);
         handleOfferClickStatus(hairServiceOffer);
 
@@ -160,71 +224,7 @@ public class ModelService {
 
     }
 
-    @Transactional
-    public UserCreateResponse createModel(String baseUrl, String code, ModelCreateRequest request) {
-
-        String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
-
-        Model model = Model.builder()
-                .name(request.name())
-                .year(request.year())
-                .gender(request.gender())
-                .phoneNumber(request.phoneNumber())
-                .isMarketingAgree(request.isMarketingAgree())
-                .profileImgUrl(s3Service.getDefaultProfileImageUrl())
-                .kakaoId(kakaoId)
-                .role(Role.MODEL)
-                .build();
-
-        modelJpaRepository.save(model);
-
-        request.preferRegions().stream().forEach(preferRegionId -> {
-            Region region = regionJpaRepository.findById(preferRegionId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_REGION_EXCEPTION));
-            PreferRegion preferRegion = PreferRegion.builder().user(model).region(region).build();
-            preferRegionJpaRepository.save(preferRegion);
-        });
-
-        return authService.createUserToken(model.getId().toString());
-    }
-
-    @Transactional
-    public void createModelApplication(Long userId, ModelApplicationRequest request){
-
-        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-        String modelImgUrl = s3Service.uploadProfileImage(request.modelImgUrl(), model.getRole());
-        String applicationCaptureUmgUrl = s3Service.uploadApplicationImage(request.applicationCaptureImgUrl());
-
-        HairModelApplication hairModelApplication = HairModelApplication.builder()
-                .user(model)
-                .hairLength(HairLength.findByHairLength(request.hairLength()))
-                .hairDetail(request.hairDetail())
-                .modelImgUrl(modelImgUrl)
-                .instagramId(request.instagramId())
-                .applicationCaptureUrl(applicationCaptureUmgUrl)
-                .build();
-
-        hairModelApplicationJpaRepository.save(hairModelApplication);
-
-        request.preferHairStyles().stream().forEach(hairStyle -> {
-            PreferHairStyle preferHairStyle = PreferHairStyle.builder()
-                    .hairModelApplication(hairModelApplication)
-                    .hairStyle(HairStyle.findByHairStyle(hairStyle))
-                    .build();
-            preferHairStyleJpaRepository.save(preferHairStyle);
-        });
-
-        request.getHairServiceRecords().stream().forEach(modelHairServiceRecord -> {
-            HairServiceRecord hairServiceRecord = HairServiceRecord.builder()
-                    .hairModelApplication(hairModelApplication)
-                    .serviceRecord(ServiceRecord.findByServiceRecord(modelHairServiceRecord.hairService()))
-                    .serviceRecordTerm(ServiceRecordTerm.findByServiceRecord(modelHairServiceRecord.hairServiceTerm()))
-                    .build();
-            hairServiceRecordJpaRepository.save(hairServiceRecord);
-        });
-
-    }
-
-    private DesignerInfoResponse getDesignerInfoResponseList(HairServiceOffer hairServiceOffer, Long userId, Long offerId){
+    private DesignerInfoResponse getDesignerInfoResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId){
 
         Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
