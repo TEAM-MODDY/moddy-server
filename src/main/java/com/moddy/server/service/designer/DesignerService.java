@@ -20,7 +20,6 @@ import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServcieRecordJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
-import com.moddy.server.domain.prefer_hair_style.HairStyle;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
 import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
@@ -186,7 +185,7 @@ public class DesignerService {
         List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
         hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
 
-        List<PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(model.getId());
+        List<PreferRegion> preferRegions = preferRegionJpaRepository.findAllByModelId(model.getId());
 
         List<String> regionList = preferRegions.stream().map(preferregion -> {
             return preferregion.getRegion().getName();

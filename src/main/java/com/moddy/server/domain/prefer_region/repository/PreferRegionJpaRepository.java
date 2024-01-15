@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PreferRegionJpaRepository extends JpaRepository<PreferRegion, Long> {
-    List<PreferRegion> findAllByUserId(Long userId);
-    void deleteAllByUserId(Long userId);
+    List<PreferRegion> findAllByModelId(Long modelId);
+
+    void deleteAllByModelId(Long modelId);
 }

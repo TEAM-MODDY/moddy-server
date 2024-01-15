@@ -1,6 +1,7 @@
 package com.moddy.server.domain.prefer_region;
 
 import com.moddy.server.domain.BaseTimeEntity;
+import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.region.Region;
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.Entity;
@@ -27,9 +28,9 @@ public class PreferRegion extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "model_id")
     @NotNull
-    private User user;
+    private Model model;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id")

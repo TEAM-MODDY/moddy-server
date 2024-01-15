@@ -68,7 +68,7 @@ public class UserService {
     }
 
     private void deleteModelPreferRegions(Long userId) {
-        preferRegionJpaRepository.deleteAllByUserId(userId);
+        preferRegionJpaRepository.deleteAllByModelId(userId);
     }
 
     private void deleteModelInfo(Long userId) {
