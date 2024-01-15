@@ -59,7 +59,7 @@ public class UserService {
     }
 
     private void deleteModelApplications(Long userId) {
-        List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByUserId(userId);
+        List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByModelId(userId);
         hairModelApplications.forEach(hairModelApplication -> {
             preferHairStyleJpaRepository.deleteAllByHairModelApplication(hairModelApplication);
             hairServiceRecordJpaRepository.deleteAllByHairModelApplication(hairModelApplication);

@@ -77,7 +77,7 @@ public class ModelService {
         Page<HairServiceOffer> offerPage = findOffersByPaging(userId, page, size);
         long totalElements = offerPage.getTotalElements();
 
-        boolean applyStatus = hairModelApplicationJpaRepository.existsByUserId(userId);
+        boolean applyStatus = hairModelApplicationJpaRepository.existsByModelId(userId);
         boolean offerStatus = hairServiceOfferJpaRepository.existsByUserId(userId);
         ModelApplyStatus modelApplyStatus = calModelStatus(applyStatus, offerStatus);
 
@@ -155,7 +155,7 @@ public class ModelService {
         String applicationCaptureUmgUrl = s3Service.uploadApplicationImage(request.applicationCaptureImgUrl());
 
         HairModelApplication hairModelApplication = HairModelApplication.builder()
-                .user(model)
+                .model(model)
                 .hairLength(HairLength.findByHairLength(request.hairLength()))
                 .hairDetail(request.hairDetail())
                 .modelImgUrl(modelImgUrl)
