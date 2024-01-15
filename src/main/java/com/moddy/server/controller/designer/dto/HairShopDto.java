@@ -13,6 +13,4 @@ public record HairShopDto(
         String detailAddress
 )
 {
-
-
 }
