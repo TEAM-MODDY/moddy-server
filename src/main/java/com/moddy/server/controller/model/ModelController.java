@@ -102,7 +102,7 @@ public class ModelController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/model/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessNonDataResponse submitModelApplication(
             @Parameter(hidden = true) @UserId Long userId,
             @ModelAttribute ModelApplicationRequest request
