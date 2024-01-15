@@ -8,7 +8,7 @@ import java.util.List;
 public record ApplicationInfoResponse(
         Long applicationId,
         String modelImgUrl,
-        HairLength hairLength,
+        String hairLength,
         List<String> preferHairstyles,
         List<HairRecordResponse> hairServiceRecords,
         String hairDetail,

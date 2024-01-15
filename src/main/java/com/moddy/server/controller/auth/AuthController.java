@@ -1,5 +1,7 @@
 package com.moddy.server.controller.auth;
 
+
+
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
@@ -75,7 +77,7 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
     }
 
-    @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
+    @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -83,12 +85,11 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
-            @Parameter(hidden = true) @KakaoCode String kakaoCode,
-            @RequestPart MultipartFile profileImg,
-            @RequestPart DesignerCreateRequest designerInfo,
-            @Parameter(hidden = true) HttpServletRequest servletRequest
+            @Parameter(hidden = true) @UserId Long userId,
+            @RequestPart("profileImg") MultipartFile profileImg,
+            @RequestPart("designerInfo") DesignerCreateRequest designerInfo
     ) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, designerInfo, profileImg));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
     @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
