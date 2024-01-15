@@ -148,7 +148,7 @@ public class DesignerService {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         HairServiceOffer offer = HairServiceOffer.builder()
-                .user(hairModelApplication.getModel())
+                .model(hairModelApplication.getModel())
                 .hairModelApplication(hairModelApplication)
                 .designer(designer)
                 .offerDetail(request.offerDetail())
@@ -232,7 +232,7 @@ public class DesignerService {
     }
 
     private Boolean getIsSendStatus(Long applicationId, Long userId) {
-        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndUserId(applicationId, userId);
+        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndModelId(applicationId, userId);
         return offer.isPresent();
     }
 }

@@ -51,7 +51,7 @@ public class UserService {
     }
 
     private void deleteModelHairServiceOfferInfos(Long userId) {
-        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByUserId(userId);
+        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByModelId(userId);
         hairServiceOffers.forEach(hairServiceOffer -> {
             preferOfferConditionJpaRepository.deleteAllByHairServiceOffer(hairServiceOffer);
             hairServiceOfferJpaRepository.deleteById(hairServiceOffer.getId());

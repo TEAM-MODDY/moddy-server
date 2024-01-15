@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HairServiceOfferJpaRepository extends JpaRepository<HairServiceOffer, Long> {
-    Page<HairServiceOffer> findByUserId(Long userId, Pageable pageable);
+    Page<HairServiceOffer> findByModelId(Long modelId, Pageable pageable);
 
-    Optional<HairServiceOffer> findByHairModelApplicationIdAndUserId(Long applicationId, Long userId);
+    Optional<HairServiceOffer> findByHairModelApplicationIdAndModelId(Long applicationId, Long modelId);
 
-    Boolean existsByUserId(Long userId);
+    Boolean existsByModelId(Long modelId);
 
-    List<HairServiceOffer> findAllByUserId(Long userId);
+    List<HairServiceOffer> findAllByModelId(Long modelId);
 
     List<HairServiceOffer> findAllByDesignerId(Long userId);
 }

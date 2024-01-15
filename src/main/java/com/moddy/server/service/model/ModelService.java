@@ -84,7 +84,7 @@ public class ModelService {
         long totalElements = offerPage.getTotalElements();
 
         boolean applyStatus = hairModelApplicationJpaRepository.existsByModelId(userId);
-        boolean offerStatus = hairServiceOfferJpaRepository.existsByUserId(userId);
+        boolean offerStatus = hairServiceOfferJpaRepository.existsByModelId(userId);
         ModelApplyStatus modelApplyStatus = calModelStatus(applyStatus, offerStatus);
 
         if (modelApplyStatus != ModelApplyStatus.APPLY_AND_OFFER) {
@@ -293,7 +293,7 @@ public class ModelService {
 
     private Page<HairServiceOffer> findOffersByPaging(Long userId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<HairServiceOffer> offerPage = hairServiceOfferJpaRepository.findByUserId(userId, pageRequest);
+        Page<HairServiceOffer> offerPage = hairServiceOfferJpaRepository.findByModelId(userId, pageRequest);
 
         return offerPage;
     }
