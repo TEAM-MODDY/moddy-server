@@ -5,9 +5,6 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
-import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
-import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
-import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.designer.dto.response.*;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
@@ -89,11 +86,13 @@ public class DesignerService {
     }
 
     @Transactional
-    public UserCreateResponse createDesigner(String baseUrl, String code, DesignerCreateRequest request, MultipartFile profileImg) {
+    public UserCreateResponse createDesigner(Long userId, DesignerCreateRequest request, MultipartFile profileImg) {
 
         String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
-        String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, code);
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
+
+        user.update(request.name(),request.gender(), request.phoneNumber(), request.isMarketingAgree(), profileImgUrl, Role.HAIR_DESIGNER);
 
         HairShop hairShop = HairShop.builder()
                 .name(request.hairShop().name())
@@ -104,20 +103,8 @@ public class DesignerService {
                 .instagramUrl(request.portfolio().instagramUrl())
                 .naverPlaceUrl(request.portfolio().naverPlaceUrl())
                 .build();
-        Designer designer = Designer.builder()
-                .hairShop(hairShop)
-                .portfolio(portfolio)
-                .introduction(request.introduction())
-                .kakaoOpenChatUrl(request.kakaoOpenChatUrl())
-                .kakaoId(kakaoId)
-                .name(request.name())
-                .gender(request.gender())
-                .phoneNumber(request.phoneNumber())
-                .isMarketingAgree(request.isMarketingAgree())
-                .profileImgUrl(profileImgUrl)
-                .role(Role.HAIR_DESIGNER)
-                .build();
-        designerJpaRepository.save(designer);
+        designerJpaRepository.designerRegister(user.getId(), hairShop.getAddress(), hairShop.getDetailAddress(), hairShop.getName(), portfolio.getInstagramUrl(), portfolio.getNaverPlaceUrl(), request.introduction(), request.kakaoOpenChatUrl());
+        Designer designer = designerJpaRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         request.dayOffs().stream()
                 .forEach(d -> {
                     DayOff dayOff = DayOff.builder()
@@ -127,14 +114,13 @@ public class DesignerService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-
         return authService.createUserToken(designer.getId().toString());
     }
 
     @Transactional
     public DesignerMainResponse getDesignerMainView(Long userId, int page, int size){
         User user = new User();
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
         Page<HairModelApplication> applicationPage = findApplications(page, size);
         long totalElements = applicationPage.getTotalElements();
