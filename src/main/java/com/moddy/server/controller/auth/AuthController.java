@@ -75,7 +75,7 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
     }
 
-    @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
+    @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -83,12 +83,11 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
-            @Parameter(hidden = true) @KakaoCode String kakaoCode,
+            @Parameter(hidden = true) @UserId Long userId,
             @RequestPart MultipartFile profileImg,
-            @RequestPart DesignerCreateRequest designerInfo,
-            @Parameter(hidden = true) HttpServletRequest servletRequest
+            @RequestPart DesignerCreateRequest designerInfo
     ) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, designerInfo, profileImg));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
     @Operation(summary = "[KAKAO CODE] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
