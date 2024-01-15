@@ -196,6 +196,13 @@ public class ModelService {
         return new DetailOfferResponse(designerInfoResponseList, styleDetailResponse);
     }
 
+    @Transactional
+    public void updateOfferAgreeStatus(Long offerId){
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
+
+        hairServiceOffer.setIsModelAgree(true);
+    }
+
     public OpenChatResponse getOpenChatInfo(Long userId, Long offerId) {
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
@@ -216,13 +223,6 @@ public class ModelService {
         );
 
         return openChatResponse;
-    }
-
-    @Transactional
-    public void updateOfferAgreeStatus(Long offerId){
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
-
-        hairServiceOffer.setIsModelAgree(true);
     }
 
     private DesignerInfoResponse getDesignerInfoResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId){
