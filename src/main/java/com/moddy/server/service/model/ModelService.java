@@ -73,8 +73,6 @@ public class ModelService {
     private final AuthService authService;
     private final S3Service s3Service;
 
-    private final String DEFAULT_PROFILE_IMG_URL = "";
-
 
     private Page<HairServiceOffer> findOffers(Long userId, int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
@@ -97,6 +95,7 @@ public class ModelService {
         User user = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
 
         Page<HairServiceOffer> offerPage = findOffers(userId, page, size);
+        long totalElements = offerPage.getTotalElements();
 
         boolean applyStatus = hairModelApplicationJpaRepository.existsByUserId(userId);
         boolean offerStatus = hairServiceOfferJpaRepository.existsByUserId(userId);
@@ -106,6 +105,7 @@ public class ModelService {
             return new ModelMainResponse(
                     page,
                     size,
+                    totalElements,
                     modelApplyStatus,
                     user.getName(),
                     new ArrayList<>()
@@ -131,6 +131,7 @@ public class ModelService {
         return new ModelMainResponse(
                 page,
                 size,
+                totalElements,
                 modelApplyStatus,
                 user.getName(),
                 offerResponseList
