@@ -77,7 +77,7 @@ public class DesignerService {
 
 
     @Transactional
-    public DesignerMainResponse getDesignerMainView(Long userId, int page, int size){
+    public DesignerMainResponse getDesignerMainInfo(Long userId, int page, int size){
         User user = new User();
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
