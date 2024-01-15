@@ -9,6 +9,7 @@ import java.util.List;
 public record ModelMainResponse(
         int page,
         int size,
+        int total,
         ModelApplyStatus status,
         String userName,
         List<OfferResponse> offers
