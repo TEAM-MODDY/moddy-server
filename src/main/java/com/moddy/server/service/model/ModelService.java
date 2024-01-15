@@ -95,7 +95,9 @@ public class ModelService {
         List<OfferResponse> offerResponseList = offerPage.stream().map(offer -> {
             Designer designer = offer.getDesigner();
             List<PreferOfferCondition> preferOfferCondition = preferOfferConditionJpaRepository.findTop2ByHairServiceOfferId(offer.getId());
-            List<OfferCondition> offerConditionTop2List = preferOfferCondition.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
+            List<String> offerConditionTop2List = preferOfferCondition.stream().map(offerCondition->{
+                return offerCondition.getOfferCondition().getValue();
+            }).collect(Collectors.toList());
 
             OfferResponse offerResponse = new OfferResponse(
                     offer.getId(),
