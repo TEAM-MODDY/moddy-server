@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
