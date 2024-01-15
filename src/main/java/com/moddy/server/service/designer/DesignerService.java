@@ -76,6 +76,7 @@ public class DesignerService {
     private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
+
         return applicationPage;
     }
 
@@ -141,6 +142,7 @@ public class DesignerService {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
         Page<HairModelApplication> applicationPage = findApplications(page, size);
+        long totalElements = applicationPage.getTotalElements();
 
         List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
 
@@ -163,6 +165,7 @@ public class DesignerService {
         return new DesignerMainResponse(
                 page,
                 size,
+                totalElements,
                 designer.getName(),
                 applicationResponsesList
         );
@@ -170,12 +173,10 @@ public class DesignerService {
 
     @Transactional
     public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-
         HairServiceOffer offer = HairServiceOffer.builder()
-                .user(user)
+                .user(hairModelApplication.getUser())
                 .hairModelApplication(hairModelApplication)
                 .designer(designer)
                 .offerDetail(request.offerDetail())
@@ -229,7 +230,7 @@ public class DesignerService {
         ApplicationInfoResponse applicationInfoResponse = new ApplicationInfoResponse(
                 applicationId,
                 hairModelApplication.getModelImgUrl(),
-                hairModelApplication.getHairLength(),
+                hairModelApplication.getHairLength().getValue(),
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),

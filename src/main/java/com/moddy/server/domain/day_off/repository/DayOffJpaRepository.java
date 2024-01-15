@@ -10,4 +10,6 @@ import java.util.List;
 public interface DayOffJpaRepository extends JpaRepository<DayOff, Long> {
 
     List<DayOff> findAllByDesignerId(Long userId);
+
+    void deleteAllByDesignerId(Long designerId);
 }
