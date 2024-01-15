@@ -222,7 +222,7 @@ public class DesignerService {
         ApplicationInfoResponse applicationInfoResponse = new ApplicationInfoResponse(
                 applicationId,
                 hairModelApplication.getModelImgUrl(),
-                hairModelApplication.getHairLength(),
+                hairModelApplication.getHairLength().getValue(),
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
