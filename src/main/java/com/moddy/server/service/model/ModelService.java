@@ -221,7 +221,6 @@ public class ModelService {
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
 
         hairServiceOffer.setIsModelAgree(true);
-
     }
 
     private DesignerInfoResponse getDesignerInfoResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId){
@@ -240,7 +239,7 @@ public class ModelService {
                 designer.getPortfolio().getInstagramUrl(),
                 designer.getPortfolio().getNaverPlaceUrl(),
                 designer.getIntroduction(),
-                designer.getGender(),
+                designer.getGender().getValue(),
                 dayOfWeekList,
                 designer.getHairShop().getAddress(),
                 designer.getHairShop().getDetailAddress()
