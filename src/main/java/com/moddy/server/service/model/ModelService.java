@@ -1,10 +1,8 @@
 package com.moddy.server.service.model;
 
 
-import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
-import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
@@ -35,14 +33,12 @@ import com.moddy.server.domain.prefer_region.PreferRegion;
 import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.domain.region.Region;
 import com.moddy.server.domain.region.repository.RegionJpaRepository;
-import com.moddy.server.domain.user.Gender;
 import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
 import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -74,27 +70,11 @@ public class ModelService {
     private final S3Service s3Service;
 
 
-    private Page<HairServiceOffer> findOffers(Long userId, int page, int size){
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
-        Page<HairServiceOffer> offerPage = hairServiceOfferJpaRepository.findByUserId(userId, pageRequest);
-
-        return offerPage;
-    }
-
-    private ModelApplyStatus calModelStatus(boolean apply, boolean offer){
-
-        if(!apply && !offer) return ModelApplyStatus.NOTHING;
-        else if (apply && !offer) return ModelApplyStatus.APPLY;
-        else if (apply && offer) return ModelApplyStatus.APPLY_AND_OFFER;
-        else throw new NotFoundException(ErrorCode.NOT_FOUND_MODEL_STATUS);
-
-    }
-
     public ModelMainResponse getModelMainInfo(Long userId, int page, int size){
 
         User user = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
 
-        Page<HairServiceOffer> offerPage = findOffers(userId, page, size);
+        Page<HairServiceOffer> offerPage = findOffersByPaging(userId, page, size);
         long totalElements = offerPage.getTotalElements();
 
         boolean applyStatus = hairModelApplicationJpaRepository.existsByUserId(userId);
@@ -136,66 +116,6 @@ public class ModelService {
                 user.getName(),
                 offerResponseList
         );
-    }
-
-    private DesignerInfoResponse getDesignerInfoResponseList(HairServiceOffer hairServiceOffer, Long userId, Long offerId){
-
-        Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
-
-        List<DayOff> dayOffList = dayOffJpaRepository.findAllByDesignerId(designer.getId());
-        List<String> dayOfWeekList = dayOffList.stream().map(dayOff -> {
-            return dayOff.getDayOfWeek().getValue();
-        }).collect(Collectors.toList());
-
-        DesignerInfoResponse designerInfoResponse = new DesignerInfoResponse(
-                designer.getProfileImgUrl(),
-                designer.getHairShop().getName(),
-                designer.getName(),
-                designer.getPortfolio().getInstagramUrl(),
-                designer.getPortfolio().getNaverPlaceUrl(),
-                designer.getIntroduction(),
-                designer.getGender(),
-                dayOfWeekList,
-                designer.getHairShop().getAddress(),
-                designer.getHairShop().getDetailAddress()
-        );
-
-        return  designerInfoResponse;
-
-    }
-
-    private StyleDetailResponse getStyleDetailResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId) {
-
-        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(hairServiceOffer.getHairModelApplication().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-
-        List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(hairServiceOffer.getHairModelApplication().getId());
-        List<String> hairStyleList = preferHairStyles.stream().map(hairStyle -> {
-            return hairStyle.getHairStyle().getValue();
-        }).collect(Collectors.toList());
-
-        List<PreferOfferCondition> preferOfferConditionList = preferOfferConditionJpaRepository.findAllByHairServiceOfferId(offerId);
-        List<OfferCondition> offerConditionList = preferOfferConditionList.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
-        List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(condition ->{
-            if (offerConditionList.contains(condition)) return true;
-            else return false;
-        }).collect(Collectors.toList());
-
-        StyleDetailResponse styleDetailResponse = new StyleDetailResponse(
-                hairServiceOffer.getIsModelAgree(),
-                hairStyleList,
-                hairServiceOffer.getOfferDetail(),
-                hairModelApplication.getHairDetail(),
-                preferOfferConditionBooleanList
-        );
-
-        return  styleDetailResponse;
-    }
-
-    private void handleOfferClickStatus(HairServiceOffer hairServiceOffer){
-
-        if(!hairServiceOffer.getIsClicked()){
-            hairServiceOffer.updateClickStatus();
-        }
     }
 
     @Transactional
@@ -301,6 +221,82 @@ public class ModelService {
                     .build();
             hairServiceRecordJpaRepository.save(hairServiceRecord);
         });
+
+    }
+
+    private DesignerInfoResponse getDesignerInfoResponseList(HairServiceOffer hairServiceOffer, Long userId, Long offerId){
+
+        Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+
+        List<DayOff> dayOffList = dayOffJpaRepository.findAllByDesignerId(designer.getId());
+        List<String> dayOfWeekList = dayOffList.stream().map(dayOff -> {
+            return dayOff.getDayOfWeek().getValue();
+        }).collect(Collectors.toList());
+
+        DesignerInfoResponse designerInfoResponse = new DesignerInfoResponse(
+                designer.getProfileImgUrl(),
+                designer.getHairShop().getName(),
+                designer.getName(),
+                designer.getPortfolio().getInstagramUrl(),
+                designer.getPortfolio().getNaverPlaceUrl(),
+                designer.getIntroduction(),
+                designer.getGender(),
+                dayOfWeekList,
+                designer.getHairShop().getAddress(),
+                designer.getHairShop().getDetailAddress()
+        );
+
+        return  designerInfoResponse;
+
+    }
+
+    private StyleDetailResponse getStyleDetailResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId) {
+
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(hairServiceOffer.getHairModelApplication().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+
+        List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(hairServiceOffer.getHairModelApplication().getId());
+        List<String> hairStyleList = preferHairStyles.stream().map(hairStyle -> {
+            return hairStyle.getHairStyle().getValue();
+        }).collect(Collectors.toList());
+
+        List<PreferOfferCondition> preferOfferConditionList = preferOfferConditionJpaRepository.findAllByHairServiceOfferId(offerId);
+        List<OfferCondition> offerConditionList = preferOfferConditionList.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
+        List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(condition ->{
+            if (offerConditionList.contains(condition)) return true;
+            else return false;
+        }).collect(Collectors.toList());
+
+        StyleDetailResponse styleDetailResponse = new StyleDetailResponse(
+                hairServiceOffer.getIsModelAgree(),
+                hairStyleList,
+                hairServiceOffer.getOfferDetail(),
+                hairModelApplication.getHairDetail(),
+                preferOfferConditionBooleanList
+        );
+
+        return  styleDetailResponse;
+    }
+
+    private void handleOfferClickStatus(HairServiceOffer hairServiceOffer){
+
+        if(!hairServiceOffer.getIsClicked()){
+            hairServiceOffer.updateClickStatus();
+        }
+    }
+
+    private Page<HairServiceOffer> findOffersByPaging(Long userId, int page, int size){
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
+        Page<HairServiceOffer> offerPage = hairServiceOfferJpaRepository.findByUserId(userId, pageRequest);
+
+        return offerPage;
+    }
+
+    private ModelApplyStatus calModelStatus(boolean apply, boolean offer){
+
+        if(!apply && !offer) return ModelApplyStatus.NOTHING;
+        else if (apply && !offer) return ModelApplyStatus.APPLY;
+        else if (apply && offer) return ModelApplyStatus.APPLY_AND_OFFER;
+        else throw new NotFoundException(ErrorCode.NOT_FOUND_MODEL_STATUS);
 
     }
 
