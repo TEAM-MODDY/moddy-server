@@ -45,6 +45,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_C
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private static final String ORIGIN = "origin";
     private final AuthService authService;
     private final DesignerService designerService;
@@ -62,8 +63,7 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<LoginResponseDto> login(
             @Parameter(hidden = true) @KakaoCode String kakaoCode,
-            @Parameter(hidden = true) HttpServletRequest request
-    ) {
+            @Parameter(hidden = true) HttpServletRequest request) {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
     }
 
@@ -87,8 +87,7 @@ public class AuthController {
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long userId,
             @RequestPart("profileImg") MultipartFile profileImg,
-            @RequestPart("designerInfo") DesignerCreateRequest designerInfo
-    ) {
+            @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
@@ -103,8 +102,7 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
             @Parameter(hidden = true) @UserId Long userId,
-            @RequestBody ModelCreateRequest modelCreateRequest
-    ) {
+            @RequestBody ModelCreateRequest modelCreateRequest) {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
@@ -128,8 +126,7 @@ public class AuthController {
                     responseCode = "400",
                     description = "1. 인증번호가 일치하지 않습니다."
                             + "2. 만료된 인증 코드입니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "인증 코드가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -152,4 +149,5 @@ public class AuthController {
         authService.logout(userId);
         return SuccessNonDataResponse.success(LOGOUT_SUCCESS);
     }
+
 }
