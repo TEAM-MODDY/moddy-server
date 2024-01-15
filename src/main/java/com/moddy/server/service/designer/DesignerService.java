@@ -92,12 +92,7 @@ public class DesignerService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
-        user.setGender(request.gender());
-        user.setName(request.name());
-        user.setPhoneNumber(request.phoneNumber());
-        user.setIsMarketingAgree(request.isMarketingAgree());
-        user.setProfileImgUrl(profileImgUrl);
-        user.setRole(Role.HAIR_DESIGNER);
+        user.update(request.name(),request.gender(), request.phoneNumber(), request.isMarketingAgree(), profileImgUrl, Role.HAIR_DESIGNER);
 
         HairShop hairShop = HairShop.builder()
                 .name(request.hairShop().name())

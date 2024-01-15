@@ -13,14 +13,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
@@ -52,4 +50,14 @@ public class User extends BaseTimeEntity {
         Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1;
         return age;
     }
+
+    public void update( String name, Gender gender, String phoneNumber, Boolean isMarketingAgree, String profileImgUrl, Role role) {
+        this.name = name;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.isMarketingAgree = isMarketingAgree;
+        this.profileImgUrl = profileImgUrl;
+        this.role = role;
+    }
+
 }
