@@ -8,7 +8,7 @@ import java.util.List;
 public record DesignerMainResponse(
         int page,
         int size,
-        int total,
+        long total,
         String name,
         List<HairModelApplicationResponse> hairModelApplications
 ) {
