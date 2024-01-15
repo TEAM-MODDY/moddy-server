@@ -119,7 +119,7 @@ public class ModelService {
     }
 
     @Transactional
-    public DetailOfferResponse getModelDetailOfferInfo(Long userId, Long offerId){
+    public DetailOfferResponse getOfferDetail(Long userId, Long offerId){
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
 
