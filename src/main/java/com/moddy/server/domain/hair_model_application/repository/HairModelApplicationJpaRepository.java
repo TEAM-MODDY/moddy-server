@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface HairModelApplicationJpaRepository extends JpaRepository<HairModelApplication, Long> {
-    Boolean existsByUserId(Long userId);
+    Boolean existsByModelId(Long modelId);
 
-    Optional<HairModelApplication> findByUserId(Long userId);
+    Optional<HairModelApplication> findByModelId(Long modelId);
 
     Page<HairModelApplication> findAll(Pageable pageable);
 
-    List<HairModelApplication> findAllByUserId(Long userId);
+    List<HairModelApplication> findAllByModelId(Long modelId);
 }
