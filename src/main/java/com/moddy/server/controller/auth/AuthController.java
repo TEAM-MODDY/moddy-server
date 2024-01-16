@@ -1,5 +1,6 @@
 package com.moddy.server.controller.auth;
 
+
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
@@ -28,7 +29,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -43,6 +49,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_C
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private static final String ORIGIN = "origin";
     private final AuthService authService;
     private final DesignerService designerService;
@@ -60,8 +67,7 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<LoginResponseDto> login(
             @Parameter(hidden = true) @KakaoCode String kakaoCode,
-            @Parameter(hidden = true) HttpServletRequest request
-    ) {
+            @Parameter(hidden = true) HttpServletRequest request) {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
     }
 
@@ -75,7 +81,7 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
     }
 
-    @Operation(summary = "[KAKAO CODE] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
+    @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -83,29 +89,25 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
-            @Parameter(hidden = true) @KakaoCode String kakaoCode,
-            @RequestPart MultipartFile profileImg,
-            @RequestPart DesignerCreateRequest designerInfo,
-            @Parameter(hidden = true) HttpServletRequest servletRequest
-    ) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(servletRequest.getHeader(ORIGIN), kakaoCode, designerInfo, profileImg));
+            @Parameter(hidden = true) @UserId Long userId,
+            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
+            @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
-    @Operation(summary = "[KAKAO CODE] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
+    @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping(value = "/signup/model")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
-            @Parameter(hidden = true) @KakaoCode String kakaoCode,
-            @Parameter(hidden = true) HttpServletRequest request,
-            @RequestBody ModelCreateRequest modelCreateRequest
-    ) {
-        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(request.getHeader(ORIGIN), kakaoCode, modelCreateRequest));
+            @Parameter(hidden = true) @UserId Long userId,
+            @RequestBody ModelCreateRequest modelCreateRequest) {
+        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
     @Operation(summary = "[SMS 기능 미완성] 인증번호 요청 API", description = "인증번호 요청 API입니다.")
@@ -128,8 +130,7 @@ public class AuthController {
                     responseCode = "400",
                     description = "1. 인증번호가 일치하지 않습니다."
                             + "2. 만료된 인증 코드입니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "인증 코드가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -152,4 +153,5 @@ public class AuthController {
         authService.logout(userId);
         return SuccessNonDataResponse.success(LOGOUT_SUCCESS);
     }
+
 }

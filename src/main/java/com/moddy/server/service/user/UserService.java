@@ -51,7 +51,7 @@ public class UserService {
     }
 
     private void deleteModelHairServiceOfferInfos(Long userId) {
-        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByUserId(userId);
+        List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByModelId(userId);
         hairServiceOffers.forEach(hairServiceOffer -> {
             preferOfferConditionJpaRepository.deleteAllByHairServiceOffer(hairServiceOffer);
             hairServiceOfferJpaRepository.deleteById(hairServiceOffer.getId());
@@ -59,7 +59,7 @@ public class UserService {
     }
 
     private void deleteModelApplications(Long userId) {
-        List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByUserId(userId);
+        List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByModelId(userId);
         hairModelApplications.forEach(hairModelApplication -> {
             preferHairStyleJpaRepository.deleteAllByHairModelApplication(hairModelApplication);
             hairServiceRecordJpaRepository.deleteAllByHairModelApplication(hairModelApplication);
@@ -68,7 +68,7 @@ public class UserService {
     }
 
     private void deleteModelPreferRegions(Long userId) {
-        preferRegionJpaRepository.deleteAllByUserId(userId);
+        preferRegionJpaRepository.deleteAllByModelId(userId);
     }
 
     private void deleteModelInfo(Long userId) {

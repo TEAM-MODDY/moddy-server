@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "DesignerController")
 @RequiredArgsConstructor
 public class DesignerController {
+
     private final DesignerService designerService;
+
     @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = DesignerMainResponse.class))),
@@ -37,9 +39,8 @@ public class DesignerController {
     public SuccessResponse<DesignerMainResponse> getDesignerMainInfo(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
-            @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size
-    ){
-        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, designerService.getDesignerMainView(userId, page, size));
+            @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
+        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, designerService.getDesignerMainInfo(userId, page, size));
     }
 
     @Operation(summary = "[JWT] 제안서 작성하기", description = "제안서 작성하기 API입니다.")
@@ -54,8 +55,7 @@ public class DesignerController {
     public SuccessNonDataResponse offerCreateRequest(
             @Parameter(hidden = true) @UserId Long userId,
             @PathVariable(value = "applicationId") Long applicationId,
-            @RequestBody OfferCreateRequest offerCreateRequest
-            ) {
+            @RequestBody OfferCreateRequest offerCreateRequest) {
         designerService.postOffer(userId, applicationId, offerCreateRequest);
         return SuccessNonDataResponse.success(SuccessCode.POST_OFFER_SUCCESS);
     }
@@ -71,8 +71,8 @@ public class DesignerController {
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<ApplicationDetailInfoResponse> getApplicationDetailInfo(
             @Parameter(hidden = true) @UserId Long userId,
-            @PathVariable(value = "applicationId") Long applicationId
-    ){
+            @PathVariable(value = "applicationId") Long applicationId) {
         return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, designerService.getApplicationDetail(userId, applicationId));
     }
+
 }

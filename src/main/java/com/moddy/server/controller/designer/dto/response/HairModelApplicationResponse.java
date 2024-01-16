@@ -1,8 +1,5 @@
 package com.moddy.server.controller.designer.dto.response;
 
-import com.moddy.server.domain.prefer_hair_style.HairStyle;
-import com.moddy.server.domain.user.Gender;
-
 import java.util.List;
 
 public record HairModelApplicationResponse(
@@ -11,6 +8,6 @@ public record HairModelApplicationResponse(
         int age,
         String imgUrl,
         String gender,
-        List<HairStyle> preferHairStyles
+        List<String> preferHairStyles
 ) {
 }

@@ -1,6 +1,7 @@
 package com.moddy.server.domain.hair_model_application;
 
 import com.moddy.server.domain.BaseTimeEntity;
+import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -20,9 +21,9 @@ public class HairModelApplication extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "model_id")
     @NotNull
-    private User user;
+    private Model model;
 
     @Enumerated(value = EnumType.STRING)
     @NotNull

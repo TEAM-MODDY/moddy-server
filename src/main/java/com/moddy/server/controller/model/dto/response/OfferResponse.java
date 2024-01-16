@@ -8,7 +8,7 @@ public record OfferResponse(
         String imgUrl,
         String name,
         String shopName,
-        List<OfferCondition> conditions,
+        List<String> conditions,
         boolean isClicked
 ) {
 }
