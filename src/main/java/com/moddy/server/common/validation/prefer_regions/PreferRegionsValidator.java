@@ -14,25 +14,10 @@ public class PreferRegionsValidator implements ConstraintValidator<ValidPreferRe
     @Override
     public boolean isValid(List<Long> preferRegions, ConstraintValidatorContext context) {
 
-        int zeroCount = 0;
-        int oneToFifteenCount = 0;
-
-        for (Long region : preferRegions) {
-            if (region == 0) {
-                zeroCount++;
-                if (zeroCount >= 1) {
-                    return false;
-                }
-            } else if (region >= 1 && region <= 25) {
-                oneToFifteenCount++;
-                if (oneToFifteenCount > 3) {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-
+        if(preferRegions.size() > 3) return false;
+        if(preferRegions.stream().filter(p -> p == 0).count() > 1) return false;
+        if(!preferRegions.stream().allMatch(p -> p >= 0 && p <= 26)) return false;
         return true;
+
     }
 }

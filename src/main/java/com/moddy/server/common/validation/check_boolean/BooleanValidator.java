@@ -11,7 +11,7 @@ public class BooleanValidator implements ConstraintValidator<ValidBoolean, Boole
 
     @Override
     public boolean isValid(Boolean value, ConstraintValidatorContext context) {
-        return value != null && (value || !value);
+        return value != null && (value.equals(Boolean.TRUE) || value.equals(Boolean.FALSE));
     }
 
 }
