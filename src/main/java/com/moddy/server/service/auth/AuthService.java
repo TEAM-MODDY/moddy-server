@@ -20,12 +20,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.moddy.server.common.exception.enums.ErrorCode.EXPIRE_VERIFICATION_CODE_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_PHONE_NUMBER_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_VERIFICATION_CODE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_MATCH_VERIFICATION_CODE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.USER_NOT_FOUND_EXCEPTION;
@@ -81,14 +83,15 @@ public class AuthService {
     }
 
     @Transactional
-    public void sendVerificationCodeMessageToUser(String phoneNumber) {
+    public void sendVerificationCodeMessageToUser(String phoneNumber) throws IOException {
         Optional<UserVerification> userVerification = userVerificationRepository.findByPhoneNumber(phoneNumber);
         if (userVerification.isPresent()) {
             userVerificationRepository.deleteByPhoneNumber(phoneNumber);
         }
 
         String verificationCode = VerificationCodeGenerator.generate();
-        // smsUtil.sendVerificationCode(phoneNumber, verificationCode);
+        if (!smsUtil.sendVerificationCode(phoneNumber, verificationCode))
+            throw new BadRequestException(INVALID_PHONE_NUMBER_EXCEPTION);
 
         UserVerification newUserVerification = UserVerification.builder()
                 .phoneNumber(phoneNumber)
