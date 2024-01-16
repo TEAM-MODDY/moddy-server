@@ -2,9 +2,13 @@ package com.moddy.server.controller.model.dto.request;
 
 import com.moddy.server.domain.user.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public record ModelCreateRequest(
@@ -23,4 +27,15 @@ public record ModelCreateRequest(
         @Schema(description = "모델 회원가입 선호 지역 예시입니다.", example ="[\"3\", \"15\"]")
         List<Long> preferRegions
 ) {
+
+        @Past(message = "year 는 무조건 오늘보다 과거입니다.")
+        public Date getYearAsDate() {
+                try {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+                        return dateFormat.parse(year);
+                } catch (ParseException e) {
+                        // 날짜 변환 실패 시 예외 처리
+                        return null; // 또는 다른 적절한 처리
+                }
+        }
 }

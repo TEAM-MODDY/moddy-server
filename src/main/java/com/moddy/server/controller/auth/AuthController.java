@@ -34,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.LOGOUT_SUCCESS;
@@ -104,6 +105,7 @@ public class AuthController {
     public SuccessResponse<UserCreateResponse> createModel(
             @Parameter(hidden = true) @UserId Long userId,
             @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
+        Date year = modelCreateRequest.getYearAsDate();
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
