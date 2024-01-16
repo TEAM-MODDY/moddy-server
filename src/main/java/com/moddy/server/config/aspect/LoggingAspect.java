@@ -73,14 +73,14 @@ public class LoggingAspect {
         sb.append(String.format("====> Request: %s %s ({%d}ms)\n====> *Header = {%s}\n", request.getMethod(), request.getRequestURL(), endAt - startAt, getHeaders(request)));
         sb.append("=================> content type is ").append(request.getContentType()).append("\n");
         if ("POST".equalsIgnoreCase(request.getMethod()) && request.getContentType() != null && request.getContentType().contains(MULTI_PART_FORM_DATA)) {
-            sb.append("====> Body: ");
+            sb.append("====> form-data Body: ");
             cachingRequest.getParts().stream().map(Part::getName).forEach(n -> {
                 String keyValue = String.format("%s = %s", n, request.getParameter(n));
                 sb.append(keyValue).append(", ");
             });
             sb.append("\n");
         } else if ("POST".equalsIgnoreCase(request.getMethod())) {
-            sb.append(String.format("====> Body: {%s}\n", objectMapper.readTree(cachingRequest.getContentAsByteArray())));
+            sb.append(String.format("====> application/json Body: {%s}\n", objectMapper.readTree(cachingRequest.getContentAsByteArray())));
         }
         if (returnValue != null) {
             sb.append(String.format("====> Response: {%s}\n", returnValue));
