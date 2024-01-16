@@ -1,7 +1,11 @@
 package com.moddy.server.controller.model.dto.request;
 
+import com.moddy.server.domain.prefer_region.validation.ValidPreferRegions;
 import com.moddy.server.domain.user.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -19,12 +23,17 @@ public record ModelCreateRequest(
         @Schema(description = "모델 회원가입 유저 나이 예시입니다.", example ="2000")
         String year,
         @Schema(description = "모델 회원가입 유저 성별 예시입니다.", example ="FEMALE")
+        @Enumerated(EnumType.STRING)
         Gender gender,
         @Schema(description = "모델 회원가입 유저 전화번호 예시입니다.", example ="01012345678")
+        @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 01011112222형태입니다.")
         String phoneNumber,
         @Schema(description = "모델 회원가입 유저 마케팅 동의 여부 예시입니다.", example = "true")
+        @NotNull
+        @Pattern(regexp = "^(true|false)$", message = "isMarketingAgree는 true, false값 이여야 합니다.")
         Boolean isMarketingAgree,
         @Schema(description = "모델 회원가입 선호 지역 예시입니다.", example ="[\"3\", \"15\"]")
+        @ValidPreferRegions
         List<Long> preferRegions
 ) {
 
@@ -38,4 +47,6 @@ public record ModelCreateRequest(
                         return null; // 또는 다른 적절한 처리
                 }
         }
+
+
 }
