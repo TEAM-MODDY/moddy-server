@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class Model extends User {
     private String year;
-
     public Integer getAge(String year) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1;
