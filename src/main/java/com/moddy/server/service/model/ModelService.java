@@ -2,6 +2,7 @@ package com.moddy.server.service.model;
 
 
 import com.moddy.server.common.exception.enums.ErrorCode;
+import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
@@ -131,6 +132,9 @@ public class ModelService {
     public UserCreateResponse createModel(long userId, ModelCreateRequest request) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
+
+        if(modelJpaRepository.existsById(userId)){throw  new ConflictException(ErrorCode.ALREADY_EXIST_USER_EXCEPTION);}
+
         user.update(request.name(),request.gender(), request.phoneNumber(), request.isMarketingAgree(), s3Service.getDefaultProfileImageUrl(), Role.MODEL);
 
         modelJpaRepository.modelRegister(userId, request.year());
