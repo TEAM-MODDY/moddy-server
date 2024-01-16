@@ -1,8 +1,5 @@
 package com.moddy.server.controller.model.dto.response;
 
-import com.moddy.server.domain.day_off.DayOfWeek;
-import com.moddy.server.domain.user.Gender;
-
 import java.util.List;
 
 public record DesignerInfoResponse(
