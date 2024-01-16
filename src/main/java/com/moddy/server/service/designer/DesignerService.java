@@ -72,7 +72,6 @@ public class DesignerService {
     private final UserRepository userRepository;
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
 
-
     private Page<HairModelApplication> findApplications(int page, int size){
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
@@ -119,7 +118,7 @@ public class DesignerService {
 
     @Transactional
     public DesignerMainResponse getDesignerMainView(Long userId, int page, int size){
-        User user = new User();
+
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
 
         Page<HairModelApplication> applicationPage = findApplications(page, size);
@@ -135,7 +134,7 @@ public class DesignerService {
             HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                     application.getId(),
                     model.getName(),
-                    user.getAge(model.getYear()),
+                    model.getAge(model.getYear()),
                     model.getProfileImgUrl(),
                     model.getGender().getValue(),
                     top2hairStyles
@@ -179,7 +178,6 @@ public class DesignerService {
 
     @Transactional
     public ApplicationDetailInfoResponse getApplicationDetail(Long userId, Long applicationId){
-        User user = new User();
 
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
@@ -221,7 +219,7 @@ public class DesignerService {
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
                 model.getId(),
                 model.getName(),
-                user.getAge(model.getYear()),
+                model.getAge(model.getYear()),
                 model.getGender().getValue(),
                 regionList,
                 hairModelApplication.getInstagramId()
