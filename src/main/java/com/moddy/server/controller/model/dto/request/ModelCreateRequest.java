@@ -33,6 +33,7 @@ public record ModelCreateRequest(
         @Pattern(regexp = "^(true|false)$", message = "isMarketingAgree는 true, false값 이여야 합니다.")
         Boolean isMarketingAgree,
         @Schema(description = "모델 회원가입 선호 지역 예시입니다.", example ="[\"3\", \"15\"]")
+        @NotNull
         @ValidPreferRegions
         List<Long> preferRegions
 ) {

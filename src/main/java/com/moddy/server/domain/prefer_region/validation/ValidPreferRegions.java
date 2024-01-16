@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPreferRegions {
 
-    String message() default "Invalid preferRegions";
+    String message() default "preferRegions는 0은 1개만, 1~25사이의 값은 3개까지 올 수 있습니다.";
 
     Class<?>[] groups() default {};
 
