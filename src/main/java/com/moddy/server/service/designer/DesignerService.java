@@ -92,7 +92,7 @@ import java.util.stream.Collectors;
                 HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                         application.getId(),
                         model.getName(),
-                        model.getAge(model.getYear()),
+                        model.getAge(),
                         model.getProfileImgUrl(),
                         model.getGender().getValue(),
                         top2hairStyles
@@ -210,7 +210,7 @@ import java.util.stream.Collectors;
             ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
                     model.getId(),
                     model.getName(),
-                    model.getAge(model.getYear()),
+                    model.getAge(),
                     model.getGender().getValue(),
                     regionList,
                     hairModelApplication.getInstagramId()
