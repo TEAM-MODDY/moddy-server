@@ -105,7 +105,6 @@ public class AuthController {
     public SuccessResponse<UserCreateResponse> createModel(
             @Parameter(hidden = true) @UserId Long userId,
             @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
-        Date year = modelCreateRequest.getYearAsDate();
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
