@@ -1,7 +1,6 @@
 package com.moddy.server.controller.auth;
 
 
-
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
@@ -30,7 +29,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -86,7 +90,7 @@ public class AuthController {
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long userId,
-            @RequestPart("profileImg") MultipartFile profileImg,
+            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
             @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
