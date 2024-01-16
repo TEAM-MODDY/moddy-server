@@ -1,4 +1,4 @@
-package com.moddy.server.domain.prefer_region.validation;
+package com.moddy.server.common.validation.year;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -10,12 +10,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
-@Constraint(validatedBy = PreferRegionsValidator.class)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Constraint(validatedBy = YearValidator.class)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidPreferRegions {
+public @interface ValidYear {
 
-    String message() default "preferRegions는 0은 1개만, 1~25사이의 값은 3개까지 올 수 있습니다.";
+    String message() default "Year는 오늘의 년도보다 큰 년도일 수 없어요.";
 
     Class<?>[] groups() default {};
 

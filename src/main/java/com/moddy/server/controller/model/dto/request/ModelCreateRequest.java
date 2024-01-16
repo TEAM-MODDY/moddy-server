@@ -1,7 +1,8 @@
 package com.moddy.server.controller.model.dto.request;
 
-import com.moddy.server.domain.designer.validation.ValidYear;
-import com.moddy.server.domain.prefer_region.validation.ValidPreferRegions;
+import com.moddy.server.common.validation.check_boolean.ValidBoolean;
+import com.moddy.server.common.validation.year.ValidYear;
+import com.moddy.server.common.validation.prefer_regions.ValidPreferRegions;
 import com.moddy.server.domain.user.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
@@ -28,7 +29,7 @@ public record ModelCreateRequest(
         @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 01011112222형태입니다.")
         String phoneNumber,
         @Schema(description = "모델 회원가입 유저 마케팅 동의 여부 예시입니다.", example = "true")
-        @Pattern(regexp = "^(true|false)$", message = "isMarketingAgree는 true, false값 이여야 합니다.")
+        @ValidBoolean
         Boolean isMarketingAgree,
         @Schema(description = "모델 회원가입 선호 지역 예시입니다.", example ="[\"3\", \"15\"]")
         @ValidPreferRegions

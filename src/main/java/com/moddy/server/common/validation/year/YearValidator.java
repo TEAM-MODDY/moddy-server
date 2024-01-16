@@ -1,4 +1,4 @@
-package com.moddy.server.domain.designer.validation;
+package com.moddy.server.common.validation.year;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,4 +1,4 @@
-package com.moddy.server.domain.designer.validation;
+package com.moddy.server.common.validation.check_boolean;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -10,12 +10,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
-@Constraint(validatedBy = YearValidator.class)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Constraint(validatedBy = BooleanValidator.class)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidYear {
+public @interface ValidBoolean {
 
-    String message() default "Year는 오늘의 년도보다 큰 년도일 수 없어요.";
+    String message() default "Boolean 값은 true 또는 false만 가능합니다.";
 
     Class<?>[] groups() default {};
 

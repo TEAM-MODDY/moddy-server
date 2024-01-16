@@ -1,4 +1,4 @@
-package com.moddy.server.domain.prefer_region.validation;
+package com.moddy.server.common.validation.prefer_regions;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
