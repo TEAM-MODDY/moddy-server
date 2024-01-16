@@ -67,13 +67,14 @@ import java.util.stream.Collectors;
         private final HairServcieRecordJpaRepository hairServiceRecordJpaRepository;
         private final AuthService authService;
         private final PreferRegionJpaRepository preferRegionJpaRepository;
-        private final  HairServcieRecordJpaRepository hairServcieRecordJpaRepository;
+        private final HairServcieRecordJpaRepository hairServcieRecordJpaRepository;
         private final UserRepository userRepository;
         private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
 
-        @Transactional
-        public DesignerMainResponse getDesignerMainInfo(Long userId, int page, int size){
 
+        @Transactional
+        public DesignerMainResponse getDesignerMainInfo(Long userId, int page, int size) {
+            User user = new User();
             Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
             Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
@@ -81,11 +82,11 @@ import java.util.stream.Collectors;
 
             List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
 
-                Model model = modelJpaRepository.findById(application.getUser().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
+                Model model = modelJpaRepository.findById(application.getModel().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
 
                 List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
 
-                List<String> top2hairStyles= preferHairStyle.stream().map( haireStyle -> {
+                List<String> top2hairStyles = preferHairStyle.stream().map(haireStyle -> {
                     return haireStyle.getHairStyle().getValue();
                 }).collect(Collectors.toList());
 
@@ -116,7 +117,7 @@ import java.util.stream.Collectors;
 
             User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
-            user.update(request.name(),request.gender(), request.phoneNumber(), request.isMarketingAgree(), profileImgUrl, Role.HAIR_DESIGNER);
+            user.update(request.name(), request.gender(), request.phoneNumber(), request.isMarketingAgree(), profileImgUrl, Role.HAIR_DESIGNER);
 
             HairShop hairShop = HairShop.builder()
                     .name(request.hairShop().name())
@@ -147,7 +148,7 @@ import java.util.stream.Collectors;
             Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
             HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
             HairServiceOffer offer = HairServiceOffer.builder()
-                    .user(hairModelApplication.getUser())
+                    .model(hairModelApplication.getModel())
                     .hairModelApplication(hairModelApplication)
                     .designer(designer)
                     .offerDetail(request.offerDetail())
@@ -168,11 +169,12 @@ import java.util.stream.Collectors;
         }
 
         @Transactional
-        public ApplicationDetailInfoResponse getApplicationDetail(Long userId, Long applicationId){
+        public ApplicationDetailInfoResponse getApplicationDetail(Long userId, Long applicationId) {
+            User user = new User();
 
             HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
-            Model model = modelJpaRepository.findById(hairModelApplication.getUser().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+            Model model = modelJpaRepository.findById(hairModelApplication.getModel().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
             List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
 
@@ -183,9 +185,9 @@ import java.util.stream.Collectors;
             List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
             hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
 
-            List <PreferRegion> preferRegions = preferRegionJpaRepository.findAllByUserId(model.getId());
+            List<PreferRegion> preferRegions = preferRegionJpaRepository.findAllByModelId(model.getId());
 
-            List<String> regionList = preferRegions.stream().map(preferregion ->{
+            List<String> regionList = preferRegions.stream().map(preferregion -> {
                 return preferregion.getRegion().getName();
             }).collect(Collectors.toList());
 
@@ -222,15 +224,15 @@ import java.util.stream.Collectors;
             );
         }
 
-        private Page<HairModelApplication> findApplicationsByPaging(int page, int size){
-            PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC,"id"));
+        private Page<HairModelApplication> findApplicationsByPaging(int page, int size) {
+            PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
             Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
 
             return applicationPage;
         }
 
-        private Boolean getIsSendStatus(Long applicationId, Long userId){
-            Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndUserId(applicationId, userId);
+        private Boolean getIsSendStatus(Long applicationId, Long userId) {
+            Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndModelId(applicationId, userId);
             return offer.isPresent();
         }
     }

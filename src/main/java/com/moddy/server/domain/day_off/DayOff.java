@@ -18,7 +18,7 @@ public class DayOff extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "designer_id")
     @NotNull
     private Designer designer;
 
