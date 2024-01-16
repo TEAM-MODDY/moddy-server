@@ -45,7 +45,8 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-    public Integer getAge(String year) {
+
+    public Integer getAge(String year){
         LocalDateTime currentDateTime = LocalDateTime.now();
         Integer age = currentDateTime.getYear() - Integer.parseInt(year) + 1;
         return age;
