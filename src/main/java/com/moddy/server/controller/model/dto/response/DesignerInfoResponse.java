@@ -12,7 +12,7 @@ public record DesignerInfoResponse(
         String instagramUrl,
         String naverPlaceUrl,
         String introduction,
-        Gender gender,
+        String gender,
         List<String> dayoffs,
         String shopAddress,
         String shopDetailAddress

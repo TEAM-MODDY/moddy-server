@@ -1,5 +1,7 @@
 package com.moddy.server.controller.auth;
 
+
+
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
@@ -84,8 +86,8 @@ public class AuthController {
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long userId,
-            @RequestPart MultipartFile profileImg,
-            @RequestPart DesignerCreateRequest designerInfo
+            @RequestPart("profileImg") MultipartFile profileImg,
+            @RequestPart("designerInfo") DesignerCreateRequest designerInfo
     ) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
