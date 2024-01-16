@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +56,7 @@ public class DesignerController {
     public SuccessNonDataResponse offerCreateRequest(
             @Parameter(hidden = true) @UserId Long userId,
             @PathVariable(value = "applicationId") Long applicationId,
-            @RequestBody OfferCreateRequest offerCreateRequest) {
+            @Valid @RequestBody OfferCreateRequest offerCreateRequest) {
         designerService.postOffer(userId, applicationId, offerCreateRequest);
         return SuccessNonDataResponse.success(SuccessCode.POST_OFFER_SUCCESS);
     }
