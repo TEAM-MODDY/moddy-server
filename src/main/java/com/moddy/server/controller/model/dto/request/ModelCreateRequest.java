@@ -1,6 +1,5 @@
 package com.moddy.server.controller.model.dto.request;
 
-import com.moddy.server.common.validation.check_boolean.ValidBoolean;
 import com.moddy.server.common.validation.unique_long.UniqueLongElements;
 import com.moddy.server.common.validation.year.ValidYear;
 import com.moddy.server.common.validation.prefer_regions.ValidPreferRegions;
@@ -33,8 +32,7 @@ public record ModelCreateRequest(
         @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 01011112222형태입니다.")
         String phoneNumber,
         @Schema(description = "모델 회원가입 유저 마케팅 동의 여부 예시입니다.", example = "true")
-        @ValidBoolean
-        Boolean isMarketingAgree,
+        boolean isMarketingAgree,
         @Schema(description = "모델 회원가입 선호 지역 예시입니다.", example ="[\"3\", \"15\"]")
         @ValidPreferRegions
         @UniqueLongElements
