@@ -5,7 +5,14 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
-import com.moddy.server.controller.designer.dto.response.*;
+import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
+import com.moddy.server.controller.designer.dto.response.ApplicationInfoResponse;
+import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
+import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
+import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
+import com.moddy.server.controller.designer.dto.response.HairRecordResponse;
+import com.moddy.server.controller.designer.dto.response.ModelInfoResponse;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
@@ -47,6 +54,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.moddy.server.common.exception.enums.ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION;
 
 @Service
 @RequiredArgsConstructor
@@ -93,7 +102,7 @@ public class DesignerService {
             HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                     application.getId(),
                     model.getName(),
-                    user.getAge(model.getYear()),
+                    model.getAge(),
                     model.getProfileImgUrl(),
                     model.getGender().getValue(),
                     top2hairStyles
@@ -129,7 +138,7 @@ public class DesignerService {
                 .naverPlaceUrl(request.portfolio().naverPlaceUrl())
                 .build();
         designerJpaRepository.designerRegister(user.getId(), hairShop.getAddress(), hairShop.getDetailAddress(), hairShop.getName(), portfolio.getInstagramUrl(), portfolio.getNaverPlaceUrl(), request.introduction(), request.kakaoOpenChatUrl());
-        Designer designer = designerJpaRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+        Designer designer = designerJpaRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         request.dayOffs().stream()
                 .forEach(d -> {
                     DayOff dayOff = DayOff.builder()
@@ -145,7 +154,7 @@ public class DesignerService {
 
     @Transactional
     public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) {
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         HairServiceOffer offer = HairServiceOffer.builder()
                 .model(hairModelApplication.getModel())
@@ -212,7 +221,7 @@ public class DesignerService {
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
                 model.getId(),
                 model.getName(),
-                user.getAge(model.getYear()),
+                model.getAge(),
                 model.getGender().getValue(),
                 regionList,
                 hairModelApplication.getInstagramId()
@@ -234,5 +243,12 @@ public class DesignerService {
     private Boolean getIsSendStatus(Long applicationId, Long userId) {
         Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndModelId(applicationId, userId);
         return offer.isPresent();
+    }
+
+    public DownloadUrlResponseDto getOfferImageDownloadUrl(final Long userId, final String offerImageUrl) {
+        //Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
+        String s3Key = offerImageUrl.substring(54);
+        String preSignedUrl = s3Service.getPreSignedUrlToDownload(s3Key);
+        return new DownloadUrlResponseDto(preSignedUrl);
     }
 }

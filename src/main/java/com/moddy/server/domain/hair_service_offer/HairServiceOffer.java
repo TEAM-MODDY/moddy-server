@@ -4,7 +4,6 @@ import com.moddy.server.domain.BaseTimeEntity;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.model.Model;
-import com.moddy.server.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

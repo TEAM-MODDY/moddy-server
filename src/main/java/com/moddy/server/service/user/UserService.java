@@ -40,7 +40,7 @@ public class UserService {
 
     public UserDetailResponseDto getUserDetail(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
-        return new UserDetailResponseDto(user.getId(), user.getName(), user.getName(), user.getRole());
+        return new UserDetailResponseDto(user.getId(), user.getProfileImgUrl(), user.getName(), user.getRole());
     }
 
     private void deleteModelInfos(Long userId) {

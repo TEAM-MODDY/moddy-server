@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ModelJpaRepository extends JpaRepository<Model, Long> {
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "insert into Model (id, year) VALUES (:id, :year)", nativeQuery = true)
+    @Query(value = "insert into model (id, year) VALUES (:id, :year)", nativeQuery = true)
     void modelRegister(@Param("id") Long id, @Param("year") String year);
 
 }

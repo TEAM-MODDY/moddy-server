@@ -1,7 +1,6 @@
 package com.moddy.server.controller.auth;
 
 
-
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
@@ -31,10 +30,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.LOGOUT_SUCCESS;
@@ -88,7 +92,7 @@ public class AuthController {
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long userId,
-            @RequestPart("profileImg") MultipartFile profileImg,
+            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
             @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
@@ -108,15 +112,14 @@ public class AuthController {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
-    @Operation(summary = "[SMS 기능 미완성] 인증번호 요청 API", description = "인증번호 요청 API입니다.")
+    @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "전화번호 인증 요청 성공입니다."),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 카카오 코드를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 전화번호를 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/phoneNumber")
-    public SuccessNonDataResponse sendVerificationCodeMessageToUser(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) {
+    public SuccessNonDataResponse sendVerificationCodeMessageToUser(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) throws IOException {
         authService.sendVerificationCodeMessageToUser(phoneNumberRequestDto.phoneNumber());
         return SuccessNonDataResponse.success(SEND_VERIFICATION_CODE_SUCCESS);
     }

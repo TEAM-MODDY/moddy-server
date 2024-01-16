@@ -5,9 +5,7 @@ import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
-import com.moddy.server.controller.model.dto.requestEditor.ListPropertyEditor;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
-import com.moddy.server.controller.model.dto.request.ModelHairServiceRequest;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
@@ -22,9 +20,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Tag(name = "ModelController")
@@ -104,14 +101,11 @@ public class ModelController {
     @PostMapping(value = "/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessNonDataResponse submitModelApplication(
             @Parameter(hidden = true) @UserId Long userId,
-            @ModelAttribute ModelApplicationRequest request) {
-        modelService.postApplication(userId, request);
+            @RequestPart(value = "modelImgUrl", required = false) MultipartFile modelImgUrl,
+            @RequestPart(value = "applicationCaptureImgUrl", required = false) MultipartFile applicationCaptureImgUrl,
+            @RequestPart(value = "applicationInfo") ModelApplicationRequest applicationInfo) {
+        modelService.postApplication(userId, modelImgUrl, applicationCaptureImgUrl, applicationInfo);
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(List.class, "hairServiceRecords", new ListPropertyEditor(ModelHairServiceRequest.class));
     }
 
 }
