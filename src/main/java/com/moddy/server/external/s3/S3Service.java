@@ -1,8 +1,10 @@
 package com.moddy.server.external.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.moddy.server.domain.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static com.amazonaws.HttpMethod.GET;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +26,7 @@ public class S3Service {
     private final static String APPLICATION_PATH = "APPLICATION";
     private final static String MODEL_PROFILE_PATH = "HAIR_MODEL_PROFILE";
     private final static String MODEL_PROFILE_IMAGE_NAME = "/model_default_profile.png";
+    private final static int EXPIRED_TIME = 3;
     private final AmazonS3 amazonS3;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -33,7 +40,7 @@ public class S3Service {
         return uploadImage(multipartFile, APPLICATION_PATH);
     }
 
-    public String getDefaultProfileImageUrl(){
+    public String getDefaultProfileImageUrl() {
         return amazonS3.getUrl(bucket, MODEL_PROFILE_PATH + MODEL_PROFILE_IMAGE_NAME).toString();
     }
 
@@ -49,6 +56,23 @@ public class S3Service {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getPreSignedUrlToDownload(final String fileName) {
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, fileName)
+                .withMethod(GET)
+                .withExpiration(getExpiredTime())
+                .withResponseHeaders(new ResponseHeaderOverrides().withContentDisposition("attachment"));
+
+        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+    }
+
+    private Date getExpiredTime() {
+        Date expiration = new Date();
+        long expTime = expiration.getTime();
+        expTime += TimeUnit.MINUTES.toMillis(EXPIRED_TIME);
+        expiration.setTime(expTime);
+        return expiration;
     }
 
     private String createFileName(String fileName) {
