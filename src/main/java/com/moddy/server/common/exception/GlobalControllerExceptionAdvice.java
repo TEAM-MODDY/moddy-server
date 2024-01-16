@@ -9,20 +9,18 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.common.exception.model.NotFoundUserException;
 import com.moddy.server.common.exception.model.UnAuthorizedException;
 import feign.FeignException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import static com.moddy.server.common.exception.enums.ErrorCode.INTERNAL_SERVER_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_TOKEN_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_VALUE_TYPE_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_RESOURCE_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -47,6 +45,12 @@ public class GlobalControllerExceptionAdvice {
     protected ErrorResponse handleFeignException(final FeignException e) {
         log.info(e.getMessage());
         return ErrorResponse.error(INVALID_TOKEN_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
     }
 
     /**

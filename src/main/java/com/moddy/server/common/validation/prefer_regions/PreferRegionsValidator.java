@@ -20,7 +20,7 @@ public class PreferRegionsValidator implements ConstraintValidator<ValidPreferRe
         for (Long region : preferRegions) {
             if (region == 0) {
                 zeroCount++;
-                if (zeroCount > 1) {
+                if (zeroCount >= 1) {
                     return false;
                 }
             } else if (region >= 1 && region <= 25) {
