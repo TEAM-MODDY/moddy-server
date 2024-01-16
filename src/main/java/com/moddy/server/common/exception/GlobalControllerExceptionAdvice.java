@@ -1,5 +1,6 @@
 package com.moddy.server.common.exception;
 
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.moddy.server.common.dto.ErrorDataResponse;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.TokenPair;
@@ -12,6 +13,7 @@ import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,8 +50,26 @@ public class GlobalControllerExceptionAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    protected ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
+    protected ErrorResponse handleConstraintViolationException(final ConstraintViolationException  e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValueInstantiationException.class)
+    protected ErrorResponse handleValueInstantiationException(final ValueInstantiationException  e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ErrorResponse handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
         return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
     }
 
