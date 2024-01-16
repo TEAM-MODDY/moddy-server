@@ -1,6 +1,5 @@
 package com.moddy.server.controller.model.dto.request;
 
-import com.moddy.server.common.validation.unique_long.UniqueLongElements;
 import com.moddy.server.common.validation.year.ValidYear;
 import com.moddy.server.common.validation.prefer_regions.ValidPreferRegions;
 import com.moddy.server.domain.user.Gender;
@@ -35,7 +34,6 @@ public record ModelCreateRequest(
         boolean isMarketingAgree,
         @Schema(description = "모델 회원가입 선호 지역 예시입니다.", example ="[\"3\", \"15\"]")
         @ValidPreferRegions
-        @UniqueLongElements
         List<Long> preferRegions
 ) {
 }
