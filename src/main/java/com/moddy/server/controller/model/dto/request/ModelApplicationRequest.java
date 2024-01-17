@@ -8,6 +8,7 @@ import com.moddy.server.domain.prefer_hair_style.HairStyle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record ModelApplicationRequest(
@@ -23,6 +24,7 @@ public record ModelApplicationRequest(
         @Schema(description = "HairServiceRecords 의 예시 JSON 배열 포맷입니다.", example = "[{\"hairService\": \"PERM\", \"hairServiceTerm\": \"UNDER_ONE\"}, {\"hairService\": \"BLACK\", \"hairServiceTerm\": \"ABOVE_TWELVE\"}]")
         List<ModelHairServiceRequest> hairServiceRecords,
         @Schema(description = "모델의 인스타그램 예시입니다.", example ="hizo0")
+        @Pattern(regexp = "[^@]+[_.]+[^@]+", message = "인스타 그램 아이디에는 @는 들어올 수 없지만 _와 .는 가능합니다.")
         String instagramId
 ) {
     public List<ModelHairServiceRequest> getHairServiceRecords() {
