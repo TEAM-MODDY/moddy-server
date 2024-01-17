@@ -32,7 +32,6 @@ public record DesignerCreateRequest(
         Boolean isMarketingAgree,
         @Valid
         HairShopDto hairShop,
-        @Valid
         PortfolioDto portfolio,
         @Schema(example = "introduction")
         @Size(min = 1, max = 200, message = "introduction은 1~200 글자수 사이의 글자입니다.")
