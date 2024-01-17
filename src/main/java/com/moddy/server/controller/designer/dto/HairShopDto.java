@@ -11,11 +11,12 @@ public record HairShopDto(
         @Schema(example = "juno")
         @NotBlank
         @Size(min = 1, max = 25, message = "name은 1~25 글자수 사이의 글자입니다.")
-        @Pattern(regexp = "^[^\\s]+$", message = "name에는 공백(whitespaces)이 들어갈 수 없습니다.")
         String name,
         @Schema(example = "서울시 강남구")
+        @NotBlank
         String address,
         @Schema(example = "선릉로 122길")
+        @NotBlank
         @Size(min = 1, max = 30, message = "상세주소는 1~30 글자수 사이의 글자입니다.")
         String detailAddress
 )
