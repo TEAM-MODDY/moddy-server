@@ -29,6 +29,7 @@ import static com.moddy.server.common.exception.enums.ErrorCode.METHOD_NOT_ALLOW
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_RESOURCE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.VALIDATION_REQUEST_MISSING_EXCEPTION;
 
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalControllerExceptionAdvice {
@@ -115,7 +116,7 @@ public class GlobalControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ErrorResponse handleHttpRequestMethodNotSupportedException(
-            HttpRequestMethodNotSupportedException exception) {
+            HttpRequestMethodNotSupportedException e) {
         return ErrorResponse.error(METHOD_NOT_ALLOWED_EXCEPTION);
     }
 

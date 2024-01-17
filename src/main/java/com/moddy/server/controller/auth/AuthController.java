@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,7 +93,7 @@ public class AuthController {
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long userId,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
-            @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
+            @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
@@ -107,7 +108,7 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
             @Parameter(hidden = true) @UserId Long userId,
-            @RequestBody ModelCreateRequest modelCreateRequest) {
+            @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
@@ -118,7 +119,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/phoneNumber")
-    public SuccessNonDataResponse sendVerificationCodeMessageToUser(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) throws IOException {
+    public SuccessNonDataResponse sendVerificationCodeMessageToUser(@Valid @RequestBody PhoneNumberRequestDto phoneNumberRequestDto) throws IOException {
         authService.sendVerificationCodeMessageToUser(phoneNumberRequestDto.phoneNumber());
         return SuccessNonDataResponse.success(SEND_VERIFICATION_CODE_SUCCESS);
     }
@@ -135,7 +136,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/phoneNumber/verify")
-    public SuccessNonDataResponse verifyCode(@RequestBody VerifyCodeRequestDto verifyCodeRequestDto) {
+    public SuccessNonDataResponse verifyCode(@Valid @RequestBody VerifyCodeRequestDto verifyCodeRequestDto) {
         authService.verifyCode(verifyCodeRequestDto.phoneNumber(), verifyCodeRequestDto.verifyCode());
         return SuccessNonDataResponse.success(VERIFICATION_CODE_MATCH_SUCCESS);
     }

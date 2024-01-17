@@ -2,10 +2,12 @@ package com.moddy.server.service.model;
 
 
 import com.moddy.server.common.exception.enums.ErrorCode;
+import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
+import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoOpenChatResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
@@ -106,6 +108,9 @@ public class ModelService {
     public UserCreateResponse createModel(long userId, ModelCreateRequest request) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
+
+        if (modelJpaRepository.existsById(userId)) throw new ConflictException(ErrorCode.ALREADY_EXIST_USER_EXCEPTION);
+
         user.update(request.name(), request.gender(), request.phoneNumber(), request.isMarketingAgree(), s3Service.getDefaultProfileImageUrl(), Role.MODEL);
 
         modelJpaRepository.modelRegister(userId, request.year());
@@ -173,6 +178,16 @@ public class ModelService {
         OpenChatResponse openChatResponse = new OpenChatResponse(application.getApplicationCaptureUrl(), designer.getKakaoOpenChatUrl(), designerInfoOpenChatResponse);
 
         return openChatResponse;
+    }
+
+    public ApplicationUserDetailResponse getUserDetailInApplication(final Long userId) {
+        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
+        List<String> preferRegions = preferRegionJpaRepository.findAllByModelId(model.getId())
+                .stream()
+                .map(p -> p.getRegion().getName())
+                .toList();
+
+        return new ApplicationUserDetailResponse(model.getName(), model.getGender().getValue(), model.getAge(), preferRegions);
     }
 
     private DesignerInfoResponse getDesignerInfoResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId) {

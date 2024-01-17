@@ -1,6 +1,7 @@
 package com.moddy.server.service.designer;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
+import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
@@ -125,7 +126,7 @@ public class DesignerService {
         String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-
+        if (designerJpaRepository.existsById(userId)) throw new ConflictException(ErrorCode.ALREADY_EXIST_USER_EXCEPTION);
         user.update(request.name(), request.gender(), request.phoneNumber(), request.isMarketingAgree(), profileImgUrl, Role.HAIR_DESIGNER);
 
         HairShop hairShop = HairShop.builder()
@@ -156,6 +157,7 @@ public class DesignerService {
     public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        if (hairServiceOfferJpaRepository.existsByHairModelApplicationId(applicationId)) throw new ConflictException(ErrorCode.ALREADY_EXIST_OFFER_EXCEPTION);
         HairServiceOffer offer = HairServiceOffer.builder()
                 .model(hairModelApplication.getModel())
                 .hairModelApplication(hairModelApplication)
