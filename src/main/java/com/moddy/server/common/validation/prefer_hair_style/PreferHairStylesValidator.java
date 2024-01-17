@@ -17,8 +17,8 @@ public class PreferHairStylesValidator implements ConstraintValidator<ValidPrefe
     @Override
     public boolean isValid(List<PreferHairStyle> preferHairStyles, ConstraintValidatorContext context) {
 
-        Set<PreferHairStyle> uniqueDays = new HashSet<>(preferHairStyles);
-        if(uniqueDays.size() != preferHairStyles.size()) return false;
+        Set<PreferHairStyle> uniquePreferHairStyles = new HashSet<>(preferHairStyles);
+        if(uniquePreferHairStyles.size() != preferHairStyles.size()) return false;
         if (preferHairStyles.isEmpty() || preferHairStyles == null) return false;
 
         return true;
