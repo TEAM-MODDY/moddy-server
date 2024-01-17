@@ -119,7 +119,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/phoneNumber")
-    public SuccessNonDataResponse sendVerificationCodeMessageToUser(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) throws IOException {
+    public SuccessNonDataResponse sendVerificationCodeMessageToUser(@Valid @RequestBody PhoneNumberRequestDto phoneNumberRequestDto) throws IOException {
         authService.sendVerificationCodeMessageToUser(phoneNumberRequestDto.phoneNumber());
         return SuccessNonDataResponse.success(SEND_VERIFICATION_CODE_SUCCESS);
     }
