@@ -24,7 +24,8 @@ public enum SuccessCode {
     VERIFICATION_CODE_MATCH_SUCCESS(HttpStatus.OK, "전화번호 인증 성공입니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공입니다."),
     CREATE_MODEL_APPLICATION_SUCCESS(HttpStatus.OK, "모델 지원서 생성 성공입니다."),
-    USER_WITHDRAW_SUCCESS(HttpStatus.OK, "회원 탈퇴 성공입니다.");
+    USER_WITHDRAW_SUCCESS(HttpStatus.OK, "회원 탈퇴 성공입니다."),
+    GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "제안서 다운로드 url 생성 성공");
 
     private final HttpStatus httpStatus;
     private final String message;

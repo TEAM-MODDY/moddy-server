@@ -14,6 +14,7 @@ public interface HairServiceOfferJpaRepository extends JpaRepository<HairService
     Optional<HairServiceOffer> findByHairModelApplicationIdAndModelId(Long applicationId, Long modelId);
 
     Boolean existsByModelId(Long modelId);
+    Boolean existsByHairModelApplicationId(Long applicationId);
 
     List<HairServiceOffer> findAllByModelId(Long modelId);
 
