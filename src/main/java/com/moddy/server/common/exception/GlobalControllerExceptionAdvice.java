@@ -1,5 +1,6 @@
 package com.moddy.server.common.exception;
 
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.moddy.server.common.dto.ErrorDataResponse;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.TokenPair;
@@ -9,9 +10,12 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.common.exception.model.NotFoundUserException;
 import com.moddy.server.common.exception.model.UnAuthorizedException;
 import feign.FeignException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,6 +27,7 @@ import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_TOKEN_EX
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_VALUE_TYPE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_RESOURCE_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.VALIDATION_REQUEST_MISSING_EXCEPTION;
 
 @Slf4j
 @RestControllerAdvice
@@ -47,6 +52,30 @@ public class GlobalControllerExceptionAdvice {
     protected ErrorResponse handleFeignException(final FeignException e) {
         log.info(e.getMessage());
         return ErrorResponse.error(INVALID_TOKEN_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ErrorResponse handleConstraintViolationException(final ConstraintViolationException  e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValueInstantiationException.class)
+    protected ErrorResponse handleValueInstantiationException(final ValueInstantiationException e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ErrorResponse handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
+        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
     }
 
     /**
