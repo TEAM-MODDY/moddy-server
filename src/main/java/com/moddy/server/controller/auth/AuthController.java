@@ -136,7 +136,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/phoneNumber/verify")
-    public SuccessNonDataResponse verifyCode(@RequestBody VerifyCodeRequestDto verifyCodeRequestDto) {
+    public SuccessNonDataResponse verifyCode(@Valid @RequestBody VerifyCodeRequestDto verifyCodeRequestDto) {
         authService.verifyCode(verifyCodeRequestDto.phoneNumber(), verifyCodeRequestDto.verifyCode());
         return SuccessNonDataResponse.success(VERIFICATION_CODE_MATCH_SUCCESS);
     }
