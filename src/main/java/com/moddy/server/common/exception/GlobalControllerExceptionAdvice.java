@@ -28,11 +28,6 @@ import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_RESOUR
 import static com.moddy.server.common.exception.enums.ErrorCode.VALIDATION_REQUEST_MISSING_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_TOKEN_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_VALUE_TYPE_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_RESOURCE_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.VALIDATION_REQUEST_MISSING_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_TOKEN_EXCEPTION;
-import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_VALUE_TYPE_EXCEPTION;
 
 
 @Slf4j
