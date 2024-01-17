@@ -108,7 +108,7 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
             @Parameter(hidden = true) @UserId Long userId,
-            @RequestBody ModelCreateRequest modelCreateRequest) {
+            @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
