@@ -93,7 +93,7 @@ public class AuthController {
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long userId,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
-            @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
+            @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
