@@ -69,7 +69,7 @@ public class GlobalControllerExceptionAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValueInstantiationException.class)
-    protected ErrorResponse handleValueInstantiationException(final ValueInstantiationException  e) {
+    protected ErrorResponse handleValueInstantiationException(final ValueInstantiationException e) {
         return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
     }
 
@@ -116,7 +116,7 @@ public class GlobalControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ErrorResponse handleHttpRequestMethodNotSupportedException(
-            HttpRequestMethodNotSupportedException exception) {
+            HttpRequestMethodNotSupportedException e) {
         return ErrorResponse.error(METHOD_NOT_ALLOWED_EXCEPTION);
     }
 
