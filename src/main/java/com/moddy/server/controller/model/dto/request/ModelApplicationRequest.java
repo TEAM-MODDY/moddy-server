@@ -26,7 +26,7 @@ public record ModelApplicationRequest(
         @Size(min = 0, max = 3, message = "hairServiceRecord는 선택사항이며, 3개까지 추가 가능합니다.")
         List<ModelHairServiceRequest> hairServiceRecords,
         @Schema(description = "모델의 인스타그램 예시입니다.", example ="hizo0")
-        @Pattern(regexp = "^[^@\\s]+[_\\.]+[^\\s]+$", message = "인스타 그램 아이디에는 @는 들어올 수 없지만 _와 .는 가능합니다.")
+        @Pattern(regexp = "^[^@\\s]*[_\\.]*[^\\s]+$", message = "인스타 그램 아이디에는 @는 들어올 수 없지만 _와 .는 가능합니다.")
         String instagramId
 ) {
     public List<ModelHairServiceRequest> getHairServiceRecords() {
