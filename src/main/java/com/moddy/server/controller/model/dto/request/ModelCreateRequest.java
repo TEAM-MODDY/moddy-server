@@ -18,7 +18,6 @@ public record ModelCreateRequest(
         @Schema(description = "모델 회원가입 유저 이름 예시입니다.", example ="안현주")
         @NotBlank
         @Size(min = 1, max = 10, message = "name은 1~10 글자수 사이의 글자입니다.")
-        @Pattern(regexp = "^[^\\s]+$", message = "name에는 공백(whitespaces)이 들어갈 수 없습니다.")
         String name,
         @Schema(description = "모델 회원가입 유저 나이 예시입니다.", example ="2000")
         @NotBlank
