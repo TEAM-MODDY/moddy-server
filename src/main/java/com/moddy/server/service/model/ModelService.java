@@ -6,6 +6,7 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
+import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoOpenChatResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
@@ -173,6 +174,16 @@ public class ModelService {
         OpenChatResponse openChatResponse = new OpenChatResponse(application.getApplicationCaptureUrl(), designer.getKakaoOpenChatUrl(), designerInfoOpenChatResponse);
 
         return openChatResponse;
+    }
+
+    public ApplicationUserDetailResponse getUserDetailInApplication(final Long userId) {
+        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
+        List<String> preferRegions = preferRegionJpaRepository.findAllByModelId(model.getId())
+                .stream()
+                .map(p -> p.getRegion().getName())
+                .toList();
+
+        return new ApplicationUserDetailResponse(model.getName(), model.getGender().getValue(), model.getAge(), preferRegions);
     }
 
     private DesignerInfoResponse getDesignerInfoResponse(HairServiceOffer hairServiceOffer, Long userId, Long offerId) {
