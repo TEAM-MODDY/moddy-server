@@ -5,12 +5,9 @@ import com.moddy.server.external.kakao.dto.response.KakaoUserResponse;
 import com.moddy.server.external.kakao.feign.KakaoApiClient;
 import com.moddy.server.external.kakao.feign.KakaoAuthApiClient;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoSocialService extends SocialService {
@@ -26,7 +23,6 @@ public class KakaoSocialService extends SocialService {
     @Override
     public String getIdFromKakao(String baseUrl, String kakaoCode) {
         String redirectUrl = baseUrl + KAKAO_ROUTER;
-        log.info("----------------------> " + baseUrl + " <---------------------");
         KakaoAccessTokenResponse tokenResponse = kakaoAuthApiClient.getOAuth2AccessToken(
                 GRANT_TYPE,
                 clientId,
@@ -35,8 +31,6 @@ public class KakaoSocialService extends SocialService {
         );
 
         KakaoUserResponse userResponse = kakaoApiClient.getUserInformation(Bearer + tokenResponse.accessToken());
-        log.info("---------> kakao id is " + userResponse.id() + "<----------------");
-        log.info("---------> kakao code is " + kakaoCode + "<----------------");
         return String.valueOf(userResponse.id());
     }
 }
