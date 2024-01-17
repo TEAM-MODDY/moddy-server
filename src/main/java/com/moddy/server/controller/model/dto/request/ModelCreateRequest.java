@@ -26,6 +26,7 @@ public record ModelCreateRequest(
         String year,
         @Schema(description = "모델 회원가입 유저 성별 예시입니다.", example ="FEMALE")
         @Enumerated(EnumType.STRING)
+        @NotNull
         Gender gender,
         @Schema(description = "모델 회원가입 유저 전화번호 예시입니다.", example ="01012345678")
         @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 01011112222형태입니다.")
