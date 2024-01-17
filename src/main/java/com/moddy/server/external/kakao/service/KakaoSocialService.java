@@ -35,6 +35,8 @@ public class KakaoSocialService extends SocialService {
         );
 
         KakaoUserResponse userResponse = kakaoApiClient.getUserInformation(Bearer + tokenResponse.accessToken());
+        log.info("---------> kakao id is " + userResponse.id() + "<----------------");
+        log.info("---------> kakao code is " + kakaoCode + "<----------------");
         return String.valueOf(userResponse.id());
     }
 }
