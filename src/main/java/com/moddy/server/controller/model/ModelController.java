@@ -6,6 +6,7 @@ import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
+import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
@@ -20,7 +21,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -106,6 +114,19 @@ public class ModelController {
             @RequestPart(value = "applicationInfo") ModelApplicationRequest applicationInfo) {
         modelService.postApplication(userId, modelImgUrl, applicationCaptureImgUrl, applicationInfo);
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
+    }
+
+    @Operation(summary = "[JWT] 모델 지원서 최종 확인 시 유저 정보 조회 API", description = "[모델 뷰] 모델 지원서 최종 확인 시 유저 정보 조회 API 입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 유저입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @SecurityRequirement(name = "JWT Auth")
+    @GetMapping(value = "/application/user")
+    public SuccessResponse<ApplicationUserDetailResponse> getUserDetailInApplication(@Parameter(hidden = true) @UserId Long userId) {
+        return SuccessResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS, modelService.getUserDetailInApplication(userId));
     }
 
 }
