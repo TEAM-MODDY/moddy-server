@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface HairServiceOfferJpaRepository extends JpaRepository<HairServiceOffer, Long> {
     Page<HairServiceOffer> findByModelId(Long modelId, Pageable pageable);
 
-    Optional<HairServiceOffer> findByHairModelApplicationIdAndModelId(Long applicationId, Long modelId);
+    Optional<HairServiceOffer> findByHairModelApplicationIdAndDesignerId(Long applicationId, Long designerId);
 
     Boolean existsByModelId(Long modelId);
     Boolean existsByHairModelApplicationId(Long applicationId);
