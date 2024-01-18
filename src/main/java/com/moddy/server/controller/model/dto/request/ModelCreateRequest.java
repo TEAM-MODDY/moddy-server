@@ -28,7 +28,7 @@ public record ModelCreateRequest(
         @NotNull
         Gender gender,
         @Schema(description = "모델 회원가입 유저 전화번호 예시입니다.", example ="01012345678")
-        @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 01011112222형태입니다.")
+        @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 010####$$$$형태입니다.")
         String phoneNumber,
         @Schema(description = "모델 회원가입 유저 마케팅 동의 여부 예시입니다.", example = "true")
         boolean isMarketingAgree,

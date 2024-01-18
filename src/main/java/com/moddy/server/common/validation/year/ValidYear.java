@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidYear {
 
-    String message() default "Year는 오늘의 년도보다 큰 년도일 수 없어요.";
+    String message() default "year는 1900~올해까지 가능합니다.";
 
     Class<?>[] groups() default {};
 
