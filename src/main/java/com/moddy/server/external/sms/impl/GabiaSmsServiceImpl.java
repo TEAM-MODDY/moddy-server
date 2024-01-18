@@ -3,7 +3,11 @@ package com.moddy.server.external.sms.impl;
 import com.google.gson.Gson;
 import com.moddy.server.external.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
