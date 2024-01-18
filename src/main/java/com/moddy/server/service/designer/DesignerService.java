@@ -180,7 +180,6 @@ public class DesignerService {
 
     @Transactional
     public ApplicationDetailInfoResponse getApplicationDetail(Long userId, Long applicationId) {
-        User user = new User();
 
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
