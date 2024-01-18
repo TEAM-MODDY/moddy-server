@@ -160,8 +160,9 @@ public class DesignerService {
     public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) throws IOException {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        if (hairServiceOfferJpaRepository.existsByHairModelApplicationId(applicationId))
-            throw new ConflictException(ErrorCode.ALREADY_EXIST_OFFER_EXCEPTION);
+
+        if (hairServiceOfferJpaRepository.existsByHairModelApplicationIdAndDesignerId(applicationId,designer.getId())) throw new ConflictException(ErrorCode.ALREADY_EXIST_OFFER_EXCEPTION);
+
         HairServiceOffer offer = HairServiceOffer.builder()
                 .model(hairModelApplication.getModel())
                 .hairModelApplication(hairModelApplication)
