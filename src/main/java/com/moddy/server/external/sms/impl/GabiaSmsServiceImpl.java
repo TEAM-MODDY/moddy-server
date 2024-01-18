@@ -33,11 +33,10 @@ public class GabiaSmsServiceImpl implements SmsService {
     private String refKey;
 
     @Override
-    public boolean sendSms(final String to, final String verificationCode) throws IOException {
+    public boolean sendSms(final String to, final String message) throws IOException {
         final String accessToken = getGabiaAccessToken();
         final String smsValue = createAuthValue(accessToken);
 
-        final String message = String.format(MESSAGE_FORM, verificationCode);
         final RequestBody requestBody = createMessageRequestBody(to, message);
         final Request request = createRequest(requestBody, smsValue, SMS_SEND_URL);
         final Response response = callExecute(request);
