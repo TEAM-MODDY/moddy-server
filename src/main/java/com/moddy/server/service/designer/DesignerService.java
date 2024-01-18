@@ -3,6 +3,7 @@ package com.moddy.server.service.designer;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.common.util.SmsUtil;
 import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
@@ -51,6 +52,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +82,7 @@ public class DesignerService {
     private final HairServcieRecordJpaRepository hairServcieRecordJpaRepository;
     private final UserRepository userRepository;
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
+    private final SmsUtil smsUtil;
 
 
     @Transactional
@@ -125,7 +128,8 @@ public class DesignerService {
         String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-        if (designerJpaRepository.existsById(userId)) throw new ConflictException(ErrorCode.ALREADY_EXIST_USER_EXCEPTION);
+        if (designerJpaRepository.existsById(userId))
+            throw new ConflictException(ErrorCode.ALREADY_EXIST_USER_EXCEPTION);
         user.update(request.name(), request.gender(), request.phoneNumber(), request.isMarketingAgree(), profileImgUrl, Role.HAIR_DESIGNER);
 
         HairShop hairShop = HairShop.builder()
@@ -153,10 +157,11 @@ public class DesignerService {
 
 
     @Transactional
-    public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) {
+    public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) throws IOException {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        if (hairServiceOfferJpaRepository.existsByHairModelApplicationId(applicationId)) throw new ConflictException(ErrorCode.ALREADY_EXIST_OFFER_EXCEPTION);
+        if (hairServiceOfferJpaRepository.existsByHairModelApplicationId(applicationId))
+            throw new ConflictException(ErrorCode.ALREADY_EXIST_OFFER_EXCEPTION);
         HairServiceOffer offer = HairServiceOffer.builder()
                 .model(hairModelApplication.getModel())
                 .hairModelApplication(hairModelApplication)
@@ -176,6 +181,10 @@ public class DesignerService {
                     preferOfferConditionJpaRepository.save(preferOfferCondition);
 
                 });
+
+        final String modelName = hairModelApplication.getModel().getName();
+        final String modelPhoneNumber = hairModelApplication.getModel().getPhoneNumber();
+        smsUtil.sendOfferToModel(modelPhoneNumber, modelName);
     }
 
     @Transactional
