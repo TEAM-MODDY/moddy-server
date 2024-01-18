@@ -12,6 +12,7 @@ import com.moddy.server.common.exception.model.UnAuthorizedException;
 import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -22,7 +23,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.stream.Collectors;
+
 import static com.moddy.server.common.exception.enums.ErrorCode.INTERNAL_SERVER_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_ENUM_TYPE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_TOKEN_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_VALUE_TYPE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.METHOD_NOT_ALLOWED_EXCEPTION;
@@ -58,25 +62,30 @@ public class GlobalControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+        String errorMessages = e.getAllErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+
+        return ErrorResponse.badRequestError(errorMessages);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    protected ErrorResponse handleConstraintViolationException(final ConstraintViolationException  e) {
-        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+    protected ErrorResponse handleConstraintViolationException(final ConstraintViolationException e) {
+        return ErrorResponse.badRequestError(VALIDATION_REQUEST_MISSING_EXCEPTION.getMessage() + " " + e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValueInstantiationException.class)
     protected ErrorResponse handleValueInstantiationException(final ValueInstantiationException e) {
-        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+        return ErrorResponse.badRequestError(VALIDATION_REQUEST_MISSING_EXCEPTION.getMessage() + " " + e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected ErrorResponse handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
-        return ErrorResponse.error(VALIDATION_REQUEST_MISSING_EXCEPTION);
+        return ErrorResponse.badRequestError(INVALID_ENUM_TYPE_EXCEPTION.getMessage() + " " + e.getMessage());
     }
 
     /**
