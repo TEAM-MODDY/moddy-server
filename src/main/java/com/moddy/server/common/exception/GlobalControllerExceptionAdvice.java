@@ -26,6 +26,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.stream.Collectors;
 
 import static com.moddy.server.common.exception.enums.ErrorCode.INTERNAL_SERVER_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_EMPTY_TYPE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_ENUM_TYPE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_TOKEN_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_VALUE_TYPE_EXCEPTION;
@@ -73,7 +74,7 @@ public class GlobalControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     protected ErrorResponse handleConstraintViolationException(final ConstraintViolationException e) {
-        return ErrorResponse.badRequestError(VALIDATION_REQUEST_MISSING_EXCEPTION.getMessage() + " " + e.getMessage());
+        return ErrorResponse.badRequestError(INVALID_EMPTY_TYPE_EXCEPTION.getMessage() + " " + e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
