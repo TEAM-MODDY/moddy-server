@@ -84,7 +84,6 @@ public class DesignerService {
 
     @Transactional
     public DesignerMainResponse getDesignerMainInfo(Long userId, int page, int size) {
-        User user = new User();
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
 
         Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
@@ -104,7 +103,7 @@ public class DesignerService {
                     application.getId(),
                     model.getName(),
                     model.getAge(),
-                    model.getProfileImgUrl(),
+                    application.getModelImgUrl(),
                     model.getGender().getValue(),
                     top2hairStyles
             );
