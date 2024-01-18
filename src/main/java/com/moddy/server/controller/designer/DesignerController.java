@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED_URL_SUCCESS;
 
 @RestController
@@ -66,7 +68,7 @@ public class DesignerController {
     public SuccessNonDataResponse offerCreateRequest(
             @Parameter(hidden = true) @UserId Long userId,
             @PathVariable(value = "applicationId") Long applicationId,
-            @Valid @RequestBody OfferCreateRequest offerCreateRequest) {
+            @Valid @RequestBody OfferCreateRequest offerCreateRequest) throws IOException {
         designerService.postOffer(userId, applicationId, offerCreateRequest);
         return SuccessNonDataResponse.success(SuccessCode.POST_OFFER_SUCCESS);
     }
