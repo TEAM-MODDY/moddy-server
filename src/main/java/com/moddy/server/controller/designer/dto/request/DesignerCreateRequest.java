@@ -27,7 +27,7 @@ public record DesignerCreateRequest(
         Gender gender,
         @Schema(example = "01020000000")
         @NotBlank
-        @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 01011112222형태입니다.")
+        @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 010####$$$$형태입니다.")
         String phoneNumber,
         @Schema(example = "true")
         boolean isMarketingAgree,
