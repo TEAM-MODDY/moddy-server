@@ -16,8 +16,7 @@ import java.util.List;
 @NotNull
 public record ModelCreateRequest(
         @Schema(description = "모델 회원가입 유저 이름 예시입니다.", example ="안현주")
-        @NotBlank
-        @Size(min = 1, max = 10, message = "name은 1~10 글자수 사이의 글자입니다.")
+        @Size(min = 0, max = 10, message = "name은 1~10 글자수 사이의 글자입니다.")
         String name,
         @Schema(description = "모델 회원가입 유저 나이 예시입니다.", example ="2000")
         @NotBlank
@@ -28,7 +27,7 @@ public record ModelCreateRequest(
         @NotNull
         Gender gender,
         @Schema(description = "모델 회원가입 유저 전화번호 예시입니다.", example ="01012345678")
-        @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 01011112222형태입니다.")
+        @Pattern(regexp = "^010[0-9]{8}$", message = "phoneNumber는 010####$$$$형태입니다.")
         String phoneNumber,
         @Schema(description = "모델 회원가입 유저 마케팅 동의 여부 예시입니다.", example = "true")
         boolean isMarketingAgree,
