@@ -36,3 +36,4 @@ output/
 *.log.gz
 *.log-*.gz
 logs/
+
