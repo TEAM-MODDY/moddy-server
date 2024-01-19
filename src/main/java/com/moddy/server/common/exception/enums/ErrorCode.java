@@ -24,6 +24,14 @@ public enum ErrorCode {
     INVALID_ENUM_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "요청한 상수 값이 유효하지 않습니다."),
     INVALID_EMPTY_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 값은 null 또 상수 값이 유효하지 않습니다."),
     INVALID_PHONE_NUMBER_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 전화번호를 입력했습니다."),
+    INVALID_NAME_EXCEPTION(HttpStatus.BAD_REQUEST, "name은 1~10 글자수 사이의 글자입니다."),
+    INVALID_YEAR_EXCEPTION(HttpStatus.BAD_REQUEST, "year는 1900~올해까지 가능합니다."),
+    INVALID_IS_MARKETING_AGREE_EXCEPTION(HttpStatus.BAD_REQUEST, "marketing 동의 여부는 true, false만 가능합니다."),
+    INVALID_PREFER_REGION_EXCEPTION(HttpStatus.BAD_REQUEST, "preferRegions는 0은 1개만, 1~25사이의 값은 3개까지 올 수 있습니다."),
+    INVALID_PREFER_HAIR_STYLE_EXCEPTION(HttpStatus.BAD_REQUEST,"preferHairStyles는 필수 선택, 최소 1개부터 최대 6개 선택 가능합니다."),
+    INVALID_HAIR_DETAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "hairDetail은 0~200 글자수 사이의 글자입니다."),
+    INVALID_HAIR_RECORD_SERVICE_EXCEPTION(HttpStatus.BAD_REQUEST, "hairServiceRecord는 선택사항이며, 3개까지 추가 가능합니다."),
+    INVALID_INSTAGRAM_EXCEPTION(HttpStatus.BAD_REQUEST, "인스타아이디는 선택사항이며, @는 들어올 수 없지만 _와 .는 가능합니다."),
 
     // 401
     TOKEN_NOT_CONTAINED_EXCEPTION(HttpStatus.UNAUTHORIZED, "Access Token이 필요합니다."),
