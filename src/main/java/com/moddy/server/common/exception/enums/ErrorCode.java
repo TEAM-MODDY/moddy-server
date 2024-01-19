@@ -22,6 +22,14 @@ public enum ErrorCode {
     INVALID_VALUE_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 타입 값을 입력했습니다."),
     VALIDATION_REQUEST_MISSING_EXCEPTION(HttpStatus.BAD_REQUEST, "요청값이 유효하지 않습니다."),
     INVALID_PHONE_NUMBER_EXCEPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 전화번호를 입력했습니다."),
+    INVALID_NAME_EXCEPTION(HttpStatus.BAD_REQUEST, "name은 1~10 글자수 사이의 글자입니다."),
+    INVALID_INTRODUCTION_EXCEPTION(HttpStatus.BAD_REQUEST, "introduction은 1~200 글자수 사이의 글자입니다."),
+    INVALID_URL_EXCEPTION(HttpStatus.BAD_REQUEST, "url에는 공백(whitespaces)이 들어갈 수 없습니다."),
+    INVALID_HAIRSHOP_NAME_EXCEPTION(HttpStatus.BAD_REQUEST, "name은 1~25 글자수 사이의 글자입니다."),
+    INVALID_IS_MARKETING_AGREE_EXCEPTION(HttpStatus.BAD_REQUEST, "marketing 동의 여부는 true, false만 가능합니다."),
+    INVALID_HAIRSHOP_DETAIL_ADDRESS_EXCEPTION(HttpStatus.BAD_REQUEST, "상세주소는 1~30 글자수 사이의 글자입니다."),
+    INVALID_OFFER_DETAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "상세제안은 1~200 글자수 사이의 글자입니다."),
+    INVALID_PREFER_OFFER_CONDITION_EXCEPTION(HttpStatus.BAD_REQUEST, "최소 한 개 이상의 희망 제안 조건이 필요합니다"),
 
     // 401
     TOKEN_NOT_CONTAINED_EXCEPTION(HttpStatus.UNAUTHORIZED, "Access Token이 필요합니다."),
