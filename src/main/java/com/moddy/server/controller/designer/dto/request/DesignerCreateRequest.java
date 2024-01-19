@@ -19,8 +19,7 @@ import java.util.List;
 @Schema
 public record DesignerCreateRequest(
         @Schema(example = "박경린")
-        @NotBlank
-        @Size(min = 1, max = 10, message = "name은 1~10 글자수 사이의 글자입니다.")
+        @NotNull
         String name,
         @Schema(example = "MALE")
         @NotNull
@@ -37,12 +36,11 @@ public record DesignerCreateRequest(
         @Valid
         PortfolioDto portfolio,
         @Schema(example = "introduction")
-        @NotBlank
-        @Size(min = 1, max = 200, message = "introduction은 1~200 글자수 사이의 글자입니다.")
+        @NotNull
+        @Size(min = 0, max = 200, message = "introduction은 1~200 글자수 사이의 글자입니다.")
         String introduction,
         @Schema(example = "http://.kakao")
-        @NotBlank
-        @Pattern(regexp = "^[^\\s]+$", message = "url에는 공백(whitespaces)이 들어갈 수 없습니다.")
+        @NotNull
         String kakaoOpenChatUrl,
         @UniqueDayOfWeek
         List<DayOfWeek> dayOffs

@@ -2,6 +2,7 @@ package com.moddy.server.controller.designer.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -9,15 +10,15 @@ import lombok.*;
 @Builder
 public record HairShopDto(
         @Schema(example = "juno")
-        @NotBlank
-        @Size(min = 1, max = 25, message = "name은 1~25 글자수 사이의 글자입니다.")
+        @NotNull
+        @Size(min = 0, max = 25, message = "name은 1~25 글자수 사이의 글자입니다.")
         String name,
         @Schema(example = "서울시 강남구")
-        @NotBlank
+        @NotNull
         String address,
         @Schema(example = "선릉로 122길")
-        @NotBlank
-        @Size(min = 1, max = 30, message = "상세주소는 1~30 글자수 사이의 글자입니다.")
+        @NotNull
+        @Size(min = 0, max = 30, message = "상세주소는 1~30 글자수 사이의 글자입니다.")
         String detailAddress
 )
 {

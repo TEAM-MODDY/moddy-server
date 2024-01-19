@@ -10,11 +10,9 @@ import lombok.*;
 public record PortfolioDto(
         @Schema(example = "http://instagram")
         @NotNull
-        @Pattern(regexp = "^[\\s\\S]*$", message = "url에는 공백(whitespaces)이 들어갈 수 없습니다.")
         String instagramUrl,
         @Schema(example = "http://naver")
         @NotNull
-        @Pattern(regexp = "^[\\s\\S]*$", message = "url에는 공백(whitespaces)이 들어갈 수 없습니다.")
         String naverPlaceUrl
 ) {
 }
