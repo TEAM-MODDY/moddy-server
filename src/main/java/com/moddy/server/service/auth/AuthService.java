@@ -13,24 +13,21 @@ import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.domain.region.repository.RegionJpaRepository;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.domain.user.repository.UserRepository;
-import com.moddy.server.domain.verify.UserVerification;
-import com.moddy.server.domain.verify.repository.UserVerificationRepository;
 import com.moddy.server.external.kakao.service.KakaoSocialService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.moddy.server.common.exception.enums.ErrorCode.EXPIRE_VERIFICATION_CODE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_PHONE_NUMBER_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_VERIFICATION_CODE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_MATCH_VERIFICATION_CODE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.USER_NOT_FOUND_EXCEPTION;
+
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +37,6 @@ public class AuthService {
     private final KakaoSocialService kakaoSocialService;
     private final UserRepository userRepository;
     private final RegionJpaRepository regionJpaRepository;
-    private final UserVerificationRepository userVerificationRepository;
 
     public LoginResponseDto login(final String baseUrl, final String kakaoCode) {
         String kakaoId = kakaoSocialService.getIdFromKakao(baseUrl, kakaoCode);
@@ -83,37 +79,24 @@ public class AuthService {
     }
 
     @Transactional
-    public void sendVerificationCodeMessageToUser(String phoneNumber) throws IOException {
-        Optional<UserVerification> userVerification = userVerificationRepository.findByPhoneNumber(phoneNumber);
-        if (userVerification.isPresent()) {
-            userVerificationRepository.deleteByPhoneNumber(phoneNumber);
-        }
+    public void sendVerificationCodeMessageToUser(final String phoneNumber) throws IOException {
+        final String verificationCode = VerificationCodeGenerator.generate();
 
-        String verificationCode = VerificationCodeGenerator.generate();
         if (!smsUtil.sendVerificationCode(phoneNumber, verificationCode))
             throw new BadRequestException(INVALID_PHONE_NUMBER_EXCEPTION);
 
-        UserVerification newUserVerification = UserVerification.builder()
-                .phoneNumber(phoneNumber)
-                .verificationCode(verificationCode)
-                .build();
-        userVerificationRepository.save(newUserVerification);
+        smsUtil.saveVerificationCode(phoneNumber, verificationCode);
     }
 
     @Transactional
-    public void verifyCode(String phoneNumber, String verificationCode) {
-        UserVerification userVerification = userVerificationRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_VERIFICATION_CODE_EXCEPTION));
+    public void verifyCode(final String phoneNumber, final String verificationCode) {
+        if (!smsUtil.isVerificationCode(phoneNumber))
+            throw new NotFoundException(NOT_FOUND_VERIFICATION_CODE_EXCEPTION);
 
-        if (userVerification.isExpireCode(LocalDateTime.now())) {
-            userVerificationRepository.deleteByPhoneNumber(phoneNumber);
-            throw new BadRequestException(EXPIRE_VERIFICATION_CODE_EXCEPTION);
-        }
-
-        if (!verificationCode.equals(userVerification.getVerificationCode()))
+        if (!smsUtil.getVerificationCode(phoneNumber).equals(verificationCode))
             throw new BadRequestException(NOT_MATCH_VERIFICATION_CODE_EXCEPTION);
 
-        userVerificationRepository.deleteByPhoneNumber(phoneNumber);
+        smsUtil.deleteVerificationCode(phoneNumber);
     }
 
     public void logout(Long userId) {
