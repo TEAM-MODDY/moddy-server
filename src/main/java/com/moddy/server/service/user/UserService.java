@@ -63,10 +63,16 @@ public class UserService {
     private void deleteModelApplications(Long userId) {
         List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByModelId(userId);
         hairModelApplications.forEach(hairModelApplication -> {
+            deleteApplicationImage(hairModelApplication);
             preferHairStyleJpaRepository.deleteAllByHairModelApplication(hairModelApplication);
             hairServiceRecordJpaRepository.deleteAllByHairModelApplication(hairModelApplication);
             hairModelApplicationJpaRepository.deleteById(hairModelApplication.getId());
         });
+    }
+
+    private void deleteApplicationImage(final HairModelApplication hairModelApplication) {
+        s3Service.deleteS3Image(hairModelApplication.getApplicationCaptureUrl());
+        s3Service.deleteS3Image(hairModelApplication.getModelImgUrl());
     }
 
     private void deleteModelPreferRegions(Long userId) {
