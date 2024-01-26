@@ -15,6 +15,7 @@ import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferCond
 import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.domain.user.repository.UserRepository;
+import com.moddy.server.external.s3.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class UserService {
     private final PreferRegionJpaRepository preferRegionJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
     private final DesignerJpaRepository designerJpaRepository;
+    private final S3Service s3Service;
 
     public UserDetailResponseDto getUserDetail(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
@@ -76,10 +78,11 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    private void deleteDesignerInfos(Long userId) {
-        deleteDesignerHairServiceOfferInfos(userId);
-        deleteDesignerDayOffs(userId);
-        deleteDesignerInfo(userId);
+    private void deleteDesignerInfos(final User user) {
+        deleteDesignerHairServiceOfferInfos(user.getId());
+        deleteDesignerDayOffs(user.getId());
+        deleteDesignerProfileImage(user);
+        deleteDesignerInfo(user.getId());
     }
 
     private void deleteDesignerHairServiceOfferInfos(Long userId) {
@@ -99,10 +102,14 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    private void deleteDesignerProfileImage(final User user) {
+        s3Service.deleteS3Image(user.getProfileImgUrl());
+    }
+
     @Transactional
     public void withdraw(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
         if (user.getRole() == MODEL) deleteModelInfos(userId);
-        else deleteDesignerInfos(userId);
+        else deleteDesignerInfos(user);
     }
 }

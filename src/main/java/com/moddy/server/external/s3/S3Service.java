@@ -56,6 +56,11 @@ public class S3Service {
         return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
     }
 
+    public void deleteS3Image(final String imageUrl) {
+        final String imageKey = getImageUrlToKey(imageUrl);
+        amazonS3.deleteObject(bucket, imageKey);
+    }
+
     private String uploadImage(MultipartFile multipartFile, String path) {
         String fileName = createFileName(multipartFile.getOriginalFilename());
         ObjectMetadata objectMetadata = new ObjectMetadata();
