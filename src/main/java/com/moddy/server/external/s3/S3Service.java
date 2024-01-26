@@ -26,6 +26,7 @@ public class S3Service {
     private final static String APPLICATION_PATH = "APPLICATION";
     private final static String MODEL_PROFILE_PATH = "HAIR_MODEL_PROFILE";
     private final static String MODEL_PROFILE_IMAGE_NAME = "/model_default_profile.png";
+    private final static int IMAGE_URL_PREFIX_LENGTH = 54;
     private final static int EXPIRED_TIME = 3;
     private final AmazonS3 amazonS3;
     @Value("${cloud.aws.s3.bucket}")
@@ -44,6 +45,22 @@ public class S3Service {
         return amazonS3.getUrl(bucket, MODEL_PROFILE_PATH + MODEL_PROFILE_IMAGE_NAME).toString();
     }
 
+    public String getPreSignedUrlToDownload(final String fileName) {
+        final String imageKey = getImageUrlToKey(fileName);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, imageKey)
+                .withMethod(GET)
+                .withExpiration(getExpiredTime())
+                .withResponseHeaders(new ResponseHeaderOverrides().withContentDisposition("attachment"));
+
+        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+    }
+
+    public void deleteS3Image(final String imageUrl) {
+        final String imageKey = getImageUrlToKey(imageUrl);
+        amazonS3.deleteObject(bucket, imageKey);
+    }
+
     private String uploadImage(MultipartFile multipartFile, String path) {
         String fileName = createFileName(multipartFile.getOriginalFilename());
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -58,13 +75,8 @@ public class S3Service {
         }
     }
 
-    public String getPreSignedUrlToDownload(final String fileName) {
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, fileName)
-                .withMethod(GET)
-                .withExpiration(getExpiredTime())
-                .withResponseHeaders(new ResponseHeaderOverrides().withContentDisposition("attachment"));
-
-        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+    private String getImageUrlToKey(final String imageUrl) {
+        return imageUrl.substring(IMAGE_URL_PREFIX_LENGTH);
     }
 
     private Date getExpiredTime() {

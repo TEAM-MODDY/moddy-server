@@ -256,9 +256,8 @@ public class DesignerService {
     }
 
     public DownloadUrlResponseDto getOfferImageDownloadUrl(final Long userId, final String offerImageUrl) {
-        //Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
-        String s3Key = offerImageUrl.substring(54);
-        String preSignedUrl = s3Service.getPreSignedUrlToDownload(s3Key);
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
+        String preSignedUrl = s3Service.getPreSignedUrlToDownload(offerImageUrl);
         return new DownloadUrlResponseDto(preSignedUrl);
     }
 }
