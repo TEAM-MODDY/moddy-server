@@ -12,8 +12,8 @@ public class ModelRegisterService {
     private final ModelJpaRepository modelJpaRepository;
 
     public void deleteModelInfo(final Long modelId) {
-        modelJpaRepository.deleteById(modelId);
         deleteModelPreferRegions(modelId);
+        modelJpaRepository.deleteById(modelId);
     }
 
     private void deleteModelPreferRegions(final Long modelId) {
