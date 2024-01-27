@@ -21,4 +21,12 @@ public class HairServiceOfferRegisterService {
             hairServiceOfferJpaRepository.deleteById(hairServiceOffer.getId());
         });
     }
+
+    public void deleteDesignerHairServiceOfferInfos(final Long designerId) {
+        final List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByDesignerId(designerId);
+        hairServiceOffers.forEach(hairServiceOffer -> {
+            preferOfferConditionJpaRepository.deleteAllByHairServiceOffer(hairServiceOffer);
+            hairServiceOfferJpaRepository.deleteById(hairServiceOffer.getId());
+        });
+    }
 }
