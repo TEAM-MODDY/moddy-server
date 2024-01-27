@@ -40,11 +40,6 @@ public class UserService {
     private final DesignerJpaRepository designerJpaRepository;
     private final S3Service s3Service;
 
-    public UserDetailResponseDto getUserDetail(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
-        return new UserDetailResponseDto(user.getId(), user.getProfileImgUrl(), user.getName(), user.getRole());
-    }
-
     private void deleteModelInfos(Long userId) {
         deleteModelHairServiceOfferInfos(userId);
         deleteModelApplications(userId);
