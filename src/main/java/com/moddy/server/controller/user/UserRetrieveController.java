@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.USER_MY_PAGE_S
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "User Controller", description = "유저 정보 조회 및 탈퇴 API 입니다.")
 @RequestMapping("/user")
 public class UserRetrieveController {
     private final UserRetrieveService userRetrieveService;
