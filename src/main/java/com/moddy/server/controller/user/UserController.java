@@ -42,18 +42,4 @@ public class UserController {
     public SuccessResponse<UserDetailResponseDto> getUserDetail(@Parameter(hidden = true) @UserId Long userId) {
         return SuccessResponse.success(USER_MY_PAGE_SUCCESS, userService.getUserDetail(userId));
     }
-
-    @DeleteMapping
-    @Operation(summary = "[JWT] 유저 마이페이지 조회 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공입니다."),
-            @ApiResponse(responseCode = "401", description = "토큰이 만료되었습니다. 다시 로그인 해주세요.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "해당 유저는 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessNonDataResponse withdraw(@Parameter(hidden = true) @UserId Long userId) {
-        userService.withdraw(userId);
-        return SuccessNonDataResponse.success(USER_WITHDRAW_SUCCESS);
-    }
 }
