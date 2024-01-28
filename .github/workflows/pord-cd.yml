@@ -1,8 +1,8 @@
-name: MODDY DEV CD
+name: MODDY PROD CD
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "main" ]
 
 jobs:
   deploy-ci:
