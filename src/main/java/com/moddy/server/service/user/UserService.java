@@ -13,9 +13,4 @@ import static com.moddy.server.common.exception.enums.ErrorCode.USER_NOT_FOUND_E
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
-    public UserDetailResponseDto getUserDetail(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
-        return new UserDetailResponseDto(user.getId(), user.getProfileImgUrl(), user.getName(), user.getRole());
-    }
 }
