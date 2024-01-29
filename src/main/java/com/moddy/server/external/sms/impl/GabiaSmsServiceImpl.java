@@ -9,6 +9,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
+@Profile({"prod"})
 public class GabiaSmsServiceImpl implements SmsService {
     public static final String SMS_OAUTH_TOKEN_URL = "https://sms.gabia.com/oauth/token";
     public static final String SMS_SEND_URL = "https://sms.gabia.com/api/send/sms";
