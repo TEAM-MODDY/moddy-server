@@ -41,25 +41,7 @@ public class HairModelApplicationRetrieveService {
         Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
         long totalElements = applicationPage.getTotalElements();
 
-        List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
-            Long modelId = application.getModel().getId();
-
-            List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
-
-            List<String> top2hairStyles = preferHairStyle.stream().map(hairStyle -> {
-                return hairStyle.getHairStyle().getValue();
-            }).collect(Collectors.toList());
-            ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(modelId);
-            HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
-                    application.getId(),
-                    modelInfoDto.name(),
-                    modelInfoDto.age(),
-                    application.getModelImgUrl(),
-                    modelInfoDto.gender(),
-                    top2hairStyles
-            );
-            return applicationResponse;
-        }).collect(Collectors.toList());
+        List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(this::getApplicationResponse).collect(Collectors.toList());
 
         return new DesignerMainResponse(
                 page,
@@ -76,4 +58,21 @@ public class HairModelApplicationRetrieveService {
         return applicationPage;
     }
 
+    private HairModelApplicationResponse getApplicationResponse(final HairModelApplication application) {
+        Long modelId = application.getModel().getId();
+        List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
+        List<String> top2hairStyles = preferHairStyle.stream().map(hairStyle -> {
+            return hairStyle.getHairStyle().getValue();
+        }).collect(Collectors.toList());
+        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(modelId);
+        HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
+                application.getId(),
+                modelInfoDto.name(),
+                modelInfoDto.age(),
+                application.getModelImgUrl(),
+                modelInfoDto.gender(),
+                top2hairStyles
+        );
+        return applicationResponse;
+    }
 }
