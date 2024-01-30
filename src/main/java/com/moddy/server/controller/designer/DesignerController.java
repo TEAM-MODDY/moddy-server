@@ -52,10 +52,10 @@ public class DesignerController {
     @GetMapping
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<DesignerMainResponse> getDesignerMainInfo(
-            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long designerId,
             @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
-        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(userId, page, size));
+        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(designerId, page, size));
     }
 
     @Operation(summary = "[JWT] 제안서 작성하기", description = "제안서 작성하기 API입니다.")

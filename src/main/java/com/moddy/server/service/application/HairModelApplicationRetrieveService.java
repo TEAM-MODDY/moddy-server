@@ -4,6 +4,7 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
+import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
@@ -49,13 +50,13 @@ public class HairModelApplicationRetrieveService {
             List<String> top2hairStyles = preferHairStyle.stream().map(hairStyle -> {
                 return hairStyle.getHairStyle().getValue();
             }).collect(Collectors.toList());
-
+            ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(modelId);
             HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                     application.getId(),
-                    modelRetrieveService.getApplicationModelInfo(modelId).name(),
-                    modelRetrieveService.getApplicationModelInfo(modelId).age(),
+                    modelInfoDto.name(),
+                    modelInfoDto.age(),
                     application.getModelImgUrl(),
-                    modelRetrieveService.getApplicationModelInfo(modelId).gender(),
+                    modelInfoDto.gender(),
                     top2hairStyles
             );
             return applicationResponse;
