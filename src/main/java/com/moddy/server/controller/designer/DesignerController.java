@@ -10,6 +10,7 @@ import com.moddy.server.controller.designer.dto.request.OfferImageUrlRequestDto;
 import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
+import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.designer.DesignerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,6 +41,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED
 public class DesignerController {
 
     private final DesignerService designerService;
+    private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
 
     @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
     @ApiResponses({
@@ -50,10 +52,10 @@ public class DesignerController {
     @GetMapping
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<DesignerMainResponse> getDesignerMainInfo(
-            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long designerId,
             @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
-        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, designerService.getDesignerMainInfo(userId, page, size));
+        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(designerId, page, size));
     }
 
     @Operation(summary = "[JWT] 제안서 작성하기", description = "제안서 작성하기 API입니다.")
