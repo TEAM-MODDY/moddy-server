@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@Tag(name = "ModelController")
 @RequiredArgsConstructor
 public class ModelController {
 
@@ -59,6 +58,7 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelRegisterService.createModel(userId, modelCreateRequest));
     }
 
+    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainResponse.class))),
@@ -74,6 +74,7 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo(userId, page, size));
     }
 
+    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 제안서 상세보기 뷰 조회", description = "제안서 상세보기 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "제안서 상세보기 조회 성공", content = @Content(schema = @Schema(implementation = DetailOfferResponse.class))),
@@ -89,6 +90,7 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, modelService.getOfferDetail(userId, offerId));
     }
 
+    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 카카오톡 오픈채팅", description = "지원서 캡처 이미지 및 디자이너 정보 조회입니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = OpenChatResponse.class))),
@@ -103,6 +105,7 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, modelService.getOpenChatInfo(userId, offerId));
     }
 
+    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 디자이너 제안서 승낙하기", description = "디자이너 제안서 승낙하기 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 제안서 승낙하기"),
@@ -119,6 +122,7 @@ public class ModelController {
         return SuccessNonDataResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
     }
 
+    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델 지원서 작성", description = "모델 지원서 작성 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),
@@ -136,6 +140,7 @@ public class ModelController {
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
     }
 
+    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델 지원서 최종 확인 시 유저 정보 조회 API", description = "[모델 뷰] 모델 지원서 최종 확인 시 유저 정보 조회 API 입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),
