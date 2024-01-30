@@ -35,7 +35,7 @@ public class HairModelApplicationRetrieveService {
         HairModelApplication application = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         return application.getApplicationCaptureUrl();
     }
-    
+
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
         Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
