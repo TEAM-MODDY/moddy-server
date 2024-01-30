@@ -44,7 +44,7 @@ jobs:
 
       - name: docker image 빌드 및 푸시
         run: |
-          docker build --platform linux/amd64 -t moddy1217/moddy-develop .
+          docker build --platform linux/amd64 -t moddy1217/moddy-develop . -f Dockerfile-Dev
           docker push moddy1217/moddy-develop
 
   deploy-cd:
