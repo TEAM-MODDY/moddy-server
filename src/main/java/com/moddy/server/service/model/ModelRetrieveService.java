@@ -13,16 +13,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ModelRetrieveService {
 
-    private final DesignerRetrieveService designerRetrieveService;
-    private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
-    private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
-
-    public OpenChatResponse getOpenChatInfo(Long userId, Long offerId) {
-        Long designerId = hairServiceOfferRetrieveService.getDesignerApplicationId(offerId).designerId();
-        Long applicationId = hairServiceOfferRetrieveService.getDesignerApplicationId(offerId).applicationId();
-
-        OpenChatResponse openChatResponse = new OpenChatResponse(hairModelApplicationRetrieveService.getApplicationCaptureUrl(applicationId), designerRetrieveService.getDesignerOpenDetail(designerId).kakaoUrl(), designerRetrieveService.getDesignerOpenChatDetail(designerId));
-
-        return openChatResponse;
-    }
 }

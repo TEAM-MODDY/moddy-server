@@ -1,6 +1,6 @@
 package com.moddy.server.controller.model.dto;
 
-public record DesignerInfoOpenChatDTO(
+public record DesignerInfoOpenChatDto(
         String kakaoUrl,
         String imgUrl,
         String shopName,
