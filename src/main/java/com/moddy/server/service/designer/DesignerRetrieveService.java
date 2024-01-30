@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class DesignerRetrieveService {
 
     private final DesignerJpaRepository designerJpaRepository;
-    public DesignerInfoOpenChatDto getDesignerOpenDetail(final Long userId){
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+    public DesignerInfoOpenChatDto getDesignerOpenDetail(final Long designerId){
+        Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         return new DesignerInfoOpenChatDto(designer.getKakaoOpenChatUrl(),designer.getProfileImgUrl(), designer.getHairShop().getName(), designer.getName(), designer.getIntroduction());
     }
 

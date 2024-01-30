@@ -22,7 +22,7 @@ public class HairServiceOfferRetrieveService {
     private final DesignerRetrieveService designerRetrieveService;
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
 
-    public OpenChatResponse getOpenChatInfo(Long userId, Long offerId) {
+    public OpenChatResponse getOpenChatInfo(final Long userId, final Long offerId) {
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
 
         Long designerId = hairServiceOffer.getDesigner().getId();

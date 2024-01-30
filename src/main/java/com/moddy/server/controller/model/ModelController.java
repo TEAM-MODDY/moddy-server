@@ -10,7 +10,6 @@ import com.moddy.server.controller.model.dto.response.ApplicationUserDetailRespo
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
-import com.moddy.server.service.model.ModelRetrieveService;
 import com.moddy.server.service.model.ModelService;
 import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
