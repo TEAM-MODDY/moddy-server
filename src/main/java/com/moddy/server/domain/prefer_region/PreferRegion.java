@@ -37,4 +37,8 @@ public class PreferRegion extends BaseTimeEntity {
     @NotNull
     private Region region;
 
+    public PreferRegion(Model model, Region region) {
+        this.model = model;
+        this.region = region;
+    }
 }
