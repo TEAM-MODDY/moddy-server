@@ -2,7 +2,7 @@ name: MODDY DEV CD
 
 on:
   push:
-    branches: [ "feat/#207" ]
+    branches: [ "develop" ]
 
 jobs:
   deploy-ci:
@@ -24,7 +24,6 @@ jobs:
         run: |
           cd src/main/resources 
           echo "${{ secrets.APPLICATION_DEVELOP }}" > ./application.yml
-          cat "${{ secrets.APPLICATION_DEVELOP }}"
 
       - name: 빌드
         run: |
