@@ -87,7 +87,7 @@ public class DesignerController {
     public SuccessResponse<ApplicationDetailInfoResponse> getApplicationDetailInfo(
             @Parameter(hidden = true) @UserId Long userId,
             @PathVariable(value = "applicationId") Long applicationId) {
-        return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, designerService.getApplicationDetail(userId, applicationId));
+        return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, hairModelApplicationRetrieveService.getApplicationDetail(userId, applicationId));
     }
 
     @Operation(summary = "[JWT] 제안서 다운로드 링크", description = "디자이너 제안서 다운로드 링크 불러오는 API")
