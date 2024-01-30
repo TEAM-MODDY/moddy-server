@@ -2,7 +2,7 @@ name: MODDY DEV CD
 
 on:
   push:
-    branches: [ "feat/#207" ]
+    branches: [ "develop" ]
 
 jobs:
   deploy-ci:
