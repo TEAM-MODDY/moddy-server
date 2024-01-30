@@ -1,6 +1,6 @@
 package com.moddy.server.controller.model.dto;
 
-public record ApplicationModelInfo(
+public record ApplicationModelInfoDto(
         String name,
         int age,
         String gender

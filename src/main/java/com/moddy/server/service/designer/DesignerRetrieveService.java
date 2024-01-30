@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DesignerRetrieveService {
 
     private final DesignerJpaRepository designerJpaRepository;
-    public String getDesignerName(Long designerId){
+    public String getDesignerName(final Long designerId){
         Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         return designer.getName();
     }
