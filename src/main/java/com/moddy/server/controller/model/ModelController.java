@@ -11,6 +11,7 @@ import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.service.model.ModelService;
+import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ModelController {
 
     private final ModelService modelService;
+    private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
 
     @Operation(summary = "[JWT] 모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
     @ApiResponses({
@@ -81,7 +83,7 @@ public class ModelController {
     public SuccessResponse<OpenChatResponse> getOpenChat(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId) {
-        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, modelService.getOpenChatInfo(userId, offerId));
+        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, hairServiceOfferRetrieveService.getOpenChatInfo(userId, offerId));
     }
 
     @Operation(summary = "[JWT] 디자이너 제안서 승낙하기", description = "디자이너 제안서 승낙하기 API입니다.")
