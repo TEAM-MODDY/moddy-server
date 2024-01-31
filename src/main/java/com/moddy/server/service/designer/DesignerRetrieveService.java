@@ -33,7 +33,7 @@ public class DesignerRetrieveService {
         return new DesignerInfoOpenChatDto(designer.getKakaoOpenChatUrl(), designer.getProfileImgUrl(), designer.getHairShop().getName(), designer.getName(), designer.getIntroduction());
     }
 
-    public DesignerInfoResponse getOfferDesignerInfo(final Long designerId) {
+    public DesignerInfoResponse getOfferDesignerInfoResponse(final Long designerId) {
         Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         List<String> dayOfWeekList = getDayOfWeekList(designerId);
 
