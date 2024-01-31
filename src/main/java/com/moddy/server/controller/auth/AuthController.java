@@ -10,7 +10,6 @@ import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.request.PhoneNumberRequestDto;
 import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
-import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.service.auth.AuthService;
@@ -27,7 +26,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.LOGOUT_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SEND_VERIFICATION_CODE_SUCCESS;
@@ -53,6 +50,7 @@ public class AuthController {
     private final AuthService authService;
     private final DesignerService designerService;
 
+
     @Operation(summary = "[KAKAO CODE] 로그인 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카카오 로그인 성공입니다."),
@@ -66,16 +64,6 @@ public class AuthController {
             @Parameter(hidden = true) @KakaoCode String kakaoCode,
             @Parameter(hidden = true) HttpServletRequest request) {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
-    }
-
-    @Operation(summary = "모델 회원가입 시 희망 지역 리스트 조회 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "희망 지역 리스트 조회 성공입니다."),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @GetMapping("/regions")
-    public SuccessResponse<List<RegionResponse>> getRegionList() {
-        return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
     }
 
     @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")

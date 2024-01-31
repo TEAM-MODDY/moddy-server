@@ -5,6 +5,7 @@ import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
+import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
@@ -13,7 +14,9 @@ import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.service.model.ModelRegisterService;
+import com.moddy.server.service.model.ModelRetrieveService;
 import com.moddy.server.service.model.ModelService;
+import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,12 +38,27 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class ModelController {
 
     private final ModelService modelService;
     private final ModelRegisterService modelRegisterService;
+    private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
+    private final ModelRetrieveService modelRetrieveService;
+
+    @Tag(name = "Auth Controller")
+    @Operation(summary = "모델 회원가입 시 희망 지역 리스트 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "희망 지역 리스트 조회 성공입니다."),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/auth/regions")
+    public SuccessResponse<List<RegionResponse>> getRegionList() {
+        return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, modelRetrieveService.getRegionList());
+    }
 
     @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
     @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
@@ -102,7 +120,7 @@ public class ModelController {
     public SuccessResponse<OpenChatResponse> getOpenChat(
             @Parameter(hidden = true) @UserId Long userId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId) {
-        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, modelService.getOpenChatInfo(userId, offerId));
+        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, hairServiceOfferRetrieveService.getOpenChatInfo(userId, offerId));
     }
 
     @Tag(name = "ModelController")

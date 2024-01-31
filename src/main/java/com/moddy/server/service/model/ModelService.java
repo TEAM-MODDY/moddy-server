@@ -42,6 +42,7 @@ import com.moddy.server.domain.user.User;
 import com.moddy.server.domain.user.repository.UserRepository;
 import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.auth.AuthService;
+import com.moddy.server.service.designer.DesignerRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,6 +71,7 @@ public class ModelService {
     private final PreferRegionJpaRepository preferRegionJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
     private final S3Service s3Service;
+    private final DesignerRetrieveService designerRetrieveService;
 
 
     public ModelMainResponse getModelMainInfo(Long userId, int page, int size) {
@@ -141,19 +143,6 @@ public class ModelService {
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
 
         hairServiceOffer.setIsModelAgree(true);
-    }
-
-    public OpenChatResponse getOpenChatInfo(Long userId, Long offerId) {
-
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
-        HairModelApplication application = hairModelApplicationJpaRepository.findById(hairServiceOffer.getHairModelApplication().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        Designer designer = designerJpaRepository.findById(hairServiceOffer.getDesigner().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
-
-        DesignerInfoOpenChatResponse designerInfoOpenChatResponse = new DesignerInfoOpenChatResponse(designer.getProfileImgUrl(), designer.getHairShop().getName(), designer.getName(), designer.getIntroduction());
-
-        OpenChatResponse openChatResponse = new OpenChatResponse(application.getApplicationCaptureUrl(), designer.getKakaoOpenChatUrl(), designerInfoOpenChatResponse);
-
-        return openChatResponse;
     }
 
     public ApplicationUserDetailResponse getUserDetailInApplication(final Long userId) {
