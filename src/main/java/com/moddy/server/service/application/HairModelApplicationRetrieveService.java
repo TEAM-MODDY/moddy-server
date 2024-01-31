@@ -8,6 +8,7 @@ import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
 import com.moddy.server.controller.designer.dto.response.HairRecordResponse;
 import com.moddy.server.controller.designer.dto.response.ModelInfoResponse;
+import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
@@ -66,19 +67,14 @@ public class HairModelApplicationRetrieveService {
                 applicationResponsesList
         );
     }
-
-    public ApplicationDetailInfoResponse getApplicationDetail(final Long designerId, final Long applicationId) {
-
+    public ApplicationDto getApplicationDetailInfo(final Long applicationId){
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-
-        Long modelId = hairModelApplication.getModel().getId();
-        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(modelId);
-
         List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
-
         List<String> preferhairStyleList = preferHairStyles.stream().map(hairStyle -> {
             return hairStyle.getHairStyle().getValue();
         }).collect(Collectors.toList());
+
+        Long modelId = hairModelApplication.getModel().getId();
 
         List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
         hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
@@ -97,29 +93,13 @@ public class HairModelApplicationRetrieveService {
             return hairRecordResponse;
         }).collect(Collectors.toList());
 
-        ApplicationInfoResponse applicationInfoResponse = new ApplicationInfoResponse(
-                applicationId,
+        return new ApplicationDto(
                 hairModelApplication.getModelImgUrl(),
                 hairModelApplication.getHairLength().getValue(),
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
-                getIsSendStatus(applicationId, designerId)
-        );
-
-        ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
-                modelId,
-                modelInfoDto.name(),
-                modelInfoDto.age(),
-                modelInfoDto.gender(),
-                regionList,
-                hairModelApplication.getInstagramId()
-        );
-
-        return new ApplicationDetailInfoResponse(
-                applicationInfoResponse,
-                modelInfoResponse
-        );
+                hairModelApplication.getInstagramId());
     }
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));

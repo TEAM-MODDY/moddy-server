@@ -4,8 +4,12 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
+import com.moddy.server.domain.hair_model_application.HairModelApplication;
+import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
+import com.moddy.server.domain.prefer_region.PreferRegion;
+import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.domain.region.repository.RegionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +24,20 @@ import java.util.stream.Collectors;
 public class ModelRetrieveService {
     private final ModelJpaRepository modelJpaRepository;
     private final RegionJpaRepository regionJpaRepository;
+    private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
+    private final PreferRegionJpaRepository preferRegionJpaRepository;
 
-    public ApplicationModelInfoDto getApplicationModelInfo(final Long modelId) {
+    public ApplicationModelInfoDto getApplicationModelInfo(final Long applicationId) {
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        Long modelId = hairModelApplication.getModel().getId();
         Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-        return new ApplicationModelInfoDto(model.getName(), model.getAge(), model.getGender().getValue());
+
+        List<PreferRegion> preferRegions = preferRegionJpaRepository.findAllByModelId(modelId);
+
+        List<String> regionList = preferRegions.stream().map(preferregion -> {
+            return preferregion.getRegion().getName();
+        }).collect(Collectors.toList());
+        return new ApplicationModelInfoDto(modelId, model.getName(), model.getAge(), model.getGender().getValue(), regionList);
     }
 
     public List<RegionResponse> getRegionList() {

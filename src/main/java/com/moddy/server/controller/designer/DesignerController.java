@@ -3,15 +3,24 @@ package com.moddy.server.controller.designer;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
+import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.enums.SuccessCode;
+import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
 import com.moddy.server.controller.designer.dto.request.OfferImageUrlRequestDto;
 import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
+import com.moddy.server.controller.designer.dto.response.ApplicationInfoResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
+import com.moddy.server.controller.designer.dto.response.ModelInfoResponse;
+import com.moddy.server.controller.model.dto.ApplicationDto;
+import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
+import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.designer.DesignerService;
+import com.moddy.server.service.model.ModelRetrieveService;
+import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,6 +51,8 @@ public class DesignerController {
 
     private final DesignerService designerService;
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
+    private final ModelRetrieveService modelRetrieveService;
+    private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
 
     @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
     @ApiResponses({
@@ -85,9 +96,31 @@ public class DesignerController {
     @GetMapping("/{applicationId}")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<ApplicationDetailInfoResponse> getApplicationDetailInfo(
-            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long designerId,
             @PathVariable(value = "applicationId") Long applicationId) {
-        return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, hairModelApplicationRetrieveService.getApplicationDetail(userId, applicationId));
+        ApplicationDto applicationDto = hairModelApplicationRetrieveService.getApplicationDetailInfo(applicationId);
+        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(applicationId);
+        ApplicationInfoResponse applicationInfoResponse = new ApplicationInfoResponse(
+                applicationId,
+                applicationDto.modelImgUrl(),
+                applicationDto.hairLength(),
+                applicationDto.preferHairStyleList(),
+                applicationDto.recordResponseList(),
+                applicationDto.hairDetail(),
+                hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId)
+        );
+
+        ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
+                modelInfoDto.modelId(),
+                modelInfoDto.name(),
+                modelInfoDto.age(),
+                modelInfoDto.gender(),
+                modelInfoDto.regionList(),
+                applicationDto.instgramId()
+        );
+
+        ApplicationDetailInfoResponse applicationDetailInfoResponse = new ApplicationDetailInfoResponse(applicationInfoResponse,modelInfoResponse);
+        return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, applicationDetailInfoResponse);
     }
 
     @Operation(summary = "[JWT] 제안서 다운로드 링크", description = "디자이너 제안서 다운로드 링크 불러오는 API")

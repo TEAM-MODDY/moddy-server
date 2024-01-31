@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -35,5 +37,10 @@ public class HairServiceOfferRetrieveService {
         OpenChatResponse openChatResponse = new OpenChatResponse(hairModelApplicationRetrieveService.getApplicationCaptureUrl(applicationId), openChatDto.kakaoUrl(), response);
 
         return openChatResponse;
+    }
+
+    public Boolean getIsSendStatus(final Long applicationId, final Long userId) {
+        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndDesignerId(applicationId, userId);
+        return offer.isPresent();
     }
 }
