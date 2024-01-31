@@ -74,10 +74,10 @@ public class AuthController {
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
-            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long designerId,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
             @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerRegisterService.createDesigner(userId, designerInfo, profileImg));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerRegisterService.createDesigner(designerId, designerInfo, profileImg));
     }
 
     @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")

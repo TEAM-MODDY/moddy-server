@@ -5,7 +5,6 @@ import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
-import com.moddy.server.controller.user.dto.UserUpdateDto;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
 import com.moddy.server.domain.designer.Designer;
