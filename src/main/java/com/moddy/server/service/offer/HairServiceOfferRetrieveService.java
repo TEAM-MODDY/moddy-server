@@ -77,6 +77,8 @@ public class HairServiceOfferRetrieveService {
     }
 
     private void handleOfferClickStatus(final HairServiceOffer hairServiceOffer) {
-        if (!hairServiceOffer.getIsClicked()) {hairServiceOffer.updateClickStatus();}
+        if (!hairServiceOffer.getIsClicked()) {
+            hairServiceOffer.updateClickStatus();
+        }
     }
 }
