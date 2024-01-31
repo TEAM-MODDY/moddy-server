@@ -6,11 +6,14 @@ import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
+import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
+import com.moddy.server.service.model.ModelRegisterService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import com.moddy.server.service.model.ModelService;
 import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
@@ -29,7 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +45,7 @@ import java.util.List;
 public class ModelController {
 
     private final ModelService modelService;
+    private final ModelRegisterService modelRegisterService;
     private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
 
@@ -54,6 +58,22 @@ public class ModelController {
     @GetMapping("/auth/regions")
     public SuccessResponse<List<RegionResponse>> getRegionList() {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, modelRetrieveService.getRegionList());
+    }
+
+    @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
+    @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
+            @ApiResponse(responseCode = "401", description = "인증오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping(value = "/auth/signup/model")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<UserCreateResponse> createModel(
+            @Parameter(hidden = true) @UserId Long userId,
+            @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
+        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelRegisterService.createModel(userId, modelCreateRequest));
     }
 
     @Tag(name = "ModelController")

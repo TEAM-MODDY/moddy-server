@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3'

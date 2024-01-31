@@ -62,7 +62,6 @@ import java.util.stream.Collectors;
 public class ModelService {
 
     private final ModelJpaRepository modelJpaRepository;
-    private final UserRepository userRepository;
     private final DesignerJpaRepository designerJpaRepository;
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
@@ -70,9 +69,7 @@ public class ModelService {
     private final DayOffJpaRepository dayOffJpaRepository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
-    private final RegionJpaRepository regionJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
-    private final AuthService authService;
     private final S3Service s3Service;
     private final DesignerRetrieveService designerRetrieveService;
 
@@ -104,27 +101,6 @@ public class ModelService {
         }).collect(Collectors.toList());
 
         return new ModelMainResponse(page, size, totalElements, modelApplyStatus, user.getName(), offerResponseList);
-    }
-
-    @Transactional
-    public UserCreateResponse createModel(long userId, ModelCreateRequest request) {
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-
-        if (modelJpaRepository.existsById(userId)) throw new ConflictException(ErrorCode.ALREADY_EXIST_USER_EXCEPTION);
-
-        user.update(request.name(), request.gender(), request.phoneNumber(), request.isMarketingAgree(), s3Service.getDefaultProfileImageUrl(), Role.MODEL);
-
-        modelJpaRepository.modelRegister(userId, request.year());
-        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
-
-        request.preferRegions().stream().forEach(preferRegionId -> {
-            Region region = regionJpaRepository.findById(preferRegionId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_REGION_EXCEPTION));
-            PreferRegion preferRegion = PreferRegion.builder().model(model).region(region).build();
-            preferRegionJpaRepository.save(preferRegion);
-        });
-
-        return authService.createUserToken(model.getId().toString());
     }
 
     @Transactional

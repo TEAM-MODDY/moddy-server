@@ -12,10 +12,8 @@ import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
-import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.service.auth.AuthService;
 import com.moddy.server.service.designer.DesignerService;
-import com.moddy.server.service.model.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,7 +49,7 @@ public class AuthController {
     private static final String ORIGIN = "origin";
     private final AuthService authService;
     private final DesignerService designerService;
-    private final ModelService modelService;
+
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
     @ApiResponses(value = {
@@ -80,21 +78,6 @@ public class AuthController {
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
             @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
-    }
-
-    @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
-            @ApiResponse(responseCode = "401", description = "인증오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @PostMapping(value = "/signup/model")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<UserCreateResponse> createModel(
-            @Parameter(hidden = true) @UserId Long userId,
-            @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
-        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
     @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")
