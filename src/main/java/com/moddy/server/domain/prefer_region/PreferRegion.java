@@ -21,7 +21,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class PreferRegion extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +36,8 @@ public class PreferRegion extends BaseTimeEntity {
     @NotNull
     private Region region;
 
+    public PreferRegion(Model model, Region region) {
+        this.model = model;
+        this.region = region;
+    }
 }
