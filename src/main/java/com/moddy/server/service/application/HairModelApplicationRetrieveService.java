@@ -76,3 +76,4 @@ public class HairModelApplicationRetrieveService {
         return applicationResponse;
     }
 }
+

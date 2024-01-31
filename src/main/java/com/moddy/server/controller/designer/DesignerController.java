@@ -12,6 +12,7 @@ import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.designer.DesignerService;
+import com.moddy.server.service.offer.HairServiceOfferRegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,6 +43,7 @@ public class DesignerController {
 
     private final DesignerService designerService;
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
+    private final HairServiceOfferRegisterService hairServiceOfferRegisterService;
 
     @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
     @ApiResponses({
@@ -68,10 +70,10 @@ public class DesignerController {
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping("{applicationId}/offer")
     public SuccessNonDataResponse offerCreateRequest(
-            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long designerId,
             @PathVariable(value = "applicationId") Long applicationId,
             @Valid @RequestBody OfferCreateRequest offerCreateRequest) throws IOException {
-        designerService.postOffer(userId, applicationId, offerCreateRequest);
+        hairServiceOfferRegisterService.postOffer(designerId, applicationId, offerCreateRequest);
         return SuccessNonDataResponse.success(SuccessCode.POST_OFFER_SUCCESS);
     }
 

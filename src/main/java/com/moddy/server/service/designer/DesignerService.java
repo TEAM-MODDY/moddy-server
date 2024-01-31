@@ -117,39 +117,6 @@ public class DesignerService {
         return authService.createUserToken(designer.getId().toString());
     }
 
-
-    @Transactional
-    public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) throws IOException {
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
-        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-
-        if (hairServiceOfferJpaRepository.existsByHairModelApplicationIdAndDesignerId(applicationId,designer.getId())) throw new ConflictException(ErrorCode.ALREADY_EXIST_OFFER_EXCEPTION);
-
-        HairServiceOffer offer = HairServiceOffer.builder()
-                .model(hairModelApplication.getModel())
-                .hairModelApplication(hairModelApplication)
-                .designer(designer)
-                .offerDetail(request.offerDetail())
-                .isModelAgree(false)
-                .isClicked(false)
-                .build();
-        hairServiceOfferJpaRepository.save(offer);
-
-        request.preferOfferConditions().stream()
-                .forEach(p -> {
-                    PreferOfferCondition preferOfferCondition = PreferOfferCondition.builder()
-                            .offerCondition(p)
-                            .hairServiceOffer(offer)
-                            .build();
-                    preferOfferConditionJpaRepository.save(preferOfferCondition);
-
-                });
-
-        final String modelName = hairModelApplication.getModel().getName();
-        final String modelPhoneNumber = hairModelApplication.getModel().getPhoneNumber();
-        smsUtil.sendOfferToModel(modelPhoneNumber, modelName);
-    }
-
     @Transactional
     public ApplicationDetailInfoResponse getApplicationDetail(Long userId, Long applicationId) {
 

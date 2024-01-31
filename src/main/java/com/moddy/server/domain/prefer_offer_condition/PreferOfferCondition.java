@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PreferOfferCondition extends BaseTimeEntity {
@@ -28,4 +27,8 @@ public class PreferOfferCondition extends BaseTimeEntity {
     @NotNull
     private OfferCondition offerCondition;
 
+    public PreferOfferCondition(HairServiceOffer hairServiceOffer, OfferCondition offerCondition){
+        this.hairServiceOffer = hairServiceOffer;
+        this.offerCondition = offerCondition;
+    }
 }
