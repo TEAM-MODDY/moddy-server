@@ -11,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class PreferHairStyle extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +24,8 @@ public class PreferHairStyle extends BaseTimeEntity {
     @NotNull
     private HairStyle hairStyle;
 
+    public PreferHairStyle(HairModelApplication hairModelApplication, HairStyle hairStyle) {
+        this.hairModelApplication = hairModelApplication;
+        this.hairStyle = hairStyle;
+    }
 }
