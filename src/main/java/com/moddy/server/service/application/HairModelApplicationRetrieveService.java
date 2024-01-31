@@ -125,8 +125,4 @@ public class HairModelApplicationRetrieveService {
         );
         return applicationResponse;
     }
-    private Boolean getIsSendStatus(final Long applicationId, final Long userId) {
-        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndDesignerId(applicationId, userId);
-        return offer.isPresent();
-    }
 }
