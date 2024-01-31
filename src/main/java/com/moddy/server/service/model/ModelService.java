@@ -2,18 +2,12 @@ package com.moddy.server.service.model;
 
 
 import com.moddy.server.common.exception.enums.ErrorCode;
-import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
-import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
-import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
-import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
-import com.moddy.server.controller.model.dto.response.DesignerInfoOpenChatResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OfferResponse;
-import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.controller.model.dto.response.StyleDetailResponse;
 import com.moddy.server.domain.day_off.DayOff;
 import com.moddy.server.domain.day_off.repository.DayOffJpaRepository;
@@ -23,8 +17,6 @@ import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
-import com.moddy.server.domain.hair_service_record.HairServiceRecord;
-import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
@@ -33,23 +25,14 @@ import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRe
 import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferConditionJpaRepository;
-import com.moddy.server.domain.prefer_region.PreferRegion;
 import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
-import com.moddy.server.domain.region.Region;
-import com.moddy.server.domain.region.repository.RegionJpaRepository;
-import com.moddy.server.domain.user.Role;
 import com.moddy.server.domain.user.User;
-import com.moddy.server.domain.user.repository.UserRepository;
-import com.moddy.server.external.s3.S3Service;
-import com.moddy.server.service.auth.AuthService;
-import com.moddy.server.service.designer.DesignerRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,10 +52,6 @@ public class ModelService {
     private final DayOffJpaRepository dayOffJpaRepository;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
-    private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
-    private final S3Service s3Service;
-    private final DesignerRetrieveService designerRetrieveService;
-
 
     public ModelMainResponse getModelMainInfo(Long userId, int page, int size) {
 
@@ -101,29 +80,6 @@ public class ModelService {
         }).collect(Collectors.toList());
 
         return new ModelMainResponse(page, size, totalElements, modelApplyStatus, user.getName(), offerResponseList);
-    }
-
-    @Transactional
-    public void postApplication(Long userId, MultipartFile modelImgUrl, MultipartFile applicationCaptureImgUrl, ModelApplicationRequest applicationInfo) {
-
-        Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-        String s3ModelImgUrl = s3Service.uploadProfileImage(modelImgUrl, model.getRole());
-        String s3applicationCaptureImgUrl = s3Service.uploadApplicationImage(applicationCaptureImgUrl);
-
-        HairModelApplication hairModelApplication = HairModelApplication.builder().model(model).hairLength(applicationInfo.hairLength()).hairDetail(applicationInfo.hairDetail()).modelImgUrl(s3ModelImgUrl).instagramId(applicationInfo.instagramId()).applicationCaptureUrl(s3applicationCaptureImgUrl).build();
-
-        hairModelApplicationJpaRepository.save(hairModelApplication);
-
-        applicationInfo.preferHairStyles().stream().forEach(hairStyle -> {
-            PreferHairStyle preferHairStyle = PreferHairStyle.builder().hairModelApplication(hairModelApplication).hairStyle(hairStyle).build();
-            preferHairStyleJpaRepository.save(preferHairStyle);
-        });
-
-        applicationInfo.getHairServiceRecords().stream().forEach(modelHairServiceRecord -> {
-            HairServiceRecord hairServiceRecord = HairServiceRecord.builder().hairModelApplication(hairModelApplication).serviceRecord(modelHairServiceRecord.hairService()).serviceRecordTerm(modelHairServiceRecord.hairServiceTerm()).build();
-            hairServiceRecordJpaRepository.save(hairServiceRecord);
-        });
-
     }
 
     @Transactional
