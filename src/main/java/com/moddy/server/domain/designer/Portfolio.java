@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
 @ToString
 public class Portfolio {
     @NotNull
