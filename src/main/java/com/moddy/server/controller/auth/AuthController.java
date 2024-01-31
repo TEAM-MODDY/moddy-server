@@ -13,7 +13,7 @@ import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.service.auth.AuthService;
-import com.moddy.server.service.designer.DesignerService;
+import com.moddy.server.service.designer.DesignerRegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,7 +48,7 @@ public class AuthController {
 
     private static final String ORIGIN = "origin";
     private final AuthService authService;
-    private final DesignerService designerService;
+    private final DesignerRegisterService designerRegisterService;
 
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
@@ -77,7 +77,7 @@ public class AuthController {
             @Parameter(hidden = true) @UserId Long userId,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
             @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerRegisterService.createDesigner(userId, designerInfo, profileImg));
     }
 
     @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")
