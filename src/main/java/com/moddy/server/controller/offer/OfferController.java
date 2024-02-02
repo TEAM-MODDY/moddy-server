@@ -35,9 +35,9 @@ public class OfferController {
     @GetMapping("/model")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<ModelMainOfferResponse> getModelMainInfo(
-            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long modelId,
             @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
-        return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, hairServiceOfferRetrieveService.getModelMainOfferInfo(userId, page, size));
+        return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, hairServiceOfferRetrieveService.getModelMainOfferInfo(modelId, page, size));
     }
 }
