@@ -38,11 +38,11 @@ public class ApplicationController {
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping(value = "/model/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessNonDataResponse submitModelApplication(
-            @Parameter(hidden = true) @UserId Long userId,
+            @Parameter(hidden = true) @UserId Long modelId,
             @RequestPart(value = "modelImgUrl", required = false) MultipartFile modelImgUrl,
             @RequestPart(value = "applicationCaptureImgUrl", required = false) MultipartFile applicationCaptureImgUrl,
             @RequestPart(value = "applicationInfo") @Valid ModelApplicationRequest applicationInfo) {
-        hairModelApplicationRegisterService.postApplication(userId, modelImgUrl, applicationCaptureImgUrl, applicationInfo);
+        hairModelApplicationRegisterService.postApplication(modelId, modelImgUrl, applicationCaptureImgUrl, applicationInfo);
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
     }
 }
