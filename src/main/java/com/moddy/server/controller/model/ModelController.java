@@ -7,7 +7,6 @@ import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
-import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
@@ -26,16 +25,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RestController
@@ -120,24 +115,6 @@ public class ModelController {
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId) {
         modelService.updateOfferAgreeStatus(offerId);
         return SuccessNonDataResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
-    }
-
-    @Tag(name = "ModelController")
-    @Operation(summary = "[JWT] 모델 지원서 작성", description = "모델 지원서 작성 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),
-            @ApiResponse(responseCode = "400", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/model/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public SuccessNonDataResponse submitModelApplication(
-            @Parameter(hidden = true) @UserId Long userId,
-            @RequestPart(value = "modelImgUrl", required = false) MultipartFile modelImgUrl,
-            @RequestPart(value = "applicationCaptureImgUrl", required = false) MultipartFile applicationCaptureImgUrl,
-            @RequestPart(value = "applicationInfo") @Valid ModelApplicationRequest applicationInfo) {
-        modelService.postApplication(userId, modelImgUrl, applicationCaptureImgUrl, applicationInfo);
-        return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
     }
 
     @Tag(name = "ModelController")
