@@ -66,12 +66,16 @@ public class HairServiceOfferRetrieveService {
 
         List<PreferOfferCondition> preferOfferConditionList = preferOfferConditionJpaRepository.findAllByHairServiceOfferId(offerId);
         List<OfferCondition> offerConditionList = preferOfferConditionList.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
-        List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(condition -> {
-            if (offerConditionList.contains(condition)) return true;
-            else return false;
-        }).collect(Collectors.toList());
+        List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(offerConditionList::contains).collect(Collectors.toList());
 
-        StyleDetailResponse styleDetailResponse = new StyleDetailResponse(hairServiceOffer.getIsModelAgree(), preferHairStyleList, hairServiceOffer.getOfferDetail(), applicationHairDetail, preferOfferConditionBooleanList);
+        StyleDetailResponse styleDetailResponse = StyleDetailResponse
+                .builder()
+                .isAgree(hairServiceOffer.getIsModelAgree())
+                .preferStyle(preferHairStyleList)
+                .designerOfferDetail(hairServiceOffer.getOfferDetail())
+                .modelApplicationDetail(applicationHairDetail)
+                .preferOfferConditions(preferOfferConditionBooleanList)
+                .build();
 
         return styleDetailResponse;
     }
