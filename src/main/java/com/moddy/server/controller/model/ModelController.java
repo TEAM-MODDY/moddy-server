@@ -11,7 +11,6 @@ import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
 import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
-import com.moddy.server.controller.model.dto.response.ModelMainResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.service.model.ModelRegisterService;
 import com.moddy.server.service.model.ModelRetrieveService;
@@ -33,7 +32,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,22 +72,6 @@ public class ModelController {
             @Parameter(hidden = true) @UserId Long userId,
             @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelRegisterService.createModel(userId, modelCreateRequest));
-    }
-
-    @Tag(name = "ModelController")
-    @Operation(summary = "[JWT] 모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/model")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<ModelMainResponse> getModelMainInfo(
-            @Parameter(hidden = true) @UserId Long userId,
-            @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
-            @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
-        return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, modelService.getModelMainInfo(userId, page, size));
     }
 
     @Tag(name = "ModelController")
