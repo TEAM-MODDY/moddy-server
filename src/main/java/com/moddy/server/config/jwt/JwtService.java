@@ -125,4 +125,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public void deleteRefreshToken(final String userId) {
+        redisTemplate.delete(userId);
+    }
 }

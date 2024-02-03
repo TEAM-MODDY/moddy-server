@@ -4,10 +4,12 @@ package com.moddy.server.controller.auth;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
+import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.request.PhoneNumberRequestDto;
+import com.moddy.server.controller.auth.dto.request.TokenRequestDto;
 import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
@@ -36,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.LOGOUT_SUCCESS;
+import static com.moddy.server.common.exception.enums.SuccessCode.REFRESH_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SEND_VERIFICATION_CODE_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_CODE_MATCH_SUCCESS;
@@ -118,7 +121,7 @@ public class AuthController {
     })
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping("/logout")
-    public SuccessNonDataResponse logout(@UserId Long userId) {
+    public SuccessNonDataResponse logout(@Parameter(hidden = true) @UserId Long userId) {
         authService.logout(userId);
         return SuccessNonDataResponse.success(LOGOUT_SUCCESS);
     }
