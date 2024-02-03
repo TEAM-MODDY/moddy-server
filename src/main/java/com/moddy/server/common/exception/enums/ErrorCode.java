@@ -63,6 +63,7 @@ public enum ErrorCode {
 
     // 409 Conflict
     ALREADY_EXIST_USER_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 유저입니다."),
+    ALREADY_EXIST_MODEL_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 모델입니다."),
     ALREADY_EXIST_OFFER_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 제안서입니다"),
 
     // 500

@@ -84,44 +84,6 @@ public class DesignerService {
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
     private final SmsUtil smsUtil;
 
-
-    @Transactional
-    public DesignerMainResponse getDesignerMainInfo(Long userId, int page, int size) {
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-
-        Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
-        long totalElements = applicationPage.getTotalElements();
-
-        List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
-
-            Model model = modelJpaRepository.findById(application.getModel().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
-
-            List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
-
-            List<String> top2hairStyles = preferHairStyle.stream().map(haireStyle -> {
-                return haireStyle.getHairStyle().getValue();
-            }).collect(Collectors.toList());
-
-            HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
-                    application.getId(),
-                    model.getName(),
-                    model.getAge(),
-                    application.getModelImgUrl(),
-                    model.getGender().getValue(),
-                    top2hairStyles
-            );
-            return applicationResponse;
-        }).collect(Collectors.toList());
-
-        return new DesignerMainResponse(
-                page,
-                size,
-                totalElements,
-                designer.getName(),
-                applicationResponsesList
-        );
-    }
-
     @Transactional
     public UserCreateResponse createDesigner(Long userId, DesignerCreateRequest request, MultipartFile profileImg) {
 
@@ -241,13 +203,6 @@ public class DesignerService {
                 applicationInfoResponse,
                 modelInfoResponse
         );
-    }
-
-    private Page<HairModelApplication> findApplicationsByPaging(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
-
-        return applicationPage;
     }
 
     private Boolean getIsSendStatus(Long applicationId, Long userId) {
