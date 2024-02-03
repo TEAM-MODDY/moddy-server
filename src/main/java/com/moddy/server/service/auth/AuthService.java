@@ -83,5 +83,17 @@ public class AuthService {
 
     public void logout(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+    public TokenPair refresh(final TokenRequestDto tokenRequestDto) {
+        final String userId = jwtService.getUserIdInToken(tokenRequestDto.accessToken());
+        final User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+        if (!jwtService.compareRefreshToken(userId, tokenRequestDto.refreshToken()))
+            throw new UnAuthorizedException(TOKEN_TIME_EXPIRED_EXCEPTION);
+
+        if (!jwtService.verifyToken(tokenRequestDto.refreshToken()))
+            throw new UnAuthorizedException(TOKEN_TIME_EXPIRED_EXCEPTION);
+
+        final TokenPair tokenPair = jwtService.generateTokenPair(userId);
+        jwtService.saveRefreshToken(userId, tokenPair.refreshToken());
+        return tokenPair;
     }
 }

@@ -123,4 +123,16 @@ public class AuthController {
         return SuccessNonDataResponse.success(LOGOUT_SUCCESS);
     }
 
+    @Operation(summary = "토큰 갱신 API", description = "토큰 갱신 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공입니다."),
+            @ApiResponse(responseCode = "401", description = "토큰이만료되었습니다. 다시 로그인해주세요.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 유저입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @SecurityRequirement(name = "JWT Auth")
+    @PostMapping("/refresh")
+    public SuccessResponse<TokenPair> refresh(@RequestBody final TokenRequestDto tokenRequestDto) {
+        return SuccessResponse.success(REFRESH_SUCCESS, authService.refresh(tokenRequestDto));
+    }
 }
