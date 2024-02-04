@@ -29,9 +29,10 @@ public class JwtService {
     private static final String USER_ID = "USER_ID";
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    public static final int MINUTE_IN_MILLISECONDS = 60 * 1000;
     public static final long DAYS_IN_MILLISECONDS = 24 * 60 * 60 * 1000L;
-    public static final int ACCESS_TOKEN_EXPIRATION_DAYS = 30;
-    public static final int REFRESH_TOKEN_EXPIRATION_DAYS = 60;
+    public static final int ACCESS_TOKEN_EXPIRATION_MINUTE = 10;
+    public static final int REFRESH_TOKEN_EXPIRATION_DAYS = 14;
     private final RedisTemplate<String, String> redisTemplate;
 
     @PostConstruct
@@ -109,7 +110,7 @@ public class JwtService {
         return Jwts.claims()
                 .setSubject(ACCESS_TOKEN)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_DAYS * DAYS_IN_MILLISECONDS));
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS));
     }
 
     private Claims getBody(final String token) {
