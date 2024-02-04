@@ -8,7 +8,6 @@ import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
-import com.moddy.server.controller.model.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.service.model.ModelRegisterService;
 import com.moddy.server.service.model.ModelRetrieveService;
@@ -65,22 +64,6 @@ public class ModelController {
             @Parameter(hidden = true) @UserId Long userId,
             @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelRegisterService.createModel(userId, modelCreateRequest));
-    }
-
-    @Tag(name = "ModelController")
-    @Operation(summary = "[JWT] 제안서 상세보기 뷰 조회", description = "제안서 상세보기 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "제안서 상세보기 조회 성공", content = @Content(schema = @Schema(implementation = DetailOfferResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "제안서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/model/offer/{offerId}")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<DetailOfferResponse> getModelDetailOfferInfo(
-            @Parameter(hidden = true) @UserId Long userId,
-            @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId) {
-        return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, modelService.getOfferDetail(userId, offerId));
     }
 
     @Tag(name = "ModelController")

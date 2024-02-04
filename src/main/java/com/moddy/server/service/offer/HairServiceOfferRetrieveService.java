@@ -4,12 +4,16 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
 import com.moddy.server.controller.model.dto.response.DesignerInfoOpenChatResponse;
-import com.moddy.server.controller.model.dto.response.OfferResponse;
+import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
-import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
-import com.moddy.server.domain.designer.Designer;
+import com.moddy.server.controller.model.dto.response.StyleDetailResponse;
+import com.moddy.server.controller.offer.response.DetailOfferResponse;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
+import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
+import com.moddy.server.controller.model.dto.response.OfferResponse;
+import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
+import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferConditionJpaRepository;
@@ -24,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +58,38 @@ public class HairServiceOfferRetrieveService {
         return openChatResponse;
     }
 
+    public DetailOfferResponse getOfferDetail(final Long modelId, final Long offerId) {
+
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
+
+        DesignerInfoResponse designerInfoResponse = designerRetrieveService.getOfferDesignerInfoResponse(hairServiceOffer.getDesigner().getId());
+        StyleDetailResponse styleDetailResponse = getStyleDetailResponse(hairServiceOffer, offerId);
+        handleOfferClickStatus(hairServiceOffer);
+
+        return new DetailOfferResponse(designerInfoResponse, styleDetailResponse);
+    }
+
+    private StyleDetailResponse getStyleDetailResponse(final HairServiceOffer hairServiceOffer, final Long offerId) {
+
+        String applicationHairDetail = hairModelApplicationRetrieveService.fetchApplicationHairDetail(hairServiceOffer.getHairModelApplication().getId());
+        List<String> preferHairStyleList = hairModelApplicationRetrieveService.fetchPreferHairStyle(hairServiceOffer.getHairModelApplication().getId());
+
+        List<PreferOfferCondition> preferOfferConditionList = preferOfferConditionJpaRepository.findAllByHairServiceOfferId(offerId);
+        List<OfferCondition> offerConditionList = preferOfferConditionList.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
+        List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(offerConditionList::contains).collect(Collectors.toList());
+
+        StyleDetailResponse styleDetailResponse = StyleDetailResponse
+                .builder()
+                .isAgree(hairServiceOffer.getIsModelAgree())
+                .preferStyle(preferHairStyleList)
+                .designerOfferDetail(hairServiceOffer.getOfferDetail())
+                .modelApplicationDetail(applicationHairDetail)
+                .preferOfferConditions(preferOfferConditionBooleanList)
+                .build();
+
+        return styleDetailResponse;
+    }
+
     public ModelMainOfferResponse getModelMainOfferInfo(final Long modelId, final int page, final int size) {
         String modelName = modelRetrieveService.getModelName(modelId);
 
@@ -64,6 +101,12 @@ public class HairServiceOfferRetrieveService {
             return new ModelMainOfferResponse(page, size, totalElements, modelApplyStatus, modelName, new ArrayList<>());
         }
         return new ModelMainOfferResponse(page, size, totalElements, modelApplyStatus, modelName, getModelMainOfferList(offerPage));
+    }
+
+    private void handleOfferClickStatus(final HairServiceOffer hairServiceOffer) {
+        if (!hairServiceOffer.getIsClicked()) {
+            hairServiceOffer.updateClickStatus();
+        }
     }
 
     private ModelApplyStatus calModelApplyAndOfferStatus(final Long modelId) {

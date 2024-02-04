@@ -7,6 +7,7 @@ import com.moddy.server.controller.designer.dto.response.HairModelApplicationRes
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
+import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
@@ -33,7 +34,7 @@ public class HairModelApplicationRetrieveService {
     private final ModelRetrieveService modelRetrieveService;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
 
-    public String getApplicationCaptureUrl(final Long applicationId){
+    public String getApplicationCaptureUrl(final Long applicationId) {
         HairModelApplication application = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         return application.getApplicationCaptureUrl();
     }
@@ -53,6 +54,21 @@ public class HairModelApplicationRetrieveService {
                 applicationResponsesList
         );
     }
+
+    public String fetchApplicationHairDetail(final Long applicationId) {
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        return hairModelApplication.getHairDetail();
+    }
+
+    public List<String> fetchPreferHairStyle(final Long applicationId) {
+        List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
+        List<String> preferHairStyleList = preferHairStyles.stream().map(hairStyle -> {
+            return hairStyle.getHairStyle().getValue();
+        }).collect(Collectors.toList());
+
+        return preferHairStyleList;
+    }
+
 
     public boolean fetchModelApplyStatus(final Long modelId){
         return hairModelApplicationJpaRepository.existsByModelId(modelId);
