@@ -45,7 +45,6 @@ public class ModelService {
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
 
-
     @Transactional
     public DetailOfferResponse getOfferDetail(Long userId, Long offerId) {
 
@@ -56,13 +55,6 @@ public class ModelService {
         handleOfferClickStatus(hairServiceOffer);
 
         return new DetailOfferResponse(designerInfoResponseList, styleDetailResponse);
-    }
-
-    @Transactional
-    public void updateOfferAgreeStatus(Long offerId) {
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
-
-        hairServiceOffer.setIsModelAgree(true);
     }
 
     public ApplicationUserDetailResponse getUserDetailInApplication(final Long userId) {
