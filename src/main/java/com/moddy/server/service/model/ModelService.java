@@ -4,8 +4,6 @@ package com.moddy.server.service.model;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
-import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
-import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
@@ -20,15 +18,7 @@ import java.util.List;
 public class ModelService {
 
     private final ModelJpaRepository modelJpaRepository;
-    private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
-
-    @Transactional
-    public void updateOfferAgreeStatus(Long offerId) {
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
-
-        hairServiceOffer.setIsModelAgree(true);
-    }
 
     public ApplicationUserDetailResponse getUserDetailInApplication(final Long userId) {
         Model model = modelJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
