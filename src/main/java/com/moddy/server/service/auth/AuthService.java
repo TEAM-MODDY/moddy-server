@@ -90,12 +90,13 @@ public class AuthService {
     }
 
     public TokenPair refresh(final TokenRequestDto tokenRequestDto) {
-        final String userId = jwtService.getUserIdInToken(tokenRequestDto.accessToken());
-        final User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
-        if (!jwtService.compareRefreshToken(userId, tokenRequestDto.refreshToken()))
+        if (!jwtService.verifyToken(tokenRequestDto.refreshToken()))
             throw new UnAuthorizedException(TOKEN_TIME_EXPIRED_EXCEPTION);
 
-        if (!jwtService.verifyToken(tokenRequestDto.refreshToken()))
+        final String userId = jwtService.getUserIdInToken(tokenRequestDto.refreshToken());
+        final User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+
+        if (!jwtService.compareRefreshToken(userId, tokenRequestDto.refreshToken()))
             throw new UnAuthorizedException(TOKEN_TIME_EXPIRED_EXCEPTION);
 
         final TokenPair tokenPair = jwtService.generateTokenPair(userId);
