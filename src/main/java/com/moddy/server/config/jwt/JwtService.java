@@ -110,7 +110,7 @@ public class JwtService {
         return Jwts.claims()
                 .setSubject(ACCESS_TOKEN)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_MINUTE * MINUTE_IN_MILLISECONDS));
+                .setExpiration(new Date(now.getTime() + 20 * 1000L));
     }
 
     private Claims getBody(final String token) {
