@@ -4,9 +4,11 @@ import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.model.BadRequestException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.common.exception.model.NotFoundUserException;
+import com.moddy.server.common.exception.model.UnAuthorizedException;
 import com.moddy.server.common.util.SmsUtil;
 import com.moddy.server.common.util.VerificationCodeGenerator;
 import com.moddy.server.config.jwt.JwtService;
+import com.moddy.server.controller.auth.dto.request.TokenRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.domain.user.User;
@@ -22,6 +24,7 @@ import java.util.Optional;
 import static com.moddy.server.common.exception.enums.ErrorCode.INVALID_PHONE_NUMBER_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_FOUND_VERIFICATION_CODE_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.NOT_MATCH_VERIFICATION_CODE_EXCEPTION;
+import static com.moddy.server.common.exception.enums.ErrorCode.TOKEN_TIME_EXPIRED_EXCEPTION;
 import static com.moddy.server.common.exception.enums.ErrorCode.USER_NOT_FOUND_EXCEPTION;
 
 
@@ -81,7 +84,22 @@ public class AuthService {
         smsUtil.deleteVerificationCode(phoneNumber);
     }
 
-    public void logout(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+    public void logout(final Long userId) {
+        final User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+        jwtService.deleteRefreshToken(String.valueOf(userId));
+    }
+
+    public TokenPair refresh(final TokenRequestDto tokenRequestDto) {
+        final String userId = jwtService.getUserIdInToken(tokenRequestDto.accessToken());
+        final User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
+        if (!jwtService.compareRefreshToken(userId, tokenRequestDto.refreshToken()))
+            throw new UnAuthorizedException(TOKEN_TIME_EXPIRED_EXCEPTION);
+
+        if (!jwtService.verifyToken(tokenRequestDto.refreshToken()))
+            throw new UnAuthorizedException(TOKEN_TIME_EXPIRED_EXCEPTION);
+
+        final TokenPair tokenPair = jwtService.generateTokenPair(userId);
+        jwtService.saveRefreshToken(userId, tokenPair.refreshToken());
+        return tokenPair;
     }
 }
