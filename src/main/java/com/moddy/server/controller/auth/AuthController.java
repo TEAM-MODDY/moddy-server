@@ -69,20 +69,6 @@ public class AuthController {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
     }
 
-    @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    SuccessResponse<UserCreateResponse> createDesigner(
-            @Parameter(hidden = true) @UserId Long designerId,
-            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
-            @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerRegisterService.createDesigner(designerId, designerInfo, profileImg));
-    }
-
     @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "전화번호 인증 요청 성공입니다."),
