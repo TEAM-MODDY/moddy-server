@@ -49,20 +49,13 @@ public class HairServiceOfferRegisterService {
     }
 
     @Transactional
-    public void postOffer(Long designerId, Long applicationId, OfferCreateRequest request) throws IOException {
+    public void postOffer(final Long designerId, final Long applicationId, final OfferCreateRequest request) throws IOException {
         Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         Model model = hairModelApplication.getModel();
         if (hairServiceOfferJpaRepository.existsByHairModelApplicationIdAndDesignerId(applicationId,designer.getId())) throw new ConflictException(ErrorCode.ALREADY_EXIST_OFFER_EXCEPTION);
 
-        HairServiceOffer offer = HairServiceOffer.builder()
-                .model(model)
-                .hairModelApplication(hairModelApplication)
-                .designer(designer)
-                .offerDetail(request.offerDetail())
-                .isModelAgree(false)
-                .isClicked(false)
-                .build();
+        HairServiceOffer offer = new HairServiceOffer(hairModelApplication,model,designer, request.offerDetail(), false,false);
         hairServiceOfferJpaRepository.save(offer);
 
         request.preferOfferConditions().stream()
@@ -74,6 +67,16 @@ public class HairServiceOfferRegisterService {
 
         final String modelName = model.getName();
         final String modelPhoneNumber = model.getPhoneNumber();
+        sendSms(smsUtil, modelPhoneNumber,modelName);
+    }
+
+    public void updateOfferAgreeStatus(final Long offerId) {
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
+
+        hairServiceOffer.agreeOfferToModel();
+    }
+
+    private void sendSms(final SmsUtil smsUtil, final String modelPhoneNumber, final String modelName) throws IOException {
         smsUtil.sendOfferToModel(modelPhoneNumber, modelName);
     }
 

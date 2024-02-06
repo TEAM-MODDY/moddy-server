@@ -5,8 +5,10 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.domain.model.Model;
+import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.region.repository.RegionJpaRepository;
+import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +35,10 @@ public class ModelRetrieveService {
         }).collect(Collectors.toList());
 
         return regionResponseList;
+    }
+
+    public String getModelName(final Long modelId) {
+        Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
+        return model.getName();
     }
 }
