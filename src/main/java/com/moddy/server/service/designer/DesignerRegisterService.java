@@ -34,7 +34,7 @@ public class DesignerRegisterService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserCreateResponse createDesigner(Long designerId, DesignerCreateRequest request, MultipartFile profileImg) {
+    public UserCreateResponse createDesigner(final Long designerId, final DesignerCreateRequest request, final MultipartFile profileImg) {
 
         String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
@@ -46,7 +46,17 @@ public class DesignerRegisterService {
         Portfolio portfolio = new Portfolio(request.portfolio().instagramUrl(),request.portfolio().naverPlaceUrl());
 
         designerJpaRepository.designerRegister(user.getId(), hairShop.getAddress(), hairShop.getDetailAddress(), hairShop.getName(), portfolio.getInstagramUrl(), portfolio.getNaverPlaceUrl(), request.introduction(), request.kakaoOpenChatUrl());
-        Designer designer = designerJpaRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
+        createDesignerDayoffs(designerId,request);
+        return authService.createUserToken(designerId.toString());
+    }
+    public void deleteDesignerInfo(final User designer) {
+        dayOffJpaRepository.deleteAllByDesignerId(designer.getId());
+        s3Service.deleteS3Image(designer.getProfileImgUrl());
+        designerJpaRepository.deleteById(designer.getId());
+    }
+
+    private void createDesignerDayoffs(final Long designerId, final DesignerCreateRequest request){
+        Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         request.dayOffs().stream()
                 .forEach(d -> {
                     DayOff dayOff = DayOff.builder()
@@ -56,11 +66,5 @@ public class DesignerRegisterService {
                     dayOffJpaRepository.save(dayOff);
 
                 });
-        return authService.createUserToken(designer.getId().toString());
-    }
-    public void deleteDesignerInfo(final User designer) {
-        dayOffJpaRepository.deleteAllByDesignerId(designer.getId());
-        s3Service.deleteS3Image(designer.getProfileImgUrl());
-        designerJpaRepository.deleteById(designer.getId());
     }
 }
