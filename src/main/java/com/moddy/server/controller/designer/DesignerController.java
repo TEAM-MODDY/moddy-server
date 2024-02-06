@@ -86,43 +86,6 @@ public class DesignerController {
         return SuccessNonDataResponse.success(SuccessCode.POST_OFFER_SUCCESS);
     }
 
-    @Operation(summary = "[JWT] 모델 지원서 상세 조회", description = "모델 지원서 상세 조회 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "지원서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/{applicationId}")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<ApplicationDetailInfoResponse> getApplicationDetailInfo(
-            @Parameter(hidden = true) @UserId Long designerId,
-            @PathVariable(value = "applicationId") Long applicationId) {
-        ApplicationDto applicationDto = hairModelApplicationRetrieveService.getApplicationDetailInfo(applicationId);
-        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(applicationId);
-        ApplicationInfoResponse applicationInfoResponse = new ApplicationInfoResponse(
-                applicationId,
-                applicationDto.modelImgUrl(),
-                applicationDto.hairLength(),
-                applicationDto.preferHairStyleList(),
-                applicationDto.recordResponseList(),
-                applicationDto.hairDetail(),
-                hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId)
-        );
-
-        ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
-                modelInfoDto.modelId(),
-                modelInfoDto.name(),
-                modelInfoDto.age(),
-                modelInfoDto.gender(),
-                modelInfoDto.regionList(),
-                applicationDto.instgramId()
-        );
-
-        ApplicationDetailInfoResponse applicationDetailInfoResponse = new ApplicationDetailInfoResponse(applicationInfoResponse,modelInfoResponse);
-        return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, applicationDetailInfoResponse);
-    }
-
     @Operation(summary = "[JWT] 제안서 다운로드 링크", description = "디자이너 제안서 다운로드 링크 불러오는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
