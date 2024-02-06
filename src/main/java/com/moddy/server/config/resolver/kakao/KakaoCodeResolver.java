@@ -1,5 +1,6 @@
 package com.moddy.server.config.resolver.kakao;
 
+import com.moddy.server.common.exception.model.BadRequestException;
 import com.moddy.server.common.exception.model.UnAuthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class KakaoCodeResolver implements HandlerMethodArgumentResolver {
         final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         final String token = request.getHeader(AUTHORIZATION);
         if (token == null || token.isBlank() || !token.startsWith("Bearer ")) {
-            throw new UnAuthorizedException(EMPTY_KAKAO_CODE_EXCEPTION);
+            throw new BadRequestException(EMPTY_KAKAO_CODE_EXCEPTION);
         }
         return token.substring("Bearer ".length());
     }

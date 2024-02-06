@@ -4,10 +4,12 @@ package com.moddy.server.controller.auth;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
+import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.request.PhoneNumberRequestDto;
+import com.moddy.server.controller.auth.dto.request.TokenRequestDto;
 import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
@@ -36,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.LOGOUT_SUCCESS;
+import static com.moddy.server.common.exception.enums.SuccessCode.REFRESH_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SEND_VERIFICATION_CODE_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_CODE_MATCH_SUCCESS;
@@ -118,9 +121,21 @@ public class AuthController {
     })
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping("/logout")
-    public SuccessNonDataResponse logout(@UserId Long userId) {
+    public SuccessNonDataResponse logout(@Parameter(hidden = true) @UserId Long userId) {
         authService.logout(userId);
         return SuccessNonDataResponse.success(LOGOUT_SUCCESS);
     }
 
+    @Operation(summary = "토큰 갱신 API", description = "토큰 갱신 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공입니다."),
+            @ApiResponse(responseCode = "401", description = "토큰이만료되었습니다. 다시 로그인해주세요.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 유저입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @SecurityRequirement(name = "JWT Auth")
+    @PostMapping("/refresh")
+    public SuccessResponse<TokenPair> refresh(@RequestBody final TokenRequestDto tokenRequestDto) {
+        return SuccessResponse.success(REFRESH_SUCCESS, authService.refresh(tokenRequestDto));
+    }
 }
