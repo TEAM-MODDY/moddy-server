@@ -31,7 +31,7 @@ public class UserResolver implements HandlerMethodArgumentResolver {
         final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         final String token = request.getHeader("Authorization");
         if (token == null || token.isBlank() || !token.startsWith("Bearer ")) {
-            throw new UnAuthorizedException(TOKEN_NOT_CONTAINED_EXCEPTION);
+            throw new BadRequestException(TOKEN_NOT_CONTAINED_EXCEPTION);
         }
         final String encodedUserId = token.substring("Bearer ".length());
         if (!jwtService.verifyToken(encodedUserId)) {

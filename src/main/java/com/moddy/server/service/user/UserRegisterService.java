@@ -1,6 +1,7 @@
 package com.moddy.server.service.user;
 
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.config.jwt.JwtService;
 import com.moddy.server.domain.user.User;
 import com.moddy.server.domain.user.repository.UserRepository;
 import com.moddy.server.service.application.HairModelApplicationRegisterService;
@@ -22,12 +23,14 @@ public class UserRegisterService {
     private final HairModelApplicationRegisterService hairModelApplicationRegisterService;
     private final ModelRegisterService modelRegisterService;
     private final DesignerRegisterService designerRegisterService;
+    private final JwtService jwtService;
 
     @Transactional
     public void withdraw(final Long userId) {
         final User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_EXCEPTION));
         if (user.getRole() == MODEL) deleteModelInfos(userId);
         else deleteDesignerInfos(user);
+        jwtService.deleteRefreshToken(String.valueOf(userId));
     }
 
     private void deleteModelInfos(final Long modelId) {
