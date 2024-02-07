@@ -41,8 +41,6 @@ public class DesignerController {
 
     private final DesignerService designerService;
     private final DesignerRegisterService designerRegisterService;
-    private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
-    private final HairServiceOfferRegisterService hairServiceOfferRegisterService;
 
     @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
     @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
