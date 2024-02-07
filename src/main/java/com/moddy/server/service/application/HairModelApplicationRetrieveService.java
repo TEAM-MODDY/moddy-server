@@ -4,16 +4,19 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
+import com.moddy.server.controller.designer.dto.response.HairRecordResponse;
+import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
-import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
-import com.moddy.server.domain.model.ModelApplyStatus;
+import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
+import com.moddy.server.domain.hair_service_record.HairServiceRecord;
+import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
+import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
-import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +37,9 @@ public class HairModelApplicationRetrieveService {
     private final DesignerRetrieveService designerRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
+    private final PreferRegionJpaRepository preferRegionJpaRepository;
+    private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
+    private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
 
     public String getApplicationCaptureUrl(final Long applicationId) {
         HairModelApplication application = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
@@ -54,7 +61,34 @@ public class HairModelApplicationRetrieveService {
                 applicationResponsesList
         );
     }
+    public ApplicationDto getApplicationDetailInfo(final Long applicationId){
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
+        List<String> preferhairStyleList = preferHairStyles.stream().map(hairStyle -> {
+            return hairStyle.getHairStyle().getValue();
+        }).collect(Collectors.toList());
 
+        Long modelId = hairModelApplication.getModel().getId();
+
+        List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
+        hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
+
+        List<HairRecordResponse> recordResponseList = hairServiceRecords.stream().map(records -> {
+            HairRecordResponse hairRecordResponse = new HairRecordResponse(
+                    records.getServiceRecordTerm().getValue(),
+                    records.getServiceRecord().getValue()
+            );
+            return hairRecordResponse;
+        }).collect(Collectors.toList());
+
+        return new ApplicationDto(
+                hairModelApplication.getModelImgUrl(),
+                hairModelApplication.getHairLength().getValue(),
+                preferhairStyleList,
+                recordResponseList,
+                hairModelApplication.getHairDetail(),
+                hairModelApplication.getInstagramId());
+    }
     public String fetchApplicationHairDetail(final Long applicationId) {
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         return hairModelApplication.getHairDetail();

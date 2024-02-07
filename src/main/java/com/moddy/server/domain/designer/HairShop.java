@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Embeddable
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
