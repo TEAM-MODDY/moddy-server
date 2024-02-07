@@ -77,40 +77,6 @@ public class DesignerService {
     private final SmsUtil smsUtil;
 
     @Transactional
-    public UserCreateResponse createDesigner(Long userId, DesignerCreateRequest request, MultipartFile profileImg) {
-
-        String profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-        if (designerJpaRepository.existsById(userId))
-            throw new ConflictException(ErrorCode.ALREADY_EXIST_USER_EXCEPTION);
-        user.update(request.name(), request.gender(), request.phoneNumber(), request.isMarketingAgree(), profileImgUrl, Role.HAIR_DESIGNER);
-
-        HairShop hairShop = HairShop.builder()
-                .name(request.hairShop().name())
-                .address(request.hairShop().address())
-                .detailAddress(request.hairShop().detailAddress())
-                .build();
-        Portfolio portfolio = Portfolio.builder()
-                .instagramUrl(request.portfolio().instagramUrl())
-                .naverPlaceUrl(request.portfolio().naverPlaceUrl())
-                .build();
-        designerJpaRepository.designerRegister(user.getId(), hairShop.getAddress(), hairShop.getDetailAddress(), hairShop.getName(), portfolio.getInstagramUrl(), portfolio.getNaverPlaceUrl(), request.introduction(), request.kakaoOpenChatUrl());
-        Designer designer = designerJpaRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
-        request.dayOffs().stream()
-                .forEach(d -> {
-                    DayOff dayOff = DayOff.builder()
-                            .dayOfWeek(d)
-                            .designer(designer)
-                            .build();
-                    dayOffJpaRepository.save(dayOff);
-
-                });
-        return authService.createUserToken(designer.getId().toString());
-    }
-
-
-    @Transactional
     public void postOffer(Long userId, Long applicationId, OfferCreateRequest request) throws IOException {
         Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));

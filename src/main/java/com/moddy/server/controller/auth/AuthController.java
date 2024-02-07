@@ -15,7 +15,7 @@ import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.service.auth.AuthService;
-import com.moddy.server.service.designer.DesignerService;
+import com.moddy.server.service.designer.DesignerRegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,7 +51,7 @@ public class AuthController {
 
     private static final String ORIGIN = "origin";
     private final AuthService authService;
-    private final DesignerService designerService;
+    private final DesignerRegisterService designerRegisterService;
 
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
@@ -67,20 +67,6 @@ public class AuthController {
             @Parameter(hidden = true) @KakaoCode String kakaoCode,
             @Parameter(hidden = true) HttpServletRequest request) {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
-    }
-
-    @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    SuccessResponse<UserCreateResponse> createDesigner(
-            @Parameter(hidden = true) @UserId Long userId,
-            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
-            @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
     @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")

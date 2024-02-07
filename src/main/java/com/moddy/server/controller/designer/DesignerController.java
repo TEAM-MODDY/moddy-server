@@ -3,24 +3,17 @@ package com.moddy.server.controller.designer;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
-import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.enums.SuccessCode;
-import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.config.resolver.user.UserId;
+import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
 import com.moddy.server.controller.designer.dto.request.OfferImageUrlRequestDto;
 import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
-import com.moddy.server.controller.designer.dto.response.ApplicationInfoResponse;
-import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
-import com.moddy.server.controller.designer.dto.response.ModelInfoResponse;
-import com.moddy.server.controller.model.dto.ApplicationDto;
-import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
-import com.moddy.server.domain.hair_model_application.HairModelApplication;
+import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.service.application.HairModelApplicationRetrieveService;
+import com.moddy.server.service.designer.DesignerRegisterService;
 import com.moddy.server.service.designer.DesignerService;
-import com.moddy.server.service.model.ModelRetrieveService;
-import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,13 +24,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -50,21 +44,22 @@ import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED
 public class DesignerController {
 
     private final DesignerService designerService;
+    private final DesignerRegisterService designerRegisterService;
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
 
-    @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
+    @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
+    @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "디자이너 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = DesignerMainResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<DesignerMainResponse> getDesignerMainInfo(
+    @PostMapping(value = "/auth/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long designerId,
-            @Parameter(name = "page", description = "페이지 ") @RequestParam(value = "page") int page,
-            @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
-        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(designerId, page, size));
+            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
+            @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
+        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerRegisterService.createDesigner(designerId, designerInfo, profileImg));
     }
 
     @Operation(summary = "[JWT] 제안서 작성하기", description = "제안서 작성하기 API입니다.")
