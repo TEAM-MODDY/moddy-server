@@ -86,7 +86,7 @@ public class HairServiceOfferRetrieveService {
 
         StyleDetailResponse styleDetailResponse = StyleDetailResponse
                 .builder()
-                .isAgree(hairServiceOffer.getIsModelAgree())
+                .isAgree(hairServiceOffer.isModelAgree())
                 .preferStyle(preferHairStyleList)
                 .designerOfferDetail(hairServiceOffer.getOfferDetail())
                 .modelApplicationDetail(applicationHairDetail)
@@ -110,7 +110,7 @@ public class HairServiceOfferRetrieveService {
     }
 
     private void handleOfferClickStatus(final HairServiceOffer hairServiceOffer) {
-        if (!hairServiceOffer.getIsClicked()) {
+        if (!hairServiceOffer.isClicked()) {
             hairServiceOffer.updateClickStatus();
         }
     }
@@ -133,7 +133,7 @@ public class HairServiceOfferRetrieveService {
                 return offerCondition.getOfferCondition().getValue();
             }).collect(Collectors.toList());
 
-            OfferResponse offerResponse = new OfferResponse(offer.getId(), designer.getProfileImgUrl(), designer.getName(), designer.getHairShop().getName(), offerConditionTop2List, offer.getIsClicked());
+            OfferResponse offerResponse = new OfferResponse(offer.getId(), designer.getProfileImgUrl(), designer.getName(), designer.getHairShop().getName(), offerConditionTop2List, offer.isClicked());
             return offerResponse;
         }).collect(Collectors.toList());
 
