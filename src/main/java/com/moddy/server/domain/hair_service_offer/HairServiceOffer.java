@@ -37,13 +37,11 @@ public class HairServiceOffer extends BaseTimeEntity {
     @NotNull
     private String offerDetail;
 
-    @NotNull
-    private Boolean isModelAgree;
+    private boolean isModelAgree;
 
-    @NotNull
-    private Boolean isClicked;
+    private boolean isClicked;
 
-    public HairServiceOffer(@NotNull HairModelApplication hairModelApplication, @NotNull Model model, @NotNull Designer designer, @NotNull String offerDetail, @NotNull Boolean isModelAgree, @NotNull Boolean isClicked) {
+    public HairServiceOffer(HairModelApplication hairModelApplication, Model model, Designer designer, String offerDetail, boolean isModelAgree, boolean isClicked) {
         this.hairModelApplication = hairModelApplication;
         this.model = model;
         this.designer = designer;
