@@ -51,8 +51,6 @@ public class DesignerController {
 
     private final DesignerService designerService;
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
-    private final ModelRetrieveService modelRetrieveService;
-    private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
 
     @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
     @ApiResponses({
