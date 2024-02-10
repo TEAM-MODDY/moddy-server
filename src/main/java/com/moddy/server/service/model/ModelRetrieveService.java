@@ -29,9 +29,7 @@ public class ModelRetrieveService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
 
-    public ApplicationModelInfoDto getApplicationModelInfo(final Long applicationId) {
-        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        Long modelId = hairModelApplication.getModel().getId();
+    public ApplicationModelInfoDto getApplicationModelInfo(final Long modelId) {
         Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
 
         List<PreferRegion> preferRegions = preferRegionJpaRepository.findAllByModelId(modelId);

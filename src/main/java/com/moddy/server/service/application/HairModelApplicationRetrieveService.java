@@ -116,7 +116,8 @@ public class HairModelApplicationRetrieveService {
         List<String> top2hairStyles = preferHairStyle.stream().map(hairStyle -> {
             return hairStyle.getHairStyle().getValue();
         }).collect(Collectors.toList());
-        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(application.getId());
+        Long modelId = application.getModel().getId();
+        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(modelId);
         HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                 application.getId(),
                 modelInfoDto.name(),
