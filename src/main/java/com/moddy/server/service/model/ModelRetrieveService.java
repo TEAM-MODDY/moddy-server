@@ -4,15 +4,11 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
-import com.moddy.server.domain.hair_model_application.HairModelApplication;
-import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.model.Model;
-import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_region.PreferRegion;
 import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.domain.region.repository.RegionJpaRepository;
-import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +22,6 @@ import java.util.stream.Collectors;
 public class ModelRetrieveService {
     private final ModelJpaRepository modelJpaRepository;
     private final RegionJpaRepository regionJpaRepository;
-    private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
 
     public ApplicationModelInfoDto getApplicationModelInfo(final Long modelId) {
