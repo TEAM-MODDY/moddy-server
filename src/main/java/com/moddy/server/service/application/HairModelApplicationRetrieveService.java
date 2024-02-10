@@ -37,9 +37,7 @@ public class HairModelApplicationRetrieveService {
     private final DesignerRetrieveService designerRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
-    private final PreferRegionJpaRepository preferRegionJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
-    private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
 
     public String getApplicationCaptureUrl(final Long applicationId) {
         HairModelApplication application = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
@@ -67,8 +65,6 @@ public class HairModelApplicationRetrieveService {
         List<String> preferhairStyleList = preferHairStyles.stream().map(hairStyle -> {
             return hairStyle.getHairStyle().getValue();
         }).collect(Collectors.toList());
-
-        Long modelId = hairModelApplication.getModel().getId();
 
         List<HairServiceRecord> hairServiceRecords = hairServiceRecordJpaRepository.findAllByHairModelApplicationId(applicationId);
         hairServiceRecords.sort(Comparator.comparingInt(e -> e.getServiceRecordTerm().ordinal()));
@@ -116,12 +112,11 @@ public class HairModelApplicationRetrieveService {
     }
 
     private HairModelApplicationResponse getApplicationResponse(final HairModelApplication application) {
-        Long modelId = application.getModel().getId();
         List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
         List<String> top2hairStyles = preferHairStyle.stream().map(hairStyle -> {
             return hairStyle.getHairStyle().getValue();
         }).collect(Collectors.toList());
-        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(modelId);
+        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(application.getId());
         HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
                 application.getId(),
                 modelInfoDto.name(),
