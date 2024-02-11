@@ -4,7 +4,6 @@ import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
-import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 public class ModelRetrieveService {
     private final ModelJpaRepository modelJpaRepository;
     private final RegionJpaRepository regionJpaRepository;
-    private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final PreferRegionJpaRepository preferRegionJpaRepository;
 
     public ApplicationModelInfoDto getApplicationModelInfo(final Long modelId) {
@@ -50,10 +48,5 @@ public class ModelRetrieveService {
     public String getModelName(final Long modelId) {
         Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
         return model.getName();
-    }
-
-    public Long getModelId(final Long applicationId) {
-        HairModelApplication application = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        return application.getModel().getId();
     }
 }

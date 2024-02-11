@@ -90,8 +90,7 @@ public class ApplicationController {
             @Parameter(hidden = true) @UserId Long designerId,
             @PathVariable(value = "applicationId") Long applicationId) {
         ApplicationDto applicationDto = hairModelApplicationRetrieveService.getApplicationDetailInfo(applicationId);
-        Long modelId = modelRetrieveService.getModelId(applicationId);
-        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(modelId);
+        ApplicationModelInfoDto modelInfoDto = modelRetrieveService.getApplicationModelInfo(applicationDto.modelId());
         ApplicationInfoResponse applicationInfoResponse = new ApplicationInfoResponse(
                 applicationId,
                 applicationDto.modelImgUrl(),
