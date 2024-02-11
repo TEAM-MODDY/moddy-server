@@ -61,6 +61,7 @@ public class HairModelApplicationRetrieveService {
     }
     public ApplicationDto getApplicationDetailInfo(final Long applicationId){
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        Long modelId = hairModelApplication.getModel().getId();
         List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
         List<String> preferhairStyleList = preferHairStyles.stream().map(hairStyle -> {
             return hairStyle.getHairStyle().getValue();
@@ -78,6 +79,7 @@ public class HairModelApplicationRetrieveService {
         }).collect(Collectors.toList());
 
         return new ApplicationDto(
+                modelId,
                 hairModelApplication.getModelImgUrl(),
                 hairModelApplication.getHairLength().getValue(),
                 preferhairStyleList,
