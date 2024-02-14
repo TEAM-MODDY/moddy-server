@@ -51,21 +51,4 @@ public class DesignerController {
             @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerRegisterService.createDesigner(designerId, designerInfo, profileImg));
     }
-
-    @Tag(name = "DesignerController")
-    @Operation(summary = "[JWT] 제안서 다운로드 링크", description = "디자이너 제안서 다운로드 링크 불러오는 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
-            @ApiResponse(responseCode = "404", description = "해당 디자이너는 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @PostMapping("/designer/offer/download-url")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<DownloadUrlResponseDto> getOfferImageDownloadUrl(
-            @Parameter(hidden = true) @UserId Long userId,
-            @RequestBody OfferImageUrlRequestDto offerImageUrlRequestDto
-    ) {
-        return SuccessResponse.success(GET_PRE_SIGNED_URL_SUCCESS, designerService.getOfferImageDownloadUrl(userId, offerImageUrlRequestDto.offerImageUrl()));
-    }
-
 }
