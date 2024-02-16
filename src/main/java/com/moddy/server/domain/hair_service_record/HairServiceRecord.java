@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class HairServiceRecord extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +30,9 @@ public class HairServiceRecord extends BaseTimeEntity {
     @NotNull
     private ServiceRecordTerm serviceRecordTerm;
 
-
+    public HairServiceRecord(HairModelApplication hairModelApplication, ServiceRecord serviceRecord, ServiceRecordTerm serviceRecordTerm) {
+        this.hairModelApplication = hairModelApplication;
+        this.serviceRecord = serviceRecord;
+        this.serviceRecordTerm = serviceRecordTerm;
+    }
 }

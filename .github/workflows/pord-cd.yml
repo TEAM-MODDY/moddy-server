@@ -1,8 +1,8 @@
-name: MODDY DEV CD
+name: MODDY PROD CD
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "main" ]
 
 jobs:
   deploy-ci:
@@ -44,7 +44,7 @@ jobs:
 
     - name: docker image 빌드 및 푸시
       run: |
-        docker build --platform linux/amd64 -t moddy1217/moddy-server .
+        docker build --platform linux/amd64 -t moddy1217/moddy-server -f Dockerfile-Prod .
         docker push moddy1217/moddy-server
 
   deploy-cd:      

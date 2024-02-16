@@ -84,44 +84,6 @@ public class DesignerService {
     private final HairServiceOfferJpaRepository hairServiceOfferJpaRepository;
     private final SmsUtil smsUtil;
 
-
-    @Transactional
-    public DesignerMainResponse getDesignerMainInfo(Long userId, int page, int size) {
-        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION));
-
-        Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
-        long totalElements = applicationPage.getTotalElements();
-
-        List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(application -> {
-
-            Model model = modelJpaRepository.findById(application.getModel().getId()).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
-
-            List<PreferHairStyle> preferHairStyle = preferHairStyleJpaRepository.findTop2ByHairModelApplicationId(application.getId());
-
-            List<String> top2hairStyles = preferHairStyle.stream().map(haireStyle -> {
-                return haireStyle.getHairStyle().getValue();
-            }).collect(Collectors.toList());
-
-            HairModelApplicationResponse applicationResponse = new HairModelApplicationResponse(
-                    application.getId(),
-                    model.getName(),
-                    model.getAge(),
-                    application.getModelImgUrl(),
-                    model.getGender().getValue(),
-                    top2hairStyles
-            );
-            return applicationResponse;
-        }).collect(Collectors.toList());
-
-        return new DesignerMainResponse(
-                page,
-                size,
-                totalElements,
-                designer.getName(),
-                applicationResponsesList
-        );
-    }
-
     @Transactional
     public UserCreateResponse createDesigner(Long userId, DesignerCreateRequest request, MultipartFile profileImg) {
 
@@ -243,22 +205,14 @@ public class DesignerService {
         );
     }
 
-    private Page<HairModelApplication> findApplicationsByPaging(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
-
-        return applicationPage;
-    }
-
     private Boolean getIsSendStatus(Long applicationId, Long userId) {
         Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndDesignerId(applicationId, userId);
         return offer.isPresent();
     }
 
     public DownloadUrlResponseDto getOfferImageDownloadUrl(final Long userId, final String offerImageUrl) {
-        //Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
-        String s3Key = offerImageUrl.substring(54);
-        String preSignedUrl = s3Service.getPreSignedUrlToDownload(s3Key);
+        Designer designer = designerJpaRepository.findById(userId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
+        String preSignedUrl = s3Service.getPreSignedUrlToDownload(offerImageUrl);
         return new DownloadUrlResponseDto(preSignedUrl);
     }
 }

@@ -4,20 +4,18 @@ package com.moddy.server.controller.auth;
 import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
+import com.moddy.server.common.dto.TokenPair;
 import com.moddy.server.common.exception.enums.SuccessCode;
-import com.moddy.server.common.util.SmsUtil;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.request.PhoneNumberRequestDto;
+import com.moddy.server.controller.auth.dto.request.TokenRequestDto;
 import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
-import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
-import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.service.auth.AuthService;
 import com.moddy.server.service.designer.DesignerService;
-import com.moddy.server.service.model.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +28,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,9 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.moddy.server.common.exception.enums.SuccessCode.LOGOUT_SUCCESS;
+import static com.moddy.server.common.exception.enums.SuccessCode.REFRESH_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SEND_VERIFICATION_CODE_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.SOCIAL_LOGIN_SUCCESS;
 import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_CODE_MATCH_SUCCESS;
@@ -55,8 +52,7 @@ public class AuthController {
     private static final String ORIGIN = "origin";
     private final AuthService authService;
     private final DesignerService designerService;
-    private final ModelService modelService;
-    private final SmsUtil smsUtil;
+
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
     @ApiResponses(value = {
@@ -73,16 +69,6 @@ public class AuthController {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
     }
 
-    @Operation(summary = "모델 회원가입 시 희망 지역 리스트 조회 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "희망 지역 리스트 조회 성공입니다."),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @GetMapping("/regions")
-    public SuccessResponse<List<RegionResponse>> getRegionList() {
-        return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, authService.getRegionList());
-    }
-
     @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
@@ -95,21 +81,6 @@ public class AuthController {
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
             @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
-    }
-
-    @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
-            @ApiResponse(responseCode = "401", description = "인증오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @PostMapping(value = "/signup/model")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<UserCreateResponse> createModel(
-            @Parameter(hidden = true) @UserId Long userId,
-            @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
-        return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelService.createModel(userId, modelCreateRequest));
     }
 
     @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")
@@ -150,9 +121,21 @@ public class AuthController {
     })
     @SecurityRequirement(name = "JWT Auth")
     @PostMapping("/logout")
-    public SuccessNonDataResponse logout(@UserId Long userId) {
+    public SuccessNonDataResponse logout(@Parameter(hidden = true) @UserId Long userId) {
         authService.logout(userId);
         return SuccessNonDataResponse.success(LOGOUT_SUCCESS);
     }
 
+    @Operation(summary = "토큰 갱신 API", description = "토큰 갱신 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공입니다."),
+            @ApiResponse(responseCode = "401", description = "토큰이만료되었습니다. 다시 로그인해주세요.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 유저입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @SecurityRequirement(name = "JWT Auth")
+    @PostMapping("/refresh")
+    public SuccessResponse<TokenPair> refresh(@RequestBody final TokenRequestDto tokenRequestDto) {
+        return SuccessResponse.success(REFRESH_SUCCESS, authService.refresh(tokenRequestDto));
+    }
 }
