@@ -8,7 +8,6 @@ import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
-import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.service.model.ModelRegisterService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import com.moddy.server.service.model.ModelService;

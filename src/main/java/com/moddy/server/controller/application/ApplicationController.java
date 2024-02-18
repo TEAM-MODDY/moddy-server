@@ -76,7 +76,7 @@ public class ApplicationController {
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
         return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(designerId, page, size));
     }
-    @Tag(name = "DesignerController")
+    @Tag(name = "Application Controller")
     @Operation(summary = "[JWT] 모델 지원서 상세 조회", description = "모델 지원서 상세 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
@@ -98,7 +98,8 @@ public class ApplicationController {
                 applicationDto.preferHairStyleList(),
                 applicationDto.recordResponseList(),
                 applicationDto.hairDetail(),
-                hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId)
+                hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId),
+                applicationDto.instgramId()
         );
 
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
@@ -106,8 +107,8 @@ public class ApplicationController {
                 modelInfoDto.name(),
                 modelInfoDto.age(),
                 modelInfoDto.gender(),
-                modelInfoDto.regionList(),
-                applicationDto.instgramId()
+                modelInfoDto.regionList()
+
         );
 
         ApplicationDetailInfoResponse applicationDetailInfoResponse = new ApplicationDetailInfoResponse(applicationInfoResponse,modelInfoResponse);

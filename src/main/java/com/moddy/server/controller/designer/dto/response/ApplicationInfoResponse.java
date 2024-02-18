@@ -12,6 +12,7 @@ public record ApplicationInfoResponse(
         List<String> preferHairstyles,
         List<HairRecordResponse> hairServiceRecords,
         String hairDetail,
-        Boolean isSend
+        Boolean isSend,
+        String instagramId
 ) {
 }
