@@ -45,19 +45,11 @@ public class HairServiceOfferRetrieveService {
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
 
-    public OpenChatResponse getOpenChatInfo(final Long userId, final Long offerId) {
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
-
-        Long designerId = hairServiceOffer.getDesigner().getId();
-        Long applicationId = hairServiceOffer.getHairModelApplication().getId();
+    public DesignerInfoOpenChatDto getOpenChatInfo(final Long modelId, final Long designerId) {
 
         DesignerInfoOpenChatDto openChatDto = designerRetrieveService.getDesignerOpenDetail(designerId);
 
-        DesignerInfoOpenChatResponse response = new DesignerInfoOpenChatResponse(openChatDto.imgUrl(), openChatDto.shopName(), openChatDto.name(), openChatDto.introduction());
-
-        OpenChatResponse openChatResponse = new OpenChatResponse(hairModelApplicationRetrieveService.getApplicationCaptureUrl(applicationId), openChatDto.kakaoUrl(), response);
-
-        return openChatResponse;
+        return openChatDto;
     }
 
     public boolean getIsSendStatus(final Long applicationId, final Long userId) {

@@ -6,6 +6,7 @@ import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
+import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
 import com.moddy.server.controller.offer.response.DetailOfferResponse;
@@ -45,12 +46,12 @@ public class OfferController {
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/model/{offerId}/agree")
+    @GetMapping("/designer/kakao/{designerId}")
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<OpenChatResponse> getOpenChat(
-            @Parameter(hidden = true) @UserId Long userId,
-            @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId) {
-        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, hairServiceOfferRetrieveService.getOpenChatInfo(userId, offerId));
+    public SuccessResponse<DesignerInfoOpenChatDto> getOpenChat(
+            @Parameter(hidden = true) @UserId Long modelId,
+            @Parameter(name = "designerId", description = "디자이너아이디") @PathVariable(value = "designerId") Long designerId) {
+        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, hairServiceOfferRetrieveService.getOpenChatInfo(modelId, designerId));
     }
 
     @Tag(name = "ModelController")
