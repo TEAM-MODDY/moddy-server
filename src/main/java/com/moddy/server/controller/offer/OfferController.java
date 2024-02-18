@@ -39,7 +39,7 @@ public class OfferController {
     private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
     private final HairServiceOfferRegisterService hairServiceOfferRegisterService;
 
-    @Tag(name = "ModelController")
+    @Tag(name = "Offer Controller")
     @Operation(summary = "[JWT] 카카오톡 오픈채팅", description = "지원서 캡처 이미지 및 디자이너 정보 조회입니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = OpenChatResponse.class))),
