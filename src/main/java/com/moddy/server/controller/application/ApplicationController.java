@@ -84,7 +84,7 @@ public class ApplicationController {
             @ApiResponse(responseCode = "404", description = "지원서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/designer/{applicationId}")
+    @GetMapping("/application/{applicationId}")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<ApplicationDetailInfoResponse> getApplicationDetailInfo(
             @Parameter(hidden = true) @UserId Long designerId,

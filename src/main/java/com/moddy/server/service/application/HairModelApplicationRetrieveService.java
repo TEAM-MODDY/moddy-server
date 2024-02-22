@@ -99,6 +99,10 @@ public class HairModelApplicationRetrieveService {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);
     }
 
+    public String getApplicationImgUrl(final Long modelId){
+        return hairModelApplicationJpaRepository.findByModelId(modelId).get().getModelImgUrl();
+    }
+
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);

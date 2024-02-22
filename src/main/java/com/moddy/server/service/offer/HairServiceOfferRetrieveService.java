@@ -42,12 +42,6 @@ public class HairServiceOfferRetrieveService {
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
 
-    public DesignerInfoOpenChatDto getOpenChatInfo(final Long modelId, final Long designerId) {
-
-        DesignerInfoOpenChatDto openChatDto = designerRetrieveService.getDesignerOpenDetail(designerId);
-
-        return openChatDto;
-    }
 
     public boolean getIsSendStatus(final Long applicationId, final Long userId) {
         Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndDesignerId(applicationId, userId);
