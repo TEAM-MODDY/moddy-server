@@ -2,11 +2,12 @@ package com.moddy.server.service.offer;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
 import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
 import com.moddy.server.controller.model.dto.response.DesignerInfoOpenChatResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.controller.model.dto.response.OpenChatResponse;
-import com.moddy.server.controller.model.dto.response.StyleDetailResponse;
+import com.moddy.server.controller.offer.dto.response.OfferInfoResponse;
 import com.moddy.server.controller.offer.response.DetailOfferResponse;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
@@ -64,36 +65,35 @@ public class HairServiceOfferRetrieveService {
         Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndDesignerId(applicationId, userId);
         return offer.isPresent();
     }
-    public DetailOfferResponse getOfferDetail(final Long modelId, final Long offerId) {
+
+    public DetailOfferResponse getOfferDetail(final Long offerId) {
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
 
         DesignerInfoResponse designerInfoResponse = designerRetrieveService.getOfferDesignerInfoResponse(hairServiceOffer.getDesigner().getId());
-        StyleDetailResponse styleDetailResponse = getStyleDetailResponse(hairServiceOffer, offerId);
+        ApplicationInfoDetailResponse applicationInfoDetailResponse = hairModelApplicationRetrieveService.getOfferApplicationInfo(hairServiceOffer.getHairModelApplication().getId());
+        OfferInfoResponse offerInfoResponse = getOfferDetailResponse(hairServiceOffer, offerId);
+
         handleOfferClickStatus(hairServiceOffer);
 
-        return new DetailOfferResponse(designerInfoResponse, styleDetailResponse);
+        return new DetailOfferResponse(designerInfoResponse, applicationInfoDetailResponse,offerInfoResponse);
     }
 
-    private StyleDetailResponse getStyleDetailResponse(final HairServiceOffer hairServiceOffer, final Long offerId) {
-
-        String applicationHairDetail = hairModelApplicationRetrieveService.fetchApplicationHairDetail(hairServiceOffer.getHairModelApplication().getId());
-        List<String> preferHairStyleList = hairModelApplicationRetrieveService.fetchPreferHairStyle(hairServiceOffer.getHairModelApplication().getId());
+    private OfferInfoResponse getOfferDetailResponse(final HairServiceOffer hairServiceOffer, final Long offerId) {
 
         List<PreferOfferCondition> preferOfferConditionList = preferOfferConditionJpaRepository.findAllByHairServiceOfferId(offerId);
         List<OfferCondition> offerConditionList = preferOfferConditionList.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
         List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(offerConditionList::contains).collect(Collectors.toList());
 
-        StyleDetailResponse styleDetailResponse = StyleDetailResponse
+        OfferInfoResponse offerInfoResponse = OfferInfoResponse
                 .builder()
+                .offerId(hairServiceOffer.getId())
                 .isAgree(hairServiceOffer.isModelAgree())
-                .preferStyle(preferHairStyleList)
                 .designerOfferDetail(hairServiceOffer.getOfferDetail())
-                .modelApplicationDetail(applicationHairDetail)
                 .preferOfferConditions(preferOfferConditionBooleanList)
                 .build();
 
-        return styleDetailResponse;
+        return offerInfoResponse;
     }
 
     public ModelMainOfferResponse getModelMainOfferInfo(final Long modelId, final int page, final int size) {
