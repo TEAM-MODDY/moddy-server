@@ -1,15 +1,13 @@
-package com.moddy.server.controller.model.dto.response;
+package com.moddy.server.controller.offer.dto.response;
 
 import lombok.Builder;
-
 import java.util.List;
 
 @Builder
-public record StyleDetailResponse(
+public record OfferInfoResponse(
+        Long offerId,
         Boolean isAgree,
-        List<String> preferStyle,
         String designerOfferDetail,
-        String modelApplicationDetail,
         List<Boolean> preferOfferConditions
 ) {
 }
