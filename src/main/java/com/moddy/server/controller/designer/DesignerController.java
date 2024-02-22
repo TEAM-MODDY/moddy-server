@@ -15,7 +15,6 @@ import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.designer.DesignerRegisterService;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.designer.DesignerService;
-import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
