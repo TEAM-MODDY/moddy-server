@@ -7,6 +7,7 @@ import com.moddy.server.controller.designer.dto.response.HairModelApplicationRes
 import com.moddy.server.controller.designer.dto.response.HairRecordResponse;
 import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
+import com.moddy.server.controller.model.dto.response.ApplicationImgUrlResponse;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
 import com.moddy.server.domain.hair_service_record.HairServiceRecord;
@@ -99,8 +100,9 @@ public class HairModelApplicationRetrieveService {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);
     }
 
-    public String getApplicationImgUrl(final Long modelId){
-        return hairModelApplicationJpaRepository.findByModelId(modelId).get().getModelImgUrl();
+    public ApplicationImgUrlResponse getApplicationImgUrl(final Long applicationId){
+
+        return new ApplicationImgUrlResponse(hairModelApplicationJpaRepository.findById(applicationId).get().getApplicationCaptureUrl());
     }
 
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {

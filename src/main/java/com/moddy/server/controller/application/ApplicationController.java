@@ -12,6 +12,7 @@ import com.moddy.server.controller.designer.dto.response.ModelInfoResponse;
 import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
+import com.moddy.server.controller.model.dto.response.ApplicationImgUrlResponse;
 import com.moddy.server.service.application.HairModelApplicationRegisterService;
 import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
@@ -113,6 +114,21 @@ public class ApplicationController {
 
         ApplicationDetailInfoResponse applicationDetailInfoResponse = new ApplicationDetailInfoResponse(applicationInfoResponse,modelInfoResponse);
         return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, applicationDetailInfoResponse);
+    }
+
+    @Operation(summary = "[JWT] 지원서 이미지 가져오기", description = "지원서 이미지 가져오기 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모델 지원서 이미지 가져오기 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "지원서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("{applicationId}/img-url")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<ApplicationImgUrlResponse> getApplicationImgUrlOpenChat(
+            @Parameter(hidden = true) @UserId Long modelId,
+            @PathVariable(value = "applicationId") Long applicationId) {
+        return SuccessResponse.success(SuccessCode.GET_APPLICATION_IMG_URL_SUCCESS, hairModelApplicationRetrieveService.getApplicationImgUrl(applicationId));
     }
 }
 

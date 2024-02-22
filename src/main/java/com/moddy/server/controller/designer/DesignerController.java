@@ -10,7 +10,6 @@ import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoRe
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
-import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.designer.DesignerRegisterService;
 import com.moddy.server.service.designer.DesignerRetrieveService;
@@ -79,19 +78,16 @@ public class DesignerController {
 
     @Operation(summary = "[JWT] 카카오톡 오픈채팅", description = "지원서 캡처 이미지 및 디자이너 정보 조회입니다")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = OpenChatResponse.class))),
+            @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = DesignerInfoOpenChatDto.class))),
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("{designerId}")
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<OpenChatResponse> getOpenChat(
+    public SuccessResponse<DesignerInfoOpenChatDto> getOpenChat(
             @Parameter(hidden = true) @UserId Long modelId,
             @Parameter(name = "designerId", description = "디자이너아이디") @PathVariable(value = "designerId") Long designerId) {
-        DesignerInfoOpenChatDto openChatDto = designerRetrieveService.getDesignerOpenChatInfo(designerId);
-        String applicationImgUrl = hairModelApplicationRetrieveService.getApplicationImgUrl(modelId);
-        OpenChatResponse openChatResponse = new OpenChatResponse(applicationImgUrl,openChatDto);
-        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS,openChatResponse);
+        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS,designerRetrieveService.getDesignerOpenChatInfo(designerId));
     }
 
 }
