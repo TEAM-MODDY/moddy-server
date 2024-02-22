@@ -2,6 +2,7 @@ package com.moddy.server.service.application;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
 import com.moddy.server.controller.designer.dto.response.HairRecordResponse;
@@ -9,12 +10,10 @@ import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
-import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
-import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +58,19 @@ public class HairModelApplicationRetrieveService {
                 applicationResponsesList
         );
     }
-    public ApplicationDto getApplicationDetailInfo(final Long applicationId){
+
+    public ApplicationInfoDetailResponse getOfferApplicationInfo(final Long applicationId) {
+        List<String> preferHairStyleList = getPreferHairStyle(applicationId);
+        String applicationHairDetail = getApplicationHairDetail(applicationId);
+
+        return new ApplicationInfoDetailResponse(
+                applicationId,
+                preferHairStyleList,
+                applicationHairDetail
+        );
+    }
+
+    public ApplicationDto getApplicationDetailInfo(final Long applicationId) {
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         Long modelId = hairModelApplication.getModel().getId();
         List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
@@ -87,23 +98,23 @@ public class HairModelApplicationRetrieveService {
                 hairModelApplication.getHairDetail(),
                 hairModelApplication.getInstagramId());
     }
-    public String fetchApplicationHairDetail(final Long applicationId) {
+
+    public boolean fetchModelApplyStatus(final Long modelId) {
+        return hairModelApplicationJpaRepository.existsByModelId(modelId);
+    }
+
+    private String getApplicationHairDetail(final Long applicationId) {
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         return hairModelApplication.getHairDetail();
     }
 
-    public List<String> fetchPreferHairStyle(final Long applicationId) {
+    private List<String> getPreferHairStyle(final Long applicationId) {
         List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
         List<String> preferHairStyleList = preferHairStyles.stream().map(hairStyle -> {
             return hairStyle.getHairStyle().getValue();
         }).collect(Collectors.toList());
 
         return preferHairStyleList;
-    }
-
-
-    public boolean fetchModelApplyStatus(final Long modelId){
-        return hairModelApplicationJpaRepository.existsByModelId(modelId);
     }
 
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
