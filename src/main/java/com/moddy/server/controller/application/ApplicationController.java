@@ -70,7 +70,7 @@ public class ApplicationController {
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping()
+    @GetMapping
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<DesignerMainResponse> getDesignerMainInfo(
             @Parameter(hidden = true) @UserId Long designerId,

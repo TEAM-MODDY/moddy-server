@@ -55,7 +55,7 @@ public class ModelController {
             @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping()
+    @PostMapping
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
             @Parameter(hidden = true) @UserId Long userId,
