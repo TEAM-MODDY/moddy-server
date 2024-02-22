@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "ModelController")
+@RequestMapping("/model")
 public class ModelController {
 
     private final ModelService modelService;
@@ -42,7 +44,7 @@ public class ModelController {
             @ApiResponse(responseCode = "200", description = "희망 지역 리스트 조회 성공입니다."),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/auth/regions")
+    @GetMapping("regions")
     public SuccessResponse<List<RegionResponse>> getRegionList() {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, modelRetrieveService.getRegionList());
     }
@@ -54,7 +56,7 @@ public class ModelController {
             @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping(value = "/auth/signup/model")
+    @PostMapping
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<UserCreateResponse> createModel(
             @Parameter(hidden = true) @UserId Long userId,
@@ -70,7 +72,7 @@ public class ModelController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @GetMapping(value = "/model/application/user")
+    @GetMapping(value = "/detail")
     public SuccessResponse<ApplicationUserDetailResponse> getUserDetailInApplication(@Parameter(hidden = true) @UserId Long userId) {
         return SuccessResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS, modelService.getUserDetailInApplication(userId));
     }

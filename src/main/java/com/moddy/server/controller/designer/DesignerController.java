@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +40,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "DesignerController")
+@RequestMapping("/designer")
 public class DesignerController {
 
     private final DesignerService designerService;
@@ -52,7 +54,7 @@ public class DesignerController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/auth/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long designerId,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
@@ -81,7 +83,7 @@ public class DesignerController {
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/designer/{designerId}")
+    @GetMapping("{designerId}")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<OpenChatResponse> getOpenChat(
             @Parameter(hidden = true) @UserId Long modelId,

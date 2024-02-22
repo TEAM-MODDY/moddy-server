@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +34,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Offer Controller")
+@RequestMapping("/offer")
 public class OfferController {
 
     private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
@@ -45,7 +47,7 @@ public class OfferController {
             @ApiResponse(responseCode = "404", description = "제안서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PutMapping("/model/offer/{offerId}")
+    @PutMapping("{offerId}/agree")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessNonDataResponse acceptOffer(
             @Parameter(hidden = true) @UserId Long userId,
@@ -60,7 +62,7 @@ public class OfferController {
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/model")
+    @GetMapping
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<ModelMainOfferResponse> getModelMainInfo(
             @Parameter(hidden = true) @UserId Long modelId,
@@ -76,7 +78,7 @@ public class OfferController {
             @ApiResponse(responseCode = "404", description = "제안서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/model/offer/{offerId}")
+    @GetMapping("{offerId}")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<DetailOfferResponse> getModelDetailOfferInfo(
             @Parameter(hidden = true) @UserId Long modelId,
@@ -92,7 +94,7 @@ public class OfferController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @PostMapping("/designer/{applicationId}/offer")
+    @PostMapping("{applicationId}")
     public SuccessNonDataResponse offerCreateRequest(
             @Parameter(hidden = true) @UserId Long designerId,
             @PathVariable(value = "applicationId") Long applicationId,

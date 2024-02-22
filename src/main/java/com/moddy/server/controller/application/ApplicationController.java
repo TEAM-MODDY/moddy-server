@@ -30,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Application Controller")
+@RequestMapping("/application")
 public class ApplicationController {
 
     private final HairModelApplicationRegisterService hairModelApplicationRegisterService;
@@ -52,7 +54,7 @@ public class ApplicationController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/model/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessNonDataResponse submitModelApplication(
             @Parameter(hidden = true) @UserId Long modelId,
             @RequestPart(value = "modelImgUrl", required = false) MultipartFile modelImgUrl,
@@ -67,7 +69,7 @@ public class ApplicationController {
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping(value = "/designer")
+    @GetMapping
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<DesignerMainResponse> getDesignerMainInfo(
             @Parameter(hidden = true) @UserId Long designerId,
@@ -82,7 +84,7 @@ public class ApplicationController {
             @ApiResponse(responseCode = "404", description = "지원서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/application/{applicationId}")
+    @GetMapping("{applicationId}")
     @SecurityRequirement(name = "JWT Auth")
     public SuccessResponse<ApplicationDetailInfoResponse> getApplicationDetailInfo(
             @Parameter(hidden = true) @UserId Long designerId,
