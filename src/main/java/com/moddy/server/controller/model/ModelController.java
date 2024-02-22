@@ -11,7 +11,6 @@ import com.moddy.server.controller.model.dto.response.ApplicationUserDetailRespo
 import com.moddy.server.service.model.ModelRegisterService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import com.moddy.server.service.model.ModelService;
-import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,22 +22,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "ModelController")
 public class ModelController {
 
     private final ModelService modelService;
     private final ModelRegisterService modelRegisterService;
-    private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
 
-    @Tag(name = "Auth Controller")
     @Operation(summary = "모델 회원가입 시 희망 지역 리스트 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "희망 지역 리스트 조회 성공입니다."),
@@ -49,7 +47,6 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.FIND_REGION_LIST_SUCCESS, modelRetrieveService.getRegionList());
     }
 
-    @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
     @Operation(summary = "[JWT] 모델 회원가입 API", description = "모델 회원가입 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "모델 회원가입 성공"),
@@ -65,7 +62,6 @@ public class ModelController {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelRegisterService.createModel(userId, modelCreateRequest));
     }
 
-    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델 지원서 최종 확인 시 유저 정보 조회 API", description = "[모델 뷰] 모델 지원서 최종 확인 시 유저 정보 조회 API 입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),

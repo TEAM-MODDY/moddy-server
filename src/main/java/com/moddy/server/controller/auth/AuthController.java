@@ -51,7 +51,6 @@ public class AuthController {
 
     private static final String ORIGIN = "origin";
     private final AuthService authService;
-    private final DesignerRegisterService designerRegisterService;
 
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")

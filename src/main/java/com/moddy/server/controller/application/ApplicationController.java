@@ -37,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Application Controller")
 public class ApplicationController {
 
     private final HairModelApplicationRegisterService hairModelApplicationRegisterService;
@@ -44,7 +45,6 @@ public class ApplicationController {
     private final ModelRetrieveService modelRetrieveService;
     private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
 
-    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델 지원서 작성", description = "모델 지원서 작성 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),
@@ -61,7 +61,6 @@ public class ApplicationController {
         hairModelApplicationRegisterService.postApplication(modelId, modelImgUrl, applicationCaptureImgUrl, applicationInfo);
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
     }
-    @Tag(name = "DesignerController")
     @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = DesignerMainResponse.class))),
@@ -76,7 +75,6 @@ public class ApplicationController {
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
         return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(designerId, page, size));
     }
-    @Tag(name = "Application Controller")
     @Operation(summary = "[JWT] 모델 지원서 상세 조회", description = "모델 지원서 상세 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),

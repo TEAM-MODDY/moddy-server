@@ -6,8 +6,6 @@ import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.designer.dto.request.OfferCreateRequest;
-import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
-import com.moddy.server.controller.model.dto.response.OpenChatResponse;
 import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
 import com.moddy.server.controller.offer.response.DetailOfferResponse;
 import com.moddy.server.service.offer.HairServiceOfferRegisterService;
@@ -34,12 +32,12 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Offer Controller")
 public class OfferController {
 
     private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
     private final HairServiceOfferRegisterService hairServiceOfferRegisterService;
 
-    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 디자이너 제안서 승낙하기", description = "디자이너 제안서 승낙하기 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 제안서 승낙하기"),
@@ -56,7 +54,6 @@ public class OfferController {
         return SuccessNonDataResponse.success(SuccessCode.OFFER_ACCEPT_SUCCESS);
     }
 
-    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델 메인 뷰 조회", description = "모델 메인 뷰 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = ModelMainOfferResponse.class))),
@@ -72,7 +69,6 @@ public class OfferController {
         return SuccessResponse.success(SuccessCode.FIND_MODEL_MAIN_INFO_SUCCESS, hairServiceOfferRetrieveService.getModelMainOfferInfo(modelId, page, size));
     }
 
-    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델에게 온 디자이너 제안 상세보기", description = "제안서 상세보기 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -88,7 +84,6 @@ public class OfferController {
         return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, hairServiceOfferRetrieveService.getOfferDetail(modelId, offerId));
     }
 
-    @Tag(name = "DesignerController")
     @Operation(summary = "[JWT] 제안서 작성하기", description = "제안서 작성하기 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "제안서 작성 성공", content = @Content(schema = @Schema(implementation = SuccessNonDataResponse.class))),
