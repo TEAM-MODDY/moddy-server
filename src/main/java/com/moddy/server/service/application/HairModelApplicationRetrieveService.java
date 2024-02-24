@@ -98,7 +98,31 @@ public class HairModelApplicationRetrieveService {
                 hairModelApplication.getHairDetail(),
                 hairModelApplication.getInstagramId());
     }
-    public String fetchApplicationHairDetail(final Long applicationId) {
+
+    public boolean fetchModelApplyStatus(final Long modelId) {
+        return hairModelApplicationJpaRepository.existsByModelId(modelId);
+    }
+
+    public ApplicationImgUrlResponse getApplicationImgUrl(final Long applicationId) {
+
+        return new ApplicationImgUrlResponse(hairModelApplicationJpaRepository.findById(applicationId).get().getApplicationCaptureUrl());
+    }
+
+    public DownloadUrlResponseDto getApplicationCaptureDownloadUrl(final Long applicationId) {
+        final HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        final String applicationDownloadUrl = s3Service.getPreSignedUrlToDownload(hairModelApplication.getApplicationCaptureUrl());
+        return new DownloadUrlResponseDto(applicationDownloadUrl);
+    }
+
+    private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
+
+        return applicationPage;
+    }
+
+    private String getApplicationHairDetail(final Long applicationId) {
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         return hairModelApplication.getHairDetail();
     }
@@ -110,30 +134,6 @@ public class HairModelApplicationRetrieveService {
         }).collect(Collectors.toList());
 
         return preferHairStyleList;
-    }
-
-
-    public boolean fetchModelApplyStatus(final Long modelId){
-        return hairModelApplicationJpaRepository.existsByModelId(modelId);
-    }
-
-    public ApplicationImgUrlResponse getApplicationImgUrl(final Long applicationId){
-
-        return new ApplicationImgUrlResponse(hairModelApplicationJpaRepository.findById(applicationId).get().getApplicationCaptureUrl());
-    }
-
-    private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
-
-        return applicationPage;
-    }
-
-    public DownloadUrlResponseDto getApplicationCaptureDownloadUrl(final Long applicationId) {
-        final HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        final String applicationDownloadUrl = s3Service.getPreSignedUrlToDownload(hairModelApplication.getApplicationCaptureUrl());
-        return new DownloadUrlResponseDto(applicationDownloadUrl);
     }
 
     private HairModelApplicationResponse getApplicationResponse(final HairModelApplication application) {
