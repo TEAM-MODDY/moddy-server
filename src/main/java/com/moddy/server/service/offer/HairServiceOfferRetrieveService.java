@@ -48,6 +48,7 @@ public class HairServiceOfferRetrieveService {
         return offer.isPresent();
     }
 
+    @Transactional
     public DetailOfferResponse getOfferDetail(final Long offerId) {
 
         HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
