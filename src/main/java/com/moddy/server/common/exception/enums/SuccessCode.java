@@ -26,7 +26,8 @@ public enum SuccessCode {
     REFRESH_SUCCESS(HttpStatus.OK, "토큰 갱신 성공입니다."),
     CREATE_MODEL_APPLICATION_SUCCESS(HttpStatus.OK, "모델 지원서 생성 성공입니다."),
     USER_WITHDRAW_SUCCESS(HttpStatus.OK, "회원 탈퇴 성공입니다."),
-    GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "제안서 다운로드 url 생성 성공");
+    GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "제안서 다운로드 url 생성 성공"),
+    GET_APPLICATION_IMG_URL_SUCCESS(HttpStatus.OK, "지원서 이미지 url 가져오기 성공");
 
     private final HttpStatus httpStatus;
     private final String message;
