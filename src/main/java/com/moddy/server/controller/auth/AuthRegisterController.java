@@ -5,17 +5,13 @@ import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.dto.TokenPair;
-import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.kakao.KakaoCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.request.PhoneNumberRequestDto;
 import com.moddy.server.controller.auth.dto.request.TokenRequestDto;
 import com.moddy.server.controller.auth.dto.request.VerifyCodeRequestDto;
 import com.moddy.server.controller.auth.dto.response.LoginResponseDto;
-import com.moddy.server.controller.designer.dto.request.DesignerCreateRequest;
-import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.service.auth.AuthService;
-import com.moddy.server.service.designer.DesignerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,13 +23,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -47,11 +40,10 @@ import static com.moddy.server.common.exception.enums.SuccessCode.VERIFICATION_C
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthRegisterController {
 
     private static final String ORIGIN = "origin";
     private final AuthService authService;
-    private final DesignerService designerService;
 
 
     @Operation(summary = "[KAKAO CODE] 로그인 API")
@@ -67,20 +59,6 @@ public class AuthController {
             @Parameter(hidden = true) @KakaoCode String kakaoCode,
             @Parameter(hidden = true) HttpServletRequest request) {
         return SuccessResponse.success(SOCIAL_LOGIN_SUCCESS, authService.login(request.getHeader(ORIGIN), kakaoCode));
-    }
-
-    @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    SuccessResponse<UserCreateResponse> createDesigner(
-            @Parameter(hidden = true) @UserId Long userId,
-            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
-            @Valid @RequestPart("designerInfo") DesignerCreateRequest designerInfo) {
-        return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerService.createDesigner(userId, designerInfo, profileImg));
     }
 
     @Operation(summary = "인증번호 요청 API", description = "인증번호 요청 API입니다.")

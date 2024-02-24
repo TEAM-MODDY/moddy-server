@@ -2,15 +2,17 @@ package com.moddy.server.service.offer;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
-import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
-import com.moddy.server.controller.model.dto.response.DesignerInfoOpenChatResponse;
+import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
+import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.controller.model.dto.response.OfferResponse;
-import com.moddy.server.controller.model.dto.response.OpenChatResponse;
+import com.moddy.server.controller.offer.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
+import com.moddy.server.controller.offer.dto.response.OfferInfoResponse;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.model.ModelApplyStatus;
+import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.PreferOfferCondition;
 import com.moddy.server.domain.prefer_offer_condition.repository.PreferOfferConditionJpaRepository;
 import com.moddy.server.service.application.HairModelApplicationRetrieveService;
@@ -24,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,19 +42,41 @@ public class HairServiceOfferRetrieveService {
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
 
-    public OpenChatResponse getOpenChatInfo(final Long userId, final Long offerId) {
-        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUNT_OFFER_EXCEPTION));
 
-        Long designerId = hairServiceOffer.getDesigner().getId();
-        Long applicationId = hairServiceOffer.getHairModelApplication().getId();
+    public boolean getIsSendStatus(final Long applicationId, final Long userId) {
+        Optional<HairServiceOffer> offer = hairServiceOfferJpaRepository.findByHairModelApplicationIdAndDesignerId(applicationId, userId);
+        return offer.isPresent();
+    }
 
-        DesignerInfoOpenChatDto openChatDto = designerRetrieveService.getDesignerOpenDetail(designerId);
+    @Transactional
+    public DetailOfferResponse getOfferDetail(final Long offerId) {
 
-        DesignerInfoOpenChatResponse response = new DesignerInfoOpenChatResponse(openChatDto.imgUrl(), openChatDto.shopName(), openChatDto.name(), openChatDto.introduction());
+        HairServiceOffer hairServiceOffer = hairServiceOfferJpaRepository.findById(offerId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OFFER_EXCEPTION));
 
-        OpenChatResponse openChatResponse = new OpenChatResponse(hairModelApplicationRetrieveService.getApplicationCaptureUrl(applicationId), openChatDto.kakaoUrl(), response);
+        DesignerInfoResponse designerInfoResponse = designerRetrieveService.getOfferDesignerInfoResponse(hairServiceOffer.getDesigner().getId());
+        ApplicationInfoDetailResponse applicationInfoDetailResponse = hairModelApplicationRetrieveService.getOfferApplicationInfo(hairServiceOffer.getHairModelApplication().getId());
+        OfferInfoResponse offerInfoResponse = getOfferDetailResponse(hairServiceOffer, offerId);
 
-        return openChatResponse;
+        handleOfferClickStatus(hairServiceOffer);
+
+        return new DetailOfferResponse(designerInfoResponse, applicationInfoDetailResponse, offerInfoResponse);
+    }
+
+    private OfferInfoResponse getOfferDetailResponse(final HairServiceOffer hairServiceOffer, final Long offerId) {
+
+        List<PreferOfferCondition> preferOfferConditionList = preferOfferConditionJpaRepository.findAllByHairServiceOfferId(offerId);
+        List<OfferCondition> offerConditionList = preferOfferConditionList.stream().map(PreferOfferCondition::getOfferCondition).collect(Collectors.toList());
+        List<Boolean> preferOfferConditionBooleanList = Arrays.stream(OfferCondition.values()).map(offerConditionList::contains).collect(Collectors.toList());
+
+        OfferInfoResponse offerInfoResponse = OfferInfoResponse
+                .builder()
+                .offerId(hairServiceOffer.getId())
+                .isAgree(hairServiceOffer.isModelAgree())
+                .designerOfferDetail(hairServiceOffer.getOfferDetail())
+                .preferOfferConditions(preferOfferConditionBooleanList)
+                .build();
+
+        return offerInfoResponse;
     }
 
     public ModelMainOfferResponse getModelMainOfferInfo(final Long modelId, final int page, final int size) {
@@ -64,6 +90,12 @@ public class HairServiceOfferRetrieveService {
             return new ModelMainOfferResponse(page, size, totalElements, modelApplyStatus, modelName, new ArrayList<>());
         }
         return new ModelMainOfferResponse(page, size, totalElements, modelApplyStatus, modelName, getModelMainOfferList(offerPage));
+    }
+
+    private void handleOfferClickStatus(final HairServiceOffer hairServiceOffer) {
+        if (!hairServiceOffer.isClicked()) {
+            hairServiceOffer.updateClickStatus();
+        }
     }
 
     private ModelApplyStatus calModelApplyAndOfferStatus(final Long modelId) {
@@ -84,7 +116,7 @@ public class HairServiceOfferRetrieveService {
                 return offerCondition.getOfferCondition().getValue();
             }).collect(Collectors.toList());
 
-            OfferResponse offerResponse = new OfferResponse(offer.getId(), designer.getProfileImgUrl(), designer.getName(), designer.getHairShop().getName(), offerConditionTop2List, offer.getIsClicked());
+            OfferResponse offerResponse = new OfferResponse(offer.getId(), designer.getProfileImgUrl(), designer.getName(), designer.getHairShop().getName(), offerConditionTop2List, offer.isClicked());
             return offerResponse;
         }).collect(Collectors.toList());
 

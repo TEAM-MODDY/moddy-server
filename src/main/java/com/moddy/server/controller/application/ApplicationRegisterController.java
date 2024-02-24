@@ -18,17 +18,19 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-public class ApplicationController {
+@Tag(name = "Application Controller")
+@RequestMapping("/application")
+public class ApplicationRegisterController {
 
     private final HairModelApplicationRegisterService hairModelApplicationRegisterService;
 
-    @Tag(name = "ModelController")
     @Operation(summary = "[JWT] 모델 지원서 작성", description = "모델 지원서 작성 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 작성 성공"),
@@ -36,7 +38,7 @@ public class ApplicationController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/model/application", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessNonDataResponse submitModelApplication(
             @Parameter(hidden = true) @UserId Long modelId,
             @RequestPart(value = "modelImgUrl", required = false) MultipartFile modelImgUrl,
@@ -46,4 +48,3 @@ public class ApplicationController {
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
     }
 }
-
