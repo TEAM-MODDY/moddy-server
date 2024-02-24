@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 
-@Tag(name = "ModelController", description = "모델과 관련된 API 입니다.")
+@Tag(name = "Model Controller", description = "모델과 관련된 API 입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/model")
