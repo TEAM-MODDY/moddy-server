@@ -28,7 +28,6 @@ import java.util.List;
 @Tag(name = "ModelController")
 @RequestMapping("/model")
 public class ModelRetrieveController {
-
     private final ModelService modelService;
     private final ModelRetrieveService modelRetrieveService;
 

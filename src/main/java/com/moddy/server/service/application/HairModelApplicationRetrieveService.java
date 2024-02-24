@@ -3,6 +3,7 @@ package com.moddy.server.service.application;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
+import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
 import com.moddy.server.controller.designer.dto.response.HairRecordResponse;
 import com.moddy.server.controller.model.dto.ApplicationDto;
@@ -14,6 +15,8 @@ import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
+import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
+import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class HairModelApplicationRetrieveService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final DesignerRetrieveService designerRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
+    private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
 
@@ -53,7 +57,8 @@ public class HairModelApplicationRetrieveService {
                 applicationResponsesList
         );
     }
-    public ApplicationDto getApplicationDetailInfo(final Long applicationId){
+
+    public ApplicationDto getApplicationDetailInfo(final Long applicationId) {
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         Long modelId = hairModelApplication.getModel().getId();
         List<PreferHairStyle> preferHairStyles = preferHairStyleJpaRepository.findAllByHairModelApplicationId(applicationId);
@@ -81,6 +86,7 @@ public class HairModelApplicationRetrieveService {
                 hairModelApplication.getHairDetail(),
                 hairModelApplication.getInstagramId());
     }
+
     public String fetchApplicationHairDetail(final Long applicationId) {
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         return hairModelApplication.getHairDetail();
@@ -96,7 +102,7 @@ public class HairModelApplicationRetrieveService {
     }
 
 
-    public boolean fetchModelApplyStatus(final Long modelId){
+    public boolean fetchModelApplyStatus(final Long modelId) {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);
     }
 
@@ -110,6 +116,13 @@ public class HairModelApplicationRetrieveService {
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
 
         return applicationPage;
+    }
+
+    public DownloadUrlResponseDto getApplicationCaptureDownloadUrl(final Long applicationId) {
+        final HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        final String applicationDownloadUrl = s3Service.getPreSignedUrlToDownload(hairModelApplication.getApplicationCaptureUrl());
+        return new DownloadUrlResponseDto(applicationDownloadUrl);
     }
 
     private HairModelApplicationResponse getApplicationResponse(final HairModelApplication application) {
