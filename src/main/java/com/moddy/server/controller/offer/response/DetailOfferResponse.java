@@ -1,10 +1,13 @@
 package com.moddy.server.controller.offer.response;
 
+import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
-import com.moddy.server.controller.model.dto.response.StyleDetailResponse;
+
+import com.moddy.server.controller.offer.dto.response.OfferInfoResponse;
 
 public record DetailOfferResponse(
         DesignerInfoResponse designerInfo,
-        StyleDetailResponse styleDetail
+        ApplicationInfoDetailResponse applicationInfo,
+        OfferInfoResponse offerInfo
 ) {
 }

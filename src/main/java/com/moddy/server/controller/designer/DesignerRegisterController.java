@@ -33,7 +33,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "DesignerController")
+@Tag(name = "Designer Controller")
 @RequestMapping("/designer")
 public class DesignerRegisterController {
 

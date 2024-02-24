@@ -57,6 +57,6 @@ public class OfferRetrieveController {
     public SuccessResponse<DetailOfferResponse> getModelDetailOfferInfo(
             @Parameter(hidden = true) @UserId Long modelId,
             @Parameter(name = "offerId", description = "제안서아이디") @PathVariable(value = "offerId") Long offerId) {
-        return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, hairServiceOfferRetrieveService.getOfferDetail(modelId, offerId));
+        return SuccessResponse.success(SuccessCode.FIND_MODEL_DETAIL_OFFER_SUCCESS, hairServiceOfferRetrieveService.getOfferDetail(offerId));
     }
 }

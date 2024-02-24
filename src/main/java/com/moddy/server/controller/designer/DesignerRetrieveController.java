@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "DesignerController")
+@Tag(name = "Designer Controller")
 @RequestMapping("/designer")
 public class DesignerRetrieveController {
 

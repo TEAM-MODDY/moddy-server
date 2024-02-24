@@ -125,4 +125,3 @@ public class ApplicationRetrieveController {
         return SuccessResponse.success(SuccessCode.GET_APPLICATION_IMG_URL_SUCCESS, hairModelApplicationRetrieveService.getApplicationImgUrl(applicationId));
     }
 }
-

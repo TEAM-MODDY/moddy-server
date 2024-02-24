@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "ModelController")
+@Tag(name = "Model Controller")
 @RequestMapping("/model")
 public class ModelRegisterController {
 
