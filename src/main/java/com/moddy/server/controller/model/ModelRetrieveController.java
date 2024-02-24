@@ -7,7 +7,6 @@ import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
 import com.moddy.server.service.model.ModelRetrieveService;
-import com.moddy.server.service.model.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,13 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
+@Tag(name = "ModelController", description = "모델과 관련된 API 입니다.")
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Model Controller")
 @RequestMapping("/model")
 public class ModelRetrieveController {
-
-    private final ModelService modelService;
     private final ModelRetrieveService modelRetrieveService;
 
     @Operation(summary = "모델 회원가입 시 희망 지역 리스트 조회 API")
@@ -51,7 +49,7 @@ public class ModelRetrieveController {
     })
     @SecurityRequirement(name = "JWT Auth")
     @GetMapping(value = "/detail")
-    public SuccessResponse<ApplicationUserDetailResponse> getUserDetailInApplication(@Parameter(hidden = true) @UserId Long userId) {
-        return SuccessResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS, modelService.getUserDetailInApplication(userId));
+    public SuccessResponse<ApplicationUserDetailResponse> getUserDetailInApplication(@Parameter(hidden = true) @UserId final Long modelId) {
+        return SuccessResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS, modelRetrieveService.getModelDetailInApplication(modelId));
     }
 }

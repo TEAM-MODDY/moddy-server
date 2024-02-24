@@ -7,6 +7,7 @@ import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
 import com.moddy.server.controller.designer.dto.response.ApplicationInfoResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
+import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.ModelInfoResponse;
 import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
@@ -29,15 +30,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED_URL_SUCCESS;
+
+@Tag(name = "Application Controller", description = "지원서 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Application Controller")
 @RequestMapping("/application")
 public class ApplicationRetrieveController {
-
     private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
     private final ModelRetrieveService modelRetrieveService;
     private final HairServiceOfferRetrieveService hairServiceOfferRetrieveService;
+
+    @Operation(summary = "[JWT] 제안서 다운로드 링크", description = "디자이너 제안서 다운로드 링크 불러오는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "지원서 다운로드 URL 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "토큰이 만료되었습니다. 다시 로그인 해주세요."),
+            @ApiResponse(responseCode = "404", description = "해당 지원서는 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/{applicationId}/download-url")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<DownloadUrlResponseDto> getOfferImageDownloadUrl(
+            @Parameter(hidden = true) @UserId final Long modelId,
+            @PathVariable final Long applicationId
+    ) {
+        return SuccessResponse.success(GET_PRE_SIGNED_URL_SUCCESS, hairModelApplicationRetrieveService.getApplicationCaptureDownloadUrl(applicationId));
+    }
 
     @Operation(summary = "[JWT] 디자이너 메인 뷰 조회", description = "디자이너 메인 뷰 조회 API입니다.")
     @ApiResponses({
@@ -53,6 +71,7 @@ public class ApplicationRetrieveController {
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
         return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(designerId, page, size));
     }
+
     @Operation(summary = "[JWT] 모델 지원서 상세 조회", description = "모델 지원서 상세 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),

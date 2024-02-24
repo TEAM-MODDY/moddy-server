@@ -10,7 +10,6 @@ import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoRe
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.service.designer.DesignerRegisterService;
-import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.designer.DesignerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,7 +39,6 @@ public class DesignerRegisterController {
 
     private final DesignerService designerService;
     private final DesignerRegisterService designerRegisterService;
-    private final DesignerRetrieveService designerRetrieveService;
 
     @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({

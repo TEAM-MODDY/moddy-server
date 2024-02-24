@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DesignerRetrieveController {
 
     private final DesignerRetrieveService designerRetrieveService;
+
     @Operation(summary = "[JWT] 카카오톡 오픈채팅", description = "오픈채팅 뷰에서 디자이너 정보 조회입니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 정보 조회 성공", content = @Content(schema = @Schema(implementation = DesignerInfoOpenChatDto.class))),
@@ -38,6 +39,6 @@ public class DesignerRetrieveController {
     public SuccessResponse<DesignerInfoOpenChatDto> getDesignerOpenChatInfo(
             @Parameter(hidden = true) @UserId Long modelId,
             @Parameter(name = "designerId", description = "디자이너아이디") @PathVariable(value = "designerId") Long designerId) {
-        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS,designerRetrieveService.getDesignerOpenChatInfo(designerId));
+        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, designerRetrieveService.getDesignerOpenChatInfo(designerId));
     }
 }
