@@ -9,8 +9,6 @@ import com.moddy.server.controller.designer.dto.request.OfferImageUrlRequestDto;
 import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
-import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
-import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.designer.DesignerRegisterService;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.designer.DesignerService;
@@ -25,8 +23,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,12 +36,11 @@ import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED
 @RequiredArgsConstructor
 @Tag(name = "DesignerController")
 @RequestMapping("/designer")
-public class DesignerController {
+public class DesignerRegisterController {
 
     private final DesignerService designerService;
     private final DesignerRegisterService designerRegisterService;
     private final DesignerRetrieveService designerRetrieveService;
-    private final HairModelApplicationRetrieveService hairModelApplicationRetrieveService;
 
     @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
@@ -75,19 +70,4 @@ public class DesignerController {
     ) {
         return SuccessResponse.success(GET_PRE_SIGNED_URL_SUCCESS, designerService.getOfferImageDownloadUrl(userId, offerImageUrlRequestDto.offerImageUrl()));
     }
-
-    @Operation(summary = "[JWT] 카카오톡 오픈채팅", description = "지원서 캡처 이미지 및 디자이너 정보 조회입니다")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모델 메인뷰 조회 성공", content = @Content(schema = @Schema(implementation = DesignerInfoOpenChatDto.class))),
-            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("{designerId}")
-    @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<DesignerInfoOpenChatDto> getOpenChat(
-            @Parameter(hidden = true) @UserId Long modelId,
-            @Parameter(name = "designerId", description = "디자이너아이디") @PathVariable(value = "designerId") Long designerId) {
-        return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS,designerRetrieveService.getDesignerOpenChatInfo(designerId));
-    }
-
 }
