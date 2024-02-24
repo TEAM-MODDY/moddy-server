@@ -1,6 +1,5 @@
 package com.moddy.server.controller.designer.dto.response;
 
-
 import java.util.List;
 
 public record ApplicationInfoResponse(
@@ -10,6 +9,7 @@ public record ApplicationInfoResponse(
         List<String> preferHairstyles,
         List<HairRecordResponse> hairServiceRecords,
         String hairDetail,
-        Boolean isSend
+        boolean isSend,
+        String instagramId
 ) {
 }

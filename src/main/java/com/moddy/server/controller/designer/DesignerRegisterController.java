@@ -10,6 +10,7 @@ import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoRe
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.service.designer.DesignerRegisterService;
+import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.designer.DesignerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,19 +34,21 @@ import static com.moddy.server.common.exception.enums.SuccessCode.GET_PRE_SIGNED
 
 @RestController
 @RequiredArgsConstructor
-public class DesignerController {
+@Tag(name = "Designer Controller")
+@RequestMapping("/designer")
+public class DesignerRegisterController {
 
     private final DesignerService designerService;
     private final DesignerRegisterService designerRegisterService;
+    private final DesignerRetrieveService designerRetrieveService;
 
-    @Tag(name = "Auth Controller", description = "로그인 및 회원 가입 관련 API 입니다.")
     @Operation(summary = "[JWT] 디자이너 회원가입 API", description = "디자이너 회원가입 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "디자이너 회원가입 성공", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @SecurityRequirement(name = "JWT Auth")
-    @PostMapping(value = "/auth/signup/designer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     SuccessResponse<UserCreateResponse> createDesigner(
             @Parameter(hidden = true) @UserId Long designerId,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
@@ -52,7 +56,6 @@ public class DesignerController {
         return SuccessResponse.success(SuccessCode.DESIGNER_CREATE_SUCCESS, designerRegisterService.createDesigner(designerId, designerInfo, profileImg));
     }
 
-    @Tag(name = "DesignerController")
     @Operation(summary = "[JWT] 제안서 다운로드 링크", description = "디자이너 제안서 다운로드 링크 불러오는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
@@ -67,5 +70,4 @@ public class DesignerController {
     ) {
         return SuccessResponse.success(GET_PRE_SIGNED_URL_SUCCESS, designerService.getOfferImageDownloadUrl(userId, offerImageUrlRequestDto.offerImageUrl()));
     }
-
 }

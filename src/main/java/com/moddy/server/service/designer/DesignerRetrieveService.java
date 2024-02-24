@@ -28,7 +28,7 @@ public class DesignerRetrieveService {
         return designer.getName();
     }
 
-    public DesignerInfoOpenChatDto getDesignerOpenDetail(final Long designerId) {
+    public DesignerInfoOpenChatDto getDesignerOpenChatInfo(final Long designerId) {
         Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         return new DesignerInfoOpenChatDto(designer.getKakaoOpenChatUrl(), designer.getProfileImgUrl(), designer.getHairShop().getName(), designer.getName(), designer.getIntroduction());
     }

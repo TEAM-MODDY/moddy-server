@@ -7,8 +7,7 @@ public record ModelInfoResponse(
         String name,
         Integer age,
         String gender,
-        List<String> preferRegions,
-        String instagramId
+        List<String> preferRegions
 
 ) {
 }

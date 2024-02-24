@@ -65,5 +65,4 @@ public class OfferRegisterController {
         hairServiceOfferRegisterService.postOffer(designerId, applicationId, offerCreateRequest);
         return SuccessNonDataResponse.success(SuccessCode.POST_OFFER_SUCCESS);
     }
-
 }

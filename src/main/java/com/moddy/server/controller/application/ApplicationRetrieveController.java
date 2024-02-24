@@ -10,6 +10,7 @@ import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.ModelInfoResponse;
 import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
+import com.moddy.server.controller.model.dto.response.ApplicationImgUrlResponse;
 import com.moddy.server.service.application.HairModelApplicationRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
@@ -52,7 +53,6 @@ public class ApplicationRetrieveController {
             @Parameter(name = "size", description = "페이지 ") @RequestParam(value = "size") int size) {
         return SuccessResponse.success(SuccessCode.FIND_DESIGNER_MAIN_INFO_SUCCESS, hairModelApplicationRetrieveService.getDesignerMainInfo(designerId, page, size));
     }
-
     @Operation(summary = "[JWT] 모델 지원서 상세 조회", description = "모델 지원서 상세 조회 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "모델 지원서 상세 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
@@ -74,7 +74,8 @@ public class ApplicationRetrieveController {
                 applicationDto.preferHairStyleList(),
                 applicationDto.recordResponseList(),
                 applicationDto.hairDetail(),
-                hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId)
+                hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId),
+                applicationDto.instgramId()
         );
 
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
@@ -82,11 +83,26 @@ public class ApplicationRetrieveController {
                 modelInfoDto.name(),
                 modelInfoDto.age(),
                 modelInfoDto.gender(),
-                modelInfoDto.regionList(),
-                applicationDto.instgramId()
+                modelInfoDto.regionList()
+
         );
 
         ApplicationDetailInfoResponse applicationDetailInfoResponse = new ApplicationDetailInfoResponse(applicationInfoResponse, modelInfoResponse);
         return SuccessResponse.success(SuccessCode.MODEL_APPLICATION_DETAil_INFO_SUCCESS, applicationDetailInfoResponse);
+    }
+
+    @Operation(summary = "[JWT] 지원서 이미지 가져오기", description = "오픈채팅 뷰에서 지원서 이미지 가져오기 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모델 지원서 이미지 가져오기 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "지원서 아이디가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/{applicationId}/img-url")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<ApplicationImgUrlResponse> getApplicationImgUrlOpenChat(
+            @Parameter(hidden = true) @UserId Long modelId,
+            @PathVariable(value = "applicationId") Long applicationId) {
+        return SuccessResponse.success(SuccessCode.GET_APPLICATION_IMG_URL_SUCCESS, hairModelApplicationRetrieveService.getApplicationImgUrl(applicationId));
     }
 }
