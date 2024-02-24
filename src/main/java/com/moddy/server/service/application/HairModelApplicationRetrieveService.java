@@ -8,9 +8,9 @@ import com.moddy.server.controller.designer.dto.response.HairModelApplicationRes
 import com.moddy.server.controller.designer.dto.response.HairRecordResponse;
 import com.moddy.server.controller.model.dto.ApplicationDto;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
+import com.moddy.server.controller.model.dto.response.ApplicationImgUrlResponse;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
-import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
@@ -41,11 +41,6 @@ public class HairModelApplicationRetrieveService {
     private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
-
-    public String getApplicationCaptureUrl(final Long applicationId) {
-        HairModelApplication application = hairModelApplicationJpaRepository.findById(applicationId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
-        return application.getApplicationCaptureUrl();
-    }
 
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
@@ -109,6 +104,11 @@ public class HairModelApplicationRetrieveService {
 
     public boolean fetchModelApplyStatus(final Long modelId) {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);
+    }
+
+    public ApplicationImgUrlResponse getApplicationImgUrl(final Long applicationId){
+
+        return new ApplicationImgUrlResponse(hairModelApplicationJpaRepository.findById(applicationId).get().getApplicationCaptureUrl());
     }
 
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
