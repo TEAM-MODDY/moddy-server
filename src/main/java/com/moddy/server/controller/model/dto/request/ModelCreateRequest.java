@@ -2,7 +2,7 @@ package com.moddy.server.controller.model.dto.request;
 
 import com.moddy.server.common.validation.year.ValidYear;
 import com.moddy.server.common.validation.prefer_regions.ValidPreferRegions;
-import com.moddy.server.controller.user.dto.UserUpdateDto;
+import com.moddy.server.controller.user.dto.request.UserUpdateDto;
 import com.moddy.server.domain.user.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;

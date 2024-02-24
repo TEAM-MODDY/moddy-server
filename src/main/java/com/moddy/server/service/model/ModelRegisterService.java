@@ -5,7 +5,7 @@ import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
-import com.moddy.server.controller.user.dto.UserUpdateDto;
+import com.moddy.server.controller.user.dto.request.UserUpdateDto;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_region.PreferRegion;

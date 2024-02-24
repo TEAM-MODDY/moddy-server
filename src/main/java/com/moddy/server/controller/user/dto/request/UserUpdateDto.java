@@ -1,4 +1,4 @@
-package com.moddy.server.controller.user.dto;
+package com.moddy.server.controller.user.dto.request;
 
 import com.moddy.server.domain.user.Gender;
 import jakarta.validation.constraints.NotNull;

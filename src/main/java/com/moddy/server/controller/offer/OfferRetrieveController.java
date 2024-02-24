@@ -5,7 +5,7 @@ import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
-import com.moddy.server.controller.offer.response.DetailOfferResponse;
+import com.moddy.server.controller.offer.dto.response.DetailOfferResponse;
 import com.moddy.server.service.offer.HairServiceOfferRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

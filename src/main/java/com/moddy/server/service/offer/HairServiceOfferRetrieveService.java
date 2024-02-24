@@ -5,9 +5,9 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
 import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.controller.model.dto.response.OfferResponse;
+import com.moddy.server.controller.offer.dto.response.DetailOfferResponse;
 import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
 import com.moddy.server.controller.offer.dto.response.OfferInfoResponse;
-import com.moddy.server.controller.offer.response.DetailOfferResponse;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
@@ -58,7 +58,7 @@ public class HairServiceOfferRetrieveService {
 
         handleOfferClickStatus(hairServiceOffer);
 
-        return new DetailOfferResponse(designerInfoResponse, applicationInfoDetailResponse,offerInfoResponse);
+        return new DetailOfferResponse(designerInfoResponse, applicationInfoDetailResponse, offerInfoResponse);
     }
 
     private OfferInfoResponse getOfferDetailResponse(final HairServiceOffer hairServiceOffer, final Long offerId) {
