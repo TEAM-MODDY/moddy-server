@@ -3,6 +3,7 @@ package com.moddy.server.service.application;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
+import com.moddy.server.controller.application.dto.response.ValidApplicationStatusResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
@@ -16,7 +17,6 @@ import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
-import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
@@ -97,6 +97,12 @@ public class HairModelApplicationRetrieveService {
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
                 hairModelApplication.getInstagramId());
+    }
+
+    public ValidApplicationStatusResponse checkValidApplicationStatus(final Long modelId){
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findFirstByModelIdOrderByCreatedAtDesc(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+
+        return new ValidApplicationStatusResponse(!hairModelApplication.isExpired());
     }
 
     public boolean fetchModelApplyStatus(final Long modelId) {
