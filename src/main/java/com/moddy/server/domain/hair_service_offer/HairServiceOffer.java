@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -50,11 +50,14 @@ public class HairServiceOffer extends BaseTimeEntity {
         this.isClicked = isClicked;
     }
 
-    public void agreeOfferToModel(){
-        this.isModelAgree = true;
-    }
+    public void agreeOfferToModel() { this.isModelAgree = true; }
 
     public void updateClickStatus() { this.isClicked = true; }
 
+    public boolean isExpired() {
+        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
+        LocalDate currentDate = LocalDate.now();
 
+        return currentDate.isAfter(expiredDate);
+    }
 }
