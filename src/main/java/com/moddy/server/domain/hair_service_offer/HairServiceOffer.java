@@ -54,10 +54,4 @@ public class HairServiceOffer extends BaseTimeEntity {
 
     public void updateClickStatus() { this.isClicked = true; }
 
-    public boolean isExpired() {
-        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
-        LocalDate currentDate = LocalDate.now();
-
-        return currentDate.isAfter(expiredDate);
-    }
 }

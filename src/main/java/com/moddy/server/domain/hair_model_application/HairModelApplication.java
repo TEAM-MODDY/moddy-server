@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -47,5 +49,12 @@ public class HairModelApplication extends BaseTimeEntity {
         this.modelImgUrl = modelImgUrl;
         this.instagramId = instagramId;
         this.applicationCaptureUrl = applicationCaptureUrl;
+    }
+
+    public boolean isExpired() {
+        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+
+        return currentDate.isAfter(expiredDate);
     }
 }
