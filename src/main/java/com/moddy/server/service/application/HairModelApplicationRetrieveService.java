@@ -12,6 +12,7 @@ import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.controller.model.dto.response.ApplicationImgUrlResponse;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
+import com.moddy.server.domain.hair_service_offer.OfferStatus;
 import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
@@ -113,6 +114,12 @@ public class HairModelApplicationRetrieveService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         final String applicationDownloadUrl = s3Service.getPreSignedUrlToDownload(hairModelApplication.getApplicationCaptureUrl());
         return new DownloadUrlResponseDto(applicationDownloadUrl);
+    }
+
+    public boolean getApplicationExpiredStatus(final Long applicationId){
+        final HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        return hairModelApplication.isExpired();
     }
 
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {

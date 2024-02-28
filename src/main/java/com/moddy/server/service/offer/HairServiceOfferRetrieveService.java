@@ -125,7 +125,7 @@ public class HairServiceOfferRetrieveService {
     }
 
     private OfferStatus calOfferStatus(final HairServiceOffer hairServiceOffer){
-        if(hairServiceOffer.isExpired()){
+        if(hairModelApplicationRetrieveService.getApplicationExpiredStatus(hairServiceOffer.getHairModelApplication().getId())){
             return OfferStatus.EXPIRED;
         } else if (hairServiceOffer.isClicked()){
             return OfferStatus.CLICKED;
