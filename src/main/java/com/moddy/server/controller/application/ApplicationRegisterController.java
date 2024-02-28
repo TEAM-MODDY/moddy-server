@@ -17,11 +17,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import static com.moddy.server.common.exception.enums.SuccessCode.APPLICATION_DELETE_SUCCESS;
+import static com.moddy.server.common.exception.enums.SuccessCode.USER_WITHDRAW_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,5 +50,19 @@ public class ApplicationRegisterController {
             @RequestPart(value = "applicationInfo") @Valid ModelApplicationRequest applicationInfo) {
         hairModelApplicationRegisterService.postApplication(modelId, modelImgUrl, applicationCaptureImgUrl, applicationInfo);
         return SuccessNonDataResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "[JWT] 지원서 삭제하기 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "지원서 삭제하기 성공입니다."),
+            @ApiResponse(responseCode = "401", description = "토큰이 만료되었습니다. 다시 로그인 해주세요.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "해당 유저는 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessNonDataResponse deleteApplication(@Parameter(hidden = true) @UserId final Long modelId) {
+        hairModelApplicationRegisterService.deleteModelApplications(modelId);
+        return SuccessNonDataResponse.success(APPLICATION_DELETE_SUCCESS);
     }
 }
