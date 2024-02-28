@@ -129,9 +129,8 @@ public class HairServiceOfferRetrieveService {
             return OfferStatus.EXPIRED;
         } else if (hairServiceOffer.isClicked()){
             return OfferStatus.CLICKED;
-        } else {
-            return OfferStatus.UNCLICKED;
         }
+        return OfferStatus.UNCLICKED;
     }
 
     private Page<HairServiceOffer> findOffersByPaging(final Long modelId, final int page, final int size) {
