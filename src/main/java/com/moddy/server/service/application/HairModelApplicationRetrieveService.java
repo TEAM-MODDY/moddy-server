@@ -3,7 +3,6 @@ package com.moddy.server.service.application;
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
-import com.moddy.server.controller.application.dto.response.ValidApplicationStatusResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
 import com.moddy.server.controller.designer.dto.response.HairModelApplicationResponse;
@@ -99,10 +98,10 @@ public class HairModelApplicationRetrieveService {
                 hairModelApplication.getInstagramId());
     }
 
-    public ValidApplicationStatusResponse checkValidApplicationStatus(final Long modelId){
+    public void checkValidApplicationStatus(final Long modelId){
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findFirstByModelIdOrderByCreatedAtDesc(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
-        return new ValidApplicationStatusResponse(!hairModelApplication.isExpired());
+        if(hairModelApplication.isExpired()) throw new NotFoundException(ErrorCode.NOT_FOUND_VALID_APPLICATION_EXCEPTION);
     }
 
     public boolean fetchModelApplyStatus(final Long modelId) {
