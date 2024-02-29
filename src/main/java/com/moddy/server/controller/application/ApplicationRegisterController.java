@@ -6,6 +6,7 @@ import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.service.application.HairModelApplicationRegisterService;
+import com.moddy.server.service.offer.HairServiceOfferRegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +35,7 @@ import static com.moddy.server.common.exception.enums.SuccessCode.USER_WITHDRAW_
 public class ApplicationRegisterController {
 
     private final HairModelApplicationRegisterService hairModelApplicationRegisterService;
+    private final HairServiceOfferRegisterService hairServiceOfferRegisterService;
 
     @Operation(summary = "[JWT] 모델 지원서 작성", description = "모델 지원서 작성 API입니다.")
     @ApiResponses({
@@ -62,6 +64,7 @@ public class ApplicationRegisterController {
     })
     @SecurityRequirement(name = "JWT Auth")
     public SuccessNonDataResponse deleteApplication(@Parameter(hidden = true) @UserId final Long modelId) {
+        hairServiceOfferRegisterService.deleteModelHairServiceOfferInfos(modelId);
         hairModelApplicationRegisterService.deleteModelApplications(modelId);
         return SuccessNonDataResponse.success(APPLICATION_DELETE_SUCCESS);
     }
