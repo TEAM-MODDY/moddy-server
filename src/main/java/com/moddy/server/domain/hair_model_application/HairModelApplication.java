@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -50,8 +49,7 @@ public class HairModelApplication extends BaseTimeEntity {
         this.applicationCaptureUrl = applicationCaptureUrl;
     }
 
-    public String calExpireDate(){
-        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
-        return expiredDate.format(DateTimeFormatter.ofPattern("yyyy. MM. dd."));
+    public LocalDate getExpiredDate(){
+        return getCreatedAt().plusDays(7).toLocalDate();
     }
 }

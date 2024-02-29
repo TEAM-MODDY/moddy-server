@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -41,7 +42,7 @@ public class HairModelApplicationRegisterService {
         savePreferHairStyles(applicationInfo, hairModelApplication);
         saveHairServiceRecords(applicationInfo, hairModelApplication);
 
-        return new ApplicationExpireDateResponse(hairModelApplication.calExpireDate());
+        return new ApplicationExpireDateResponse(hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")));
     }
 
     public void deleteModelApplications(final Long modelId) {
