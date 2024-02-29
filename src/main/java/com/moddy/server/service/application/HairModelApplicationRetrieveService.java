@@ -16,7 +16,6 @@ import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
-import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
@@ -27,9 +26,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -96,8 +97,11 @@ public class HairModelApplicationRetrieveService {
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
-                hairModelApplication.getInstagramId());
+                hairModelApplication.getInstagramId(),
+                hairModelApplication.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")),
+                hairModelApplication.getExpireDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")));
     }
+
 
     public boolean fetchModelApplyStatus(final Long modelId) {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);

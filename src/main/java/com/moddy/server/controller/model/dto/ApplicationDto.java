@@ -11,6 +11,8 @@ public record ApplicationDto(
         List<String> preferHairStyleList,
         List<HairRecordResponse> recordResponseList,
         String hairDetail,
-        String instgramId
+        String instgramId,
+        String createDate,
+        String expireDate
 ) {
 }

@@ -10,6 +10,8 @@ public record ApplicationInfoResponse(
         List<HairRecordResponse> hairServiceRecords,
         String hairDetail,
         boolean isSend,
-        String instagramId
+        String instagramId,
+        String createDate,
+        String expireDate
 ) {
 }
