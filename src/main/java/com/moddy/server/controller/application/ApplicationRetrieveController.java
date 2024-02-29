@@ -1,10 +1,10 @@
 package com.moddy.server.controller.application;
 
 import com.moddy.server.common.dto.ErrorResponse;
+import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
-import com.moddy.server.controller.application.dto.response.ValidApplicationStatusResponse;
 import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
 import com.moddy.server.controller.designer.dto.response.ApplicationInfoResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
@@ -135,9 +135,10 @@ public class ApplicationRetrieveController {
     })
     @GetMapping("/check")
     @SecurityRequirement(name = "JWT Auth")
-    public SuccessResponse<ValidApplicationStatusResponse> getValidApplicationStatus(
+    public SuccessNonDataResponse getValidApplicationStatus(
             @Parameter(hidden = true) @UserId Long modelId) {
-        return SuccessResponse.success(SuccessCode.CHECK_VALID_APPLICATION_SUCCESS, hairModelApplicationRetrieveService.checkValidApplicationStatus(modelId));
+        hairModelApplicationRetrieveService.checkValidApplicationStatus(modelId);
+        return SuccessNonDataResponse.success(SuccessCode.CHECK_VALID_APPLICATION_SUCCESS);
     }
 
 }
