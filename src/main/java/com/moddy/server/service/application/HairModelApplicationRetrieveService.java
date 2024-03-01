@@ -42,7 +42,7 @@ public class HairModelApplicationRetrieveService {
     private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
-    private final String dateFormat = "yyyy. MM. dd.";
+    private static final String DATE_FORMAT = "yyyy. MM. dd.";
 
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
@@ -98,8 +98,8 @@ public class HairModelApplicationRetrieveService {
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
                 hairModelApplication.getInstagramId(),
-                hairModelApplication.getCreatedDate().format(DateTimeFormatter.ofPattern(dateFormat)),
-                hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(dateFormat)));
+                hairModelApplication.getCreatedDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
     }
 
 
