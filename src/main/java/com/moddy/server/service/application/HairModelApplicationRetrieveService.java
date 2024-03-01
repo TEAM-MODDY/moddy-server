@@ -43,6 +43,7 @@ public class HairModelApplicationRetrieveService {
     private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
+    private final LocalDate currentDate = LocalDate.now();
 
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
@@ -162,8 +163,6 @@ public class HairModelApplicationRetrieveService {
         );
         return applicationResponse;
     }
-
-    private LocalDate currentDate = LocalDate.now();
 
     private boolean isExpired(final HairModelApplication application) {
         return application.getExpiredDate().isBefore(currentDate);
