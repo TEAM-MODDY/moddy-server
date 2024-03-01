@@ -16,17 +16,18 @@ import com.moddy.server.domain.hair_service_record.HairServiceRecord;
 import com.moddy.server.domain.hair_service_record.repository.HairServiceRecordJpaRepository;
 import com.moddy.server.domain.prefer_hair_style.PreferHairStyle;
 import com.moddy.server.domain.prefer_hair_style.repository.PreferHairStyleJpaRepository;
-import com.moddy.server.domain.prefer_region.repository.PreferRegionJpaRepository;
 import com.moddy.server.external.s3.S3Service;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -119,7 +120,15 @@ public class HairModelApplicationRetrieveService {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
 
-        return applicationPage;
+        Page<HairModelApplication> nonExpiredApplications = applicationPage
+                .stream()
+                .filter(application -> !isExpired(application))
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> new PageImpl<>(list, pageRequest, list.size())
+                ));
+
+        return nonExpiredApplications;
     }
 
     private String getApplicationHairDetail(final Long applicationId) {
@@ -152,6 +161,12 @@ public class HairModelApplicationRetrieveService {
                 top2hairStyles
         );
         return applicationResponse;
+    }
+
+    private LocalDate currentDate = LocalDate.now();
+
+    private boolean isExpired(HairModelApplication application) {
+        return application.getExpiredDate().isBefore(currentDate);
     }
 }
 
