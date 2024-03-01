@@ -26,7 +26,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +42,7 @@ public class HairModelApplicationRetrieveService {
     private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
+    private final String dateFormat = "yyyy. MM. dd.";
 
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
@@ -98,8 +98,8 @@ public class HairModelApplicationRetrieveService {
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
                 hairModelApplication.getInstagramId(),
-                hairModelApplication.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")),
-                hairModelApplication.getExpireDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")));
+                hairModelApplication.getCreatedDate().format(DateTimeFormatter.ofPattern(dateFormat)),
+                hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(dateFormat)));
     }
 
 
