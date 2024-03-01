@@ -165,7 +165,7 @@ public class HairModelApplicationRetrieveService {
 
     private LocalDate currentDate = LocalDate.now();
 
-    private boolean isExpired(HairModelApplication application) {
+    private boolean isExpired(final HairModelApplication application) {
         return application.getExpiredDate().isBefore(currentDate);
     }
 }
