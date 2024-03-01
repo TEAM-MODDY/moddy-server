@@ -27,7 +27,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +42,6 @@ public class HairModelApplicationRetrieveService {
     private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
-    private final LocalDate currentDate = LocalDate.now();
 
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
@@ -123,7 +121,7 @@ public class HairModelApplicationRetrieveService {
 
         Page<HairModelApplication> nonExpiredApplications = applicationPage
                 .stream()
-                .filter(application -> !isExpired(application))
+                .filter(application -> !application.isExpired())
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
                         list -> new PageImpl<>(list, pageRequest, list.size())
@@ -162,10 +160,6 @@ public class HairModelApplicationRetrieveService {
                 top2hairStyles
         );
         return applicationResponse;
-    }
-
-    private boolean isExpired(final HairModelApplication application) {
-        return application.getExpiredDate().isBefore(currentDate);
     }
 }
 

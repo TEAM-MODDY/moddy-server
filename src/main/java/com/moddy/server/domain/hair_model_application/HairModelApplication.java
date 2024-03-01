@@ -57,4 +57,11 @@ public class HairModelApplication extends BaseTimeEntity {
         LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
         return expiredDate;
     }
+
+    public boolean isExpired() {
+        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+
+        return currentDate.isAfter(expiredDate);
+    }
 }
