@@ -95,8 +95,8 @@ public class ApplicationRetrieveController {
                 applicationDto.hairDetail(),
                 hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId),
                 applicationDto.instgramId(),
-                applicationDto.createDate(),
-                applicationDto.expireDate()
+                applicationDto.createdDate(),
+                applicationDto.expiredDate()
         );
 
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(

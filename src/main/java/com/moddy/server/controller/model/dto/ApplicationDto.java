@@ -12,7 +12,7 @@ public record ApplicationDto(
         List<HairRecordResponse> recordResponseList,
         String hairDetail,
         String instgramId,
-        String createDate,
-        String expireDate
+        String createdDate,
+        String expiredDate
 ) {
 }
