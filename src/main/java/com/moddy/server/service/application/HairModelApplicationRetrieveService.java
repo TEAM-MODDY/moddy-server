@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +43,7 @@ public class HairModelApplicationRetrieveService {
     private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
+    private static final String DATE_FORMAT = "yyyy. MM. dd.";
 
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
@@ -96,8 +98,11 @@ public class HairModelApplicationRetrieveService {
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
-                hairModelApplication.getInstagramId());
+                hairModelApplication.getInstagramId(),
+                hairModelApplication.getCreatedDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
     }
+
 
     public boolean fetchModelApplyStatus(final Long modelId) {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);
