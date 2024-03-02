@@ -41,6 +41,7 @@ public class HairModelApplicationRegisterService {
         saveHairServiceRecords(applicationInfo, hairModelApplication);
     }
 
+    @Transactional
     public void deleteModelApplications(final Long modelId) {
         List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByModelId(modelId);
         hairModelApplications.forEach(hairModelApplication -> {
