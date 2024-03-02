@@ -21,6 +21,7 @@ import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -123,7 +124,15 @@ public class HairModelApplicationRetrieveService {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
 
-        return applicationPage;
+        Page<HairModelApplication> nonExpiredApplications = applicationPage
+                .stream()
+                .filter(application -> !application.isExpired())
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> new PageImpl<>(list, pageRequest, list.size())
+                ));
+
+        return nonExpiredApplications;
     }
 
     private String getApplicationHairDetail(final Long applicationId) {
