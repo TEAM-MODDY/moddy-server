@@ -11,7 +11,7 @@ public record ApplicationInfoResponse(
         String hairDetail,
         boolean isSend,
         String instagramId,
-        String createDate,
-        String expireDate
+        String createdDate,
+        String expiredDate
 ) {
 }
