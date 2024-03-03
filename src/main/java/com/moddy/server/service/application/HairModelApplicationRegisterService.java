@@ -45,6 +45,7 @@ public class HairModelApplicationRegisterService {
         return new ApplicationExpireDateResponse(hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")));
     }
 
+    @Transactional
     public void deleteModelApplications(final Long modelId) {
         List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByModelId(modelId);
         hairModelApplications.forEach(hairModelApplication -> {

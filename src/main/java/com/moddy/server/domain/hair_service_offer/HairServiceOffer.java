@@ -8,8 +8,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Builder
@@ -50,11 +48,8 @@ public class HairServiceOffer extends BaseTimeEntity {
         this.isClicked = isClicked;
     }
 
-    public void agreeOfferToModel(){
-        this.isModelAgree = true;
-    }
+    public void agreeOfferToModel() { this.isModelAgree = true; }
 
     public void updateClickStatus() { this.isClicked = true; }
-
 
 }

@@ -49,7 +49,19 @@ public class HairModelApplication extends BaseTimeEntity {
         this.applicationCaptureUrl = applicationCaptureUrl;
     }
 
+    public LocalDate getCreatedDate(){
+        LocalDate createdDate = getCreatedAt().toLocalDate();
+        return createdDate;
+    }
     public LocalDate getExpiredDate(){
-        return getCreatedAt().plusDays(7).toLocalDate();
+        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
+        return expiredDate;
+    }
+
+    public boolean isExpired() {
+        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+
+        return currentDate.isAfter(expiredDate);
     }
 }
