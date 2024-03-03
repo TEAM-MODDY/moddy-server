@@ -103,6 +103,11 @@ public class HairModelApplicationRetrieveService {
                 hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
     }
 
+    public void checkValidApplicationStatus(final Long modelId){
+        HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findFirstByModelIdOrderByCreatedAtDesc(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+
+        if(hairModelApplication.isExpired()) throw new NotFoundException(ErrorCode.NOT_FOUND_VALID_APPLICATION_EXCEPTION);
+    }
 
     public boolean fetchModelApplyStatus(final Long modelId) {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);

@@ -1,6 +1,7 @@
 package com.moddy.server.controller.application;
 
 import com.moddy.server.common.dto.ErrorResponse;
+import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
@@ -25,9 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import static com.moddy.server.common.exception.enums.SuccessCode.APPLICATION_DELETE_SUCCESS;
-import static com.moddy.server.common.exception.enums.SuccessCode.USER_WITHDRAW_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,6 +64,6 @@ public class ApplicationRegisterController {
     public SuccessNonDataResponse deleteApplication(@Parameter(hidden = true) @UserId final Long modelId) {
         hairServiceOfferRegisterService.deleteModelHairServiceOfferInfos(modelId);
         hairModelApplicationRegisterService.deleteModelApplications(modelId);
-        return SuccessNonDataResponse.success(APPLICATION_DELETE_SUCCESS);
+        return SuccessNonDataResponse.success(SuccessCode.APPLICATION_DELETE_SUCCESS);
     }
 }

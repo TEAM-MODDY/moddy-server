@@ -1,6 +1,7 @@
 package com.moddy.server.controller.application;
 
 import com.moddy.server.common.dto.ErrorResponse;
+import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
@@ -126,4 +127,20 @@ public class ApplicationRetrieveController {
             @PathVariable(value = "applicationId") Long applicationId) {
         return SuccessResponse.success(SuccessCode.GET_APPLICATION_IMG_URL_SUCCESS, hairModelApplicationRetrieveService.getApplicationImgUrl(applicationId));
     }
+
+    @Operation(summary = "[JWT] 나의 지원서 유무 확인하기", description = "마이페이지에서 유효한 지원서 유무를 확인하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "유효한 지원서 존재여부 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationDetailInfoResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "해당 지원서를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/check")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessNonDataResponse getValidApplicationStatus(
+            @Parameter(hidden = true) @UserId Long modelId) {
+        hairModelApplicationRetrieveService.checkValidApplicationStatus(modelId);
+        return SuccessNonDataResponse.success(SuccessCode.CHECK_VALID_APPLICATION_SUCCESS);
+    }
+
 }
