@@ -120,6 +120,12 @@ public class HairModelApplicationRetrieveService {
         return new DownloadUrlResponseDto(applicationDownloadUrl);
     }
 
+    public boolean getApplicationExpiredStatus(final Long applicationId){
+        final HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
+        return hairModelApplication.isExpired();
+    }
+
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
