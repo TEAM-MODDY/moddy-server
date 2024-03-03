@@ -2,6 +2,7 @@ package com.moddy.server.service.application;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.controller.application.dto.response.ApplicationExpireDateResponse;
 import com.moddy.server.controller.model.dto.request.ModelApplicationRequest;
 import com.moddy.server.domain.hair_model_application.HairModelApplication;
 import com.moddy.server.domain.hair_model_application.repository.HairModelApplicationJpaRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -29,7 +31,7 @@ public class HairModelApplicationRegisterService {
     private final ModelJpaRepository modelJpaRepository;
 
     @Transactional
-    public void postApplication(final Long modelId, final MultipartFile modelImgUrl, final MultipartFile applicationCaptureImgUrl, final ModelApplicationRequest applicationInfo) {
+    public ApplicationExpireDateResponse postApplication(final Long modelId, final MultipartFile modelImgUrl, final MultipartFile applicationCaptureImgUrl, final ModelApplicationRequest applicationInfo) {
         Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
         String s3ModelImgUrl = s3Service.uploadProfileImage(modelImgUrl, model.getRole());
         String s3applicationCaptureImgUrl = s3Service.uploadApplicationImage(applicationCaptureImgUrl);
@@ -39,8 +41,11 @@ public class HairModelApplicationRegisterService {
 
         savePreferHairStyles(applicationInfo, hairModelApplication);
         saveHairServiceRecords(applicationInfo, hairModelApplication);
+
+        return new ApplicationExpireDateResponse(hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")));
     }
 
+    @Transactional
     public void deleteModelApplications(final Long modelId) {
         List<HairModelApplication> hairModelApplications = hairModelApplicationJpaRepository.findAllByModelId(modelId);
         hairModelApplications.forEach(hairModelApplication -> {

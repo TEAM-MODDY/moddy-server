@@ -1,6 +1,7 @@
 package com.moddy.server.controller.model.dto.response;
 
-import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
+import com.moddy.server.domain.hair_service_offer.OfferStatus;
+
 import java.util.List;
 
 public record OfferResponse(
@@ -9,6 +10,6 @@ public record OfferResponse(
         String name,
         String shopName,
         List<String> conditions,
-        boolean isClicked
+        OfferStatus status
 ) {
 }

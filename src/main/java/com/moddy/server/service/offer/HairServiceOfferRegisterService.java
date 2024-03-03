@@ -32,6 +32,7 @@ public class HairServiceOfferRegisterService {
     private final HairModelApplicationJpaRepository hairModelApplicationJpaRepository;
     private final SmsUtil smsUtil;
 
+    @Transactional
     public void deleteModelHairServiceOfferInfos(final Long modelId) {
         final List<HairServiceOffer> hairServiceOffers = hairServiceOfferJpaRepository.findAllByModelId(modelId);
         hairServiceOffers.forEach(hairServiceOffer -> {

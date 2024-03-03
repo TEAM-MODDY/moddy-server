@@ -28,7 +28,8 @@ public enum SuccessCode {
     USER_WITHDRAW_SUCCESS(HttpStatus.OK, "회원 탈퇴 성공입니다."),
     GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "제안서 다운로드 url 생성 성공"),
     GET_APPLICATION_IMG_URL_SUCCESS(HttpStatus.OK, "지원서 이미지 url 가져오기 성공"),
-    CHECK_VALID_APPLICATION_SUCCESS(HttpStatus.OK, "유효한 지원서 입니다.");
+    CHECK_VALID_APPLICATION_SUCCESS(HttpStatus.OK, "유효한 지원서 입니다."),
+    APPLICATION_DELETE_SUCCESS(HttpStatus.OK, "지원서 삭제하기 성공");
 
     private final HttpStatus httpStatus;
     private final String message;

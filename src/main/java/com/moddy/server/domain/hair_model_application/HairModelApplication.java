@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
 @Entity
@@ -46,6 +47,15 @@ public class HairModelApplication extends BaseTimeEntity {
         this.modelImgUrl = modelImgUrl;
         this.instagramId = instagramId;
         this.applicationCaptureUrl = applicationCaptureUrl;
+    }
+
+    public LocalDate getCreatedDate(){
+        LocalDate createdDate = getCreatedAt().toLocalDate();
+        return createdDate;
+    }
+    public LocalDate getExpiredDate(){
+        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
+        return expiredDate;
     }
 
     public boolean isExpired() {

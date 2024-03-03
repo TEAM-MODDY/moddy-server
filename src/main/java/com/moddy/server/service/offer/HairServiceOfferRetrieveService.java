@@ -10,6 +10,7 @@ import com.moddy.server.controller.offer.dto.response.ModelMainOfferResponse;
 import com.moddy.server.controller.offer.dto.response.OfferInfoResponse;
 import com.moddy.server.domain.designer.Designer;
 import com.moddy.server.domain.hair_service_offer.HairServiceOffer;
+import com.moddy.server.domain.hair_service_offer.OfferStatus;
 import com.moddy.server.domain.hair_service_offer.repository.HairServiceOfferJpaRepository;
 import com.moddy.server.domain.model.ModelApplyStatus;
 import com.moddy.server.domain.prefer_offer_condition.OfferCondition;
@@ -116,11 +117,20 @@ public class HairServiceOfferRetrieveService {
                 return offerCondition.getOfferCondition().getValue();
             }).collect(Collectors.toList());
 
-            OfferResponse offerResponse = new OfferResponse(offer.getId(), designer.getProfileImgUrl(), designer.getName(), designer.getHairShop().getName(), offerConditionTop2List, offer.isClicked());
+            OfferResponse offerResponse = new OfferResponse(offer.getId(), designer.getProfileImgUrl(), designer.getName(), designer.getHairShop().getName(), offerConditionTop2List, calOfferStatus(offer));
             return offerResponse;
         }).collect(Collectors.toList());
 
         return offerResponseList;
+    }
+
+    private OfferStatus calOfferStatus(final HairServiceOffer hairServiceOffer){
+        if(hairModelApplicationRetrieveService.getApplicationExpiredStatus(hairServiceOffer.getHairModelApplication().getId())){
+            return OfferStatus.EXPIRED;
+        } else if (hairServiceOffer.isClicked()){
+            return OfferStatus.CLICKED;
+        }
+        return OfferStatus.UNCLICKED;
     }
 
     private Page<HairServiceOffer> findOffersByPaging(final Long modelId, final int page, final int size) {
