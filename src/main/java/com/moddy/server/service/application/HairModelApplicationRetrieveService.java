@@ -21,6 +21,7 @@ import com.moddy.server.service.designer.DesignerRetrieveService;
 import com.moddy.server.service.model.ModelRetrieveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +43,7 @@ public class HairModelApplicationRetrieveService {
     private final S3Service s3Service;
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
+    private static final String DATE_FORMAT = "yyyy. MM. dd.";
 
     public DesignerMainResponse getDesignerMainInfo(final Long designerId, final int page, final int size) {
 
@@ -95,8 +98,11 @@ public class HairModelApplicationRetrieveService {
                 preferhairStyleList,
                 recordResponseList,
                 hairModelApplication.getHairDetail(),
-                hairModelApplication.getInstagramId());
+                hairModelApplication.getInstagramId(),
+                hairModelApplication.getCreatedDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
     }
+
 
     public boolean fetchModelApplyStatus(final Long modelId) {
         return hairModelApplicationJpaRepository.existsByModelId(modelId);
@@ -124,7 +130,15 @@ public class HairModelApplicationRetrieveService {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
 
-        return applicationPage;
+        Page<HairModelApplication> nonExpiredApplications = applicationPage
+                .stream()
+                .filter(application -> !application.isExpired())
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> new PageImpl<>(list, pageRequest, list.size())
+                ));
+
+        return nonExpiredApplications;
     }
 
     private String getApplicationHairDetail(final Long applicationId) {

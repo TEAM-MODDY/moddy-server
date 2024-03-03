@@ -2,13 +2,11 @@ package com.moddy.server.domain.hair_model_application;
 
 import com.moddy.server.domain.BaseTimeEntity;
 import com.moddy.server.domain.model.Model;
-import com.moddy.server.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
@@ -49,6 +47,15 @@ public class HairModelApplication extends BaseTimeEntity {
         this.modelImgUrl = modelImgUrl;
         this.instagramId = instagramId;
         this.applicationCaptureUrl = applicationCaptureUrl;
+    }
+
+    public LocalDate getCreatedDate(){
+        LocalDate createdDate = getCreatedAt().toLocalDate();
+        return createdDate;
+    }
+    public LocalDate getExpiredDate(){
+        LocalDate expiredDate = getCreatedAt().plusDays(7).toLocalDate();
+        return expiredDate;
     }
 
     public boolean isExpired() {
