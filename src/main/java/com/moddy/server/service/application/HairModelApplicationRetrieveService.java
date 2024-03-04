@@ -2,6 +2,7 @@ package com.moddy.server.service.application;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.controller.application.dto.response.ApplicationIdResponse;
 import com.moddy.server.controller.application.dto.response.ApplicationInfoDetailResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
 import com.moddy.server.controller.designer.dto.response.DownloadUrlResponseDto;
@@ -103,10 +104,12 @@ public class HairModelApplicationRetrieveService {
                 hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
     }
 
-    public void checkValidApplicationStatus(final Long modelId){
+    public ApplicationIdResponse checkValidApplicationStatus(final Long modelId){
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findFirstByModelIdOrderByCreatedAtDesc(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
         if(hairModelApplication.isExpired()) throw new NotFoundException(ErrorCode.NOT_FOUND_VALID_APPLICATION_EXCEPTION);
+
+        return new ApplicationIdResponse(hairModelApplication.getId());
     }
 
     public boolean fetchModelApplyStatus(final Long modelId) {
