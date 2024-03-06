@@ -29,6 +29,7 @@ public class HairModelApplicationRegisterService {
     private final PreferHairStyleJpaRepository preferHairStyleJpaRepository;
     private final HairServiceRecordJpaRepository hairServiceRecordJpaRepository;
     private final ModelJpaRepository modelJpaRepository;
+    private static final String DATE_FORMAT = "yyyy. MM. dd";
 
     @Transactional
     public ApplicationExpireDateResponse postApplication(final Long modelId, final MultipartFile modelImgUrl, final MultipartFile applicationCaptureImgUrl, final ModelApplicationRequest applicationInfo) {
@@ -42,7 +43,7 @@ public class HairModelApplicationRegisterService {
         savePreferHairStyles(applicationInfo, hairModelApplication);
         saveHairServiceRecords(applicationInfo, hairModelApplication);
 
-        return new ApplicationExpireDateResponse(hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")));
+        return new ApplicationExpireDateResponse(hairModelApplication.getCreatedDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + " - " + hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
     }
 
     @Transactional
