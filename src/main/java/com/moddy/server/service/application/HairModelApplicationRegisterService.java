@@ -42,7 +42,7 @@ public class HairModelApplicationRegisterService {
         savePreferHairStyles(applicationInfo, hairModelApplication);
         saveHairServiceRecords(applicationInfo, hairModelApplication);
 
-        return new ApplicationExpireDateResponse(hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd.")));
+        return new ApplicationExpireDateResponse(hairModelApplication.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd")) + " - " + hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern("yyyy. MM. dd")));
     }
 
     @Transactional
