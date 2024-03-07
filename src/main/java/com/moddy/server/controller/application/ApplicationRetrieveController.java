@@ -4,6 +4,7 @@ import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
+import com.moddy.server.controller.application.dto.response.ApplicationIdResponse;
 import com.moddy.server.controller.designer.dto.response.ApplicationDetailInfoResponse;
 import com.moddy.server.controller.designer.dto.response.ApplicationInfoResponse;
 import com.moddy.server.controller.designer.dto.response.DesignerMainResponse;
@@ -94,7 +95,9 @@ public class ApplicationRetrieveController {
                 applicationDto.recordResponseList(),
                 applicationDto.hairDetail(),
                 hairServiceOfferRetrieveService.getIsSendStatus(applicationId, designerId),
-                applicationDto.instgramId()
+                applicationDto.instgramId(),
+                applicationDto.createdDate(),
+                applicationDto.expiredDate()
         );
 
         ModelInfoResponse modelInfoResponse = new ModelInfoResponse(
@@ -124,4 +127,19 @@ public class ApplicationRetrieveController {
             @PathVariable(value = "applicationId") Long applicationId) {
         return SuccessResponse.success(SuccessCode.GET_APPLICATION_IMG_URL_SUCCESS, hairModelApplicationRetrieveService.getApplicationImgUrl(applicationId));
     }
+
+    @Operation(summary = "[JWT] 나의 지원서 유무 확인하기", description = "마이페이지에서 유효한 지원서 유무를 확인하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "유효한 지원서 존재여부 조회 성공", content = @Content(schema = @Schema(implementation = ApplicationIdResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "해당 지원서를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/check")
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<ApplicationIdResponse> getValidApplicationStatus(
+            @Parameter(hidden = true) @UserId Long modelId) {
+        return SuccessResponse.success(SuccessCode.CHECK_VALID_APPLICATION_SUCCESS, hairModelApplicationRetrieveService.checkValidApplicationStatus(modelId));
+    }
+
 }
