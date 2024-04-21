@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -20,9 +19,14 @@ public class Model extends User {
 
     @NotNull
     private String year;
+
     public int getAge() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         Integer age = currentDateTime.getYear() - Integer.parseInt(this.year) + 1;
         return age;
+    }
+
+    public void update(String year){
+        this.year = year;
     }
 }

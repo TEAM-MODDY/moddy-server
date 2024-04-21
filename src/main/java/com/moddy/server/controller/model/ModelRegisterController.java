@@ -1,11 +1,13 @@
 package com.moddy.server.controller.model;
 
 import com.moddy.server.common.dto.ErrorResponse;
+import com.moddy.server.common.dto.SuccessNonDataResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
+import com.moddy.server.controller.model.dto.request.ModelUpdateRequest;
 import com.moddy.server.service.model.ModelRegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,4 +47,21 @@ public class ModelRegisterController {
             @Valid @RequestBody ModelCreateRequest modelCreateRequest) {
         return SuccessResponse.success(SuccessCode.MODEL_CREATE_SUCCESS, modelRegisterService.createModel(userId, modelCreateRequest));
     }
+
+    @Operation(summary = "[JWT] 모델 마이페이지 수정 API", description = "모델 마이페이지 수정 API입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "모델 마이페이지 수정 성공"),
+            @ApiResponse(responseCode = "401", description = "인증오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "유효하지 않은 값을 입력했습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PutMapping
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessNonDataResponse updateModel(
+            @Parameter(hidden = true) @UserId Long modelId,
+            @Valid @RequestBody ModelUpdateRequest modelUpdateRequest) {
+        modelRegisterService.updateModel(modelId, modelUpdateRequest);
+        return SuccessNonDataResponse.success(SuccessCode.MODEL_UPDATE_SUCCESS);
+    }
+
 }

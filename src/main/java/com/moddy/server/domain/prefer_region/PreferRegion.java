@@ -3,7 +3,6 @@ package com.moddy.server.domain.prefer_region;
 import com.moddy.server.domain.BaseTimeEntity;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.region.Region;
-import com.moddy.server.domain.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +14,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 
 @Repository
 public interface ModelJpaRepository extends JpaRepository<Model, Long> {
@@ -15,6 +14,6 @@ public interface ModelJpaRepository extends JpaRepository<Model, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "insert into model (id, year) VALUES (:id, :year)", nativeQuery = true)
     void modelRegister(@Param("id") Long id, @Param("year") String year);
-
+    
 }
 
