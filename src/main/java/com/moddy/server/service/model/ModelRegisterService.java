@@ -50,8 +50,7 @@ public class ModelRegisterService {
     public void updateModel(final Long modelId, ModelUpdateRequest modelUpdateRequest) {
         Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
 
-        UserUpdateDto userUpdateDto = new UserUpdateDto(modelUpdateRequest.name(), modelUpdateRequest.gender(), model.getPhoneNumber(), model.getIsMarketingAgree());
-        updateUserInfos(modelId, userUpdateDto);
+        updateUserInfos(modelId, new UserUpdateDto(modelUpdateRequest.name(), modelUpdateRequest.gender(), model.getPhoneNumber(), model.getIsMarketingAgree()));
         model.update(modelUpdateRequest.year());
         modelJpaRepository.save(model);
         deleteModelPreferRegions(modelId);
