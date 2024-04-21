@@ -47,7 +47,7 @@ public class ModelRetrieveService {
 
     public ModelMyPageResponse getModelInfo(final Long modelId) {
         Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-        ModelMyPageResponse modelMyPageResponse = new ModelMyPageResponse(model.getName(), model.getYear(), model.getGender(),model.getPhoneNumber(), getPreferRegionsList(modelId));
+        ModelMyPageResponse modelMyPageResponse = new ModelMyPageResponse(model.getName(), model.getYear(), model.getGender().getValue(), model.getSlashedPhoneNumber(model.getPhoneNumber()), getPreferRegionsList(modelId));
         return modelMyPageResponse;
     }
 
