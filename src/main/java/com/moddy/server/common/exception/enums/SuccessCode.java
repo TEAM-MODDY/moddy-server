@@ -29,7 +29,9 @@ public enum SuccessCode {
     GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "제안서 다운로드 url 생성 성공"),
     GET_APPLICATION_IMG_URL_SUCCESS(HttpStatus.OK, "지원서 이미지 url 가져오기 성공"),
     CHECK_VALID_APPLICATION_SUCCESS(HttpStatus.OK, "유효한 지원서 입니다."),
-    APPLICATION_DELETE_SUCCESS(HttpStatus.OK, "지원서 삭제하기 성공");
+    APPLICATION_DELETE_SUCCESS(HttpStatus.OK, "지원서 삭제하기 성공"),
+    FIND_DESIGNER_INFO_SUCCESS(HttpStatus.OK, "디자이너 정보 조회 성공"),
+    FIND_MODEL_INFO_SUCCESS(HttpStatus.OK, "모델 정보 조회 성공");
 
     private final HttpStatus httpStatus;
     private final String message;
