@@ -17,7 +17,7 @@ import java.util.List;
 @NotNull
 public record ModelCreateRequest(
         @Schema(description = "모델 회원가입 유저 이름 예시입니다.", example ="안현주")
-        @Size(min = 0, max = 10, message = "name은 1~10 글자수 사이의 글자입니다.")
+        @Size(min = 0, max = 10, message = "name은 1~5 글자수 사이의 글자입니다.")
         String name,
         @Schema(description = "모델 회원가입 유저 나이 예시입니다.", example ="2000")
         @NotBlank
