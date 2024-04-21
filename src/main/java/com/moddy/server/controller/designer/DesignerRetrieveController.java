@@ -45,7 +45,7 @@ public class DesignerRetrieveController {
 
     @Operation(summary = "[JWT] 마이페이지 디자이너 정보 조회", description = "마이페이지 수정시 디자이너 정보 조회입니다")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "디자이너 정보 조회 성공", content = @Content(schema = @Schema(implementation = DesignerInfoOpenChatDto.class))),
+            @ApiResponse(responseCode = "200", description = "디자이너 정보 조회 성공", content = @Content(schema = @Schema(implementation = DesignerMyPageResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
