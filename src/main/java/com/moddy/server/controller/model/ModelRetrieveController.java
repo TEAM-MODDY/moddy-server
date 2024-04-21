@@ -6,6 +6,7 @@ import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
+import com.moddy.server.controller.model.dto.response.ModelMyPageResponse;
 import com.moddy.server.service.model.ModelRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,5 +52,18 @@ public class ModelRetrieveController {
     @GetMapping(value = "/detail")
     public SuccessResponse<ApplicationUserDetailResponse> getUserDetailInApplication(@Parameter(hidden = true) @UserId final Long modelId) {
         return SuccessResponse.success(SuccessCode.CREATE_MODEL_APPLICATION_SUCCESS, modelRetrieveService.getModelDetailInApplication(modelId));
+    }
+
+    @Operation(summary = "[JWT] 마이페이지 모델 정보 조회", description = "마이페이지 수정시 모델 정보 조회입니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모델 정보 조회 성공", content = @Content(schema = @Schema(implementation = ModelMyPageResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping()
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<ModelMyPageResponse> getDesignerInfo(
+            @Parameter(hidden = true) @UserId Long modelId) {
+        return SuccessResponse.success(SuccessCode.FIND_MODEL_INFO_SUCCESS, modelRetrieveService.getModelInfo(modelId));
     }
 }

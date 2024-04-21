@@ -5,6 +5,7 @@ import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.auth.dto.response.RegionResponse;
 import com.moddy.server.controller.model.dto.ApplicationModelInfoDto;
 import com.moddy.server.controller.model.dto.response.ApplicationUserDetailResponse;
+import com.moddy.server.controller.model.dto.response.ModelMyPageResponse;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
 import com.moddy.server.domain.prefer_region.PreferRegion;
@@ -27,13 +28,7 @@ public class ModelRetrieveService {
 
     public ApplicationModelInfoDto getApplicationModelInfo(final Long modelId) {
         Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
-
-        List<PreferRegion> preferRegions = preferRegionJpaRepository.findAllByModelId(modelId);
-
-        List<String> regionList = preferRegions.stream().map(preferregion -> {
-            return preferregion.getRegion().getName();
-        }).collect(Collectors.toList());
-        return new ApplicationModelInfoDto(modelId, model.getName(), model.getAge(), model.getGender().getValue(), regionList);
+        return new ApplicationModelInfoDto(modelId, model.getName(), model.getAge(), model.getGender().getValue(), getPreferRegionsList(modelId));
     }
 
     public List<RegionResponse> getRegionList() {
@@ -50,6 +45,12 @@ public class ModelRetrieveService {
         return model.getName();
     }
 
+    public ModelMyPageResponse getModelInfo(final Long modelId) {
+        Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
+        ModelMyPageResponse modelMyPageResponse = new ModelMyPageResponse(model.getName(), model.getYear(), model.getGender(),model.getPhoneNumber(), getPreferRegionsList(modelId));
+        return modelMyPageResponse;
+    }
+
     public ApplicationUserDetailResponse getModelDetailInApplication(final Long modelId) {
         final Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MODEL_INFO));
         final List<String> preferRegions = preferRegionJpaRepository.findAllByModelId(model.getId())
@@ -58,5 +59,13 @@ public class ModelRetrieveService {
                 .toList();
 
         return new ApplicationUserDetailResponse(model.getName(), model.getGender().getValue(), model.getAge(), preferRegions);
+    }
+
+    private List<String> getPreferRegionsList(final Long modelId){
+        List<PreferRegion> preferRegions = preferRegionJpaRepository.findAllByModelId(modelId);
+        List<String> regionList = preferRegions.stream().map(preferregion -> {
+            return preferregion.getRegion().getName();
+        }).collect(Collectors.toList());
+        return regionList;
     }
 }
