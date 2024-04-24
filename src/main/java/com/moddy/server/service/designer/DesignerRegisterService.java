@@ -59,10 +59,14 @@ public class DesignerRegisterService {
     @Transactional
     public void updateDesigner(final Long designerId, final MultipartFile profileImg, final DesignerUpdateRequest designerUpdateRequest) {
         Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(DESIGNER_NOT_FOUND_EXCEPTION));
-        s3Service.deleteS3Image(designer.getProfileImgUrl());
-        String updatedProfileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
 
-        updateUserInfos(designerId, new UserUpdateDto(designerUpdateRequest.name(), designerUpdateRequest.gender(), designer.getPhoneNumber(), designer.getIsMarketingAgree()), updatedProfileImgUrl);
+        String profileImgUrl = designer.getProfileImgUrl();
+        if (profileImg != null) {
+            s3Service.deleteS3Image(profileImgUrl);
+            profileImgUrl = s3Service.uploadProfileImage(profileImg, Role.HAIR_DESIGNER);
+        }
+
+        updateUserInfos(designerId, new UserUpdateDto(designerUpdateRequest.name(), designerUpdateRequest.gender(), designer.getPhoneNumber(), designer.getIsMarketingAgree()), profileImgUrl);
         designer.update(new HairShop(designerUpdateRequest.hairShop().name(), designerUpdateRequest.hairShop().address(), designerUpdateRequest.hairShop().detailAddress()), new Portfolio(designerUpdateRequest.portfolio().instagramUrl(), designer.getPortfolio().getNaverPlaceUrl()), designerUpdateRequest.introduction(), designerUpdateRequest.kakaoOpenChatUrl());
         designerJpaRepository.save(designer);
         deleteDesignerDayoffs(designerId);
