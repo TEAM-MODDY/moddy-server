@@ -4,6 +4,7 @@ import com.moddy.server.common.dto.ErrorResponse;
 import com.moddy.server.common.dto.SuccessResponse;
 import com.moddy.server.common.exception.enums.SuccessCode;
 import com.moddy.server.config.resolver.user.UserId;
+import com.moddy.server.controller.designer.dto.response.DesignerMyPageResponse;
 import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
 import com.moddy.server.service.designer.DesignerRetrieveService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,4 +42,19 @@ public class DesignerRetrieveController {
             @Parameter(name = "designerId", description = "디자이너아이디") @PathVariable(value = "designerId") Long designerId) {
         return SuccessResponse.success(SuccessCode.OPEN_CHAT_GET_SUCCESS, designerRetrieveService.getDesignerOpenChatInfo(designerId));
     }
+
+    @Operation(summary = "[JWT] 마이페이지 디자이너 정보 조회", description = "마이페이지 수정시 디자이너 정보 조회입니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "디자이너 정보 조회 성공", content = @Content(schema = @Schema(implementation = DesignerMyPageResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류 입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping()
+    @SecurityRequirement(name = "JWT Auth")
+    public SuccessResponse<DesignerMyPageResponse> getDesignerInfo(
+            @Parameter(hidden = true) @UserId Long designerId){
+        return SuccessResponse.success(SuccessCode.FIND_DESIGNER_INFO_SUCCESS, designerRetrieveService.getDesignerInfo(designerId));
+    }
+
+
 }

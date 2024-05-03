@@ -5,6 +5,7 @@ import com.moddy.server.common.exception.model.ConflictException;
 import com.moddy.server.common.exception.model.NotFoundException;
 import com.moddy.server.controller.designer.dto.response.UserCreateResponse;
 import com.moddy.server.controller.model.dto.request.ModelCreateRequest;
+import com.moddy.server.controller.model.dto.request.ModelUpdateRequest;
 import com.moddy.server.controller.user.dto.request.UserUpdateDto;
 import com.moddy.server.domain.model.Model;
 import com.moddy.server.domain.model.repository.ModelJpaRepository;
@@ -43,6 +44,17 @@ public class ModelRegisterService {
         createModelPreferRegions(userId, request.preferRegions());
 
         return authService.createUserToken(userId.toString());
+    }
+
+    @Transactional
+    public void updateModel(final Long modelId, ModelUpdateRequest modelUpdateRequest) {
+        Model model = modelJpaRepository.findById(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.MODEL_NOT_FOUND_EXCEPTION));
+
+        updateUserInfos(modelId, new UserUpdateDto(modelUpdateRequest.name(), modelUpdateRequest.gender(), model.getPhoneNumber(), model.getIsMarketingAgree()));
+        model.update(modelUpdateRequest.year());
+        modelJpaRepository.save(model);
+        deleteModelPreferRegions(modelId);
+        createModelPreferRegions(modelId, modelUpdateRequest.preferRegions());
     }
 
     private void updateUserInfos(final Long userId, final UserUpdateDto userUpdateDto) {

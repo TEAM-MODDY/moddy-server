@@ -2,6 +2,7 @@ package com.moddy.server.service.designer;
 
 import com.moddy.server.common.exception.enums.ErrorCode;
 import com.moddy.server.common.exception.model.NotFoundException;
+import com.moddy.server.controller.designer.dto.response.DesignerMyPageResponse;
 import com.moddy.server.controller.model.dto.DesignerInfoOpenChatDto;
 import com.moddy.server.controller.model.dto.response.DesignerInfoResponse;
 import com.moddy.server.domain.day_off.DayOff;
@@ -26,6 +27,14 @@ public class DesignerRetrieveService {
     public String getDesignerName(final Long designerId) {
         Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
         return designer.getName();
+    }
+
+    public DesignerMyPageResponse getDesignerInfo(final Long designerId) {
+        Designer designer = designerJpaRepository.findById(designerId).orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND_EXCEPTION));
+        List<String> dayOfWeekList = getDayOfWeekList(designerId);
+
+        DesignerMyPageResponse designerMyPageResponse = new DesignerMyPageResponse(designer.getProfileImgUrl(), designer.getIntroduction(),designer.getName(), designer.getGender().getValue(), designer.getSlashedPhoneNumber(designer.getPhoneNumber()), designer.getHairShop(), dayOfWeekList, designer.getPortfolio(), designer.getKakaoOpenChatUrl());
+        return designerMyPageResponse;
     }
 
     public DesignerInfoOpenChatDto getDesignerOpenChatInfo(final Long designerId) {

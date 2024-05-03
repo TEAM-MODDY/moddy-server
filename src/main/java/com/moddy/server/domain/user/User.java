@@ -52,4 +52,8 @@ public class User extends BaseTimeEntity {
         this.profileImgUrl = profileImgUrl;
         this.role = role;
     }
+
+    public String getSlashedPhoneNumber(String phoneNumber){
+        return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 7) + "-" + phoneNumber.substring(7);
+    }
 }
