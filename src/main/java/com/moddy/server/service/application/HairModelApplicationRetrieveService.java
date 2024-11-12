@@ -28,6 +28,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,7 +52,6 @@ public class HairModelApplicationRetrieveService {
 
         Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
         long totalElements = applicationPage.getTotalElements();
-
         List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(this::getApplicationResponse).collect(Collectors.toList());
 
         return new DesignerMainResponse(
@@ -104,10 +105,11 @@ public class HairModelApplicationRetrieveService {
                 hairModelApplication.getExpiredDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
     }
 
-    public ApplicationIdResponse checkValidApplicationStatus(final Long modelId){
+    public ApplicationIdResponse checkValidApplicationStatus(final Long modelId) {
         HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findFirstByModelIdOrderByCreatedAtDesc(modelId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
 
-        if(hairModelApplication.isExpired()) throw new NotFoundException(ErrorCode.NOT_FOUND_VALID_APPLICATION_EXCEPTION);
+        if (hairModelApplication.isExpired())
+            throw new NotFoundException(ErrorCode.NOT_FOUND_VALID_APPLICATION_EXCEPTION);
 
         return new ApplicationIdResponse(hairModelApplication.getId());
     }
@@ -128,22 +130,24 @@ public class HairModelApplicationRetrieveService {
         return new DownloadUrlResponseDto(applicationDownloadUrl);
     }
 
-    public boolean getApplicationExpiredStatus(final Long applicationId){
+    public boolean getApplicationExpiredStatus(final Long applicationId) {
         final HairModelApplication hairModelApplication = hairModelApplicationJpaRepository.findById(applicationId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_APPLICATION_EXCEPTION));
         return hairModelApplication.isExpired();
     }
 
     private Page<HairModelApplication> findApplicationsByPaging(final int page, final int size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
+
+        long nonExpiredCount = hairModelApplicationJpaRepository.countNonExpiredApplications(LocalDate.now().minusDays(13).atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay());
 
         Page<HairModelApplication> nonExpiredApplications = applicationPage
                 .stream()
                 .filter(application -> !application.isExpired())
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
-                        list -> new PageImpl<>(list, pageRequest, list.size())
+                        list -> new PageImpl<>(list, pageRequest, nonExpiredCount)  // 전체 개수 사용
                 ));
 
         return nonExpiredApplications;
