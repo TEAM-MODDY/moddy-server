@@ -12,7 +12,6 @@ output/
 *.ipr
 *.iws
 
-
 # OSX
 .DS_Store
 .AppleDouble
@@ -37,3 +36,5 @@ output/
 *.log-*.gz
 logs/
 
+#Token
+/src/main/java/com/moddy/server/TestController.java
