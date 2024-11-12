@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.moddy.server.domain.user.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -101,6 +102,8 @@ public class S3Service {
         fileValidate.add(".JPG");
         fileValidate.add(".JPEG");
         fileValidate.add(".PNG");
+        fileValidate.add(".HEIC");
+        fileValidate.add(".heic");
 
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
         if (!fileValidate.contains(idxFileName)) throw new IllegalArgumentException();
