@@ -28,6 +28,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -138,10 +140,7 @@ public class HairModelApplicationRetrieveService {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
 
-        long nonExpiredCount = hairModelApplicationJpaRepository.findAll()
-                    .stream()
-                    .filter(application -> !application.isExpired())
-                    .count();
+        long nonExpiredCount = hairModelApplicationJpaRepository.countNonExpiredApplications(LocalDate.now().minusDays(13).atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay());
 
         Page<HairModelApplication> nonExpiredApplications = applicationPage
                 .stream()
