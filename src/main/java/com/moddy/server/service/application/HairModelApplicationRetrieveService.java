@@ -50,7 +50,6 @@ public class HairModelApplicationRetrieveService {
 
         Page<HairModelApplication> applicationPage = findApplicationsByPaging(page, size);
         long totalElements = applicationPage.getTotalElements();
-
         List<HairModelApplicationResponse> applicationResponsesList = applicationPage.stream().map(this::getApplicationResponse).collect(Collectors.toList());
 
         return new DesignerMainResponse(
@@ -139,14 +138,17 @@ public class HairModelApplicationRetrieveService {
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<HairModelApplication> applicationPage = hairModelApplicationJpaRepository.findAll(pageRequest);
 
-        long totalElements = applicationPage.getTotalElements();
+        long nonExpiredCount = hairModelApplicationJpaRepository.findAll()
+                    .stream()
+                    .filter(application -> !application.isExpired())
+                    .count();
 
         Page<HairModelApplication> nonExpiredApplications = applicationPage
                 .stream()
                 .filter(application -> !application.isExpired())
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
-                        list -> new PageImpl<>(list, pageRequest, totalElements)  // 전체 개수 사용
+                        list -> new PageImpl<>(list, pageRequest, nonExpiredCount)  // 전체 개수 사용
                 ));
 
         return nonExpiredApplications;
